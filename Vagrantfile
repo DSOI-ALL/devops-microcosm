@@ -13,27 +13,34 @@ Vagrant.configure("2") do |config|
   config.vm.box = "cert/centos7_x86_64"
   config.vm.box_version = "0.4.0"
 
+  config.ssh.pty = true
+  config.ssh.insert_key = false
+
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo yum install net-tools -y
+  SHELL
+
   config.vm.define "jenkins" do |jenkins|
-    jenkins.vm.network "private_network", ip: "10.10.0.2", auto_config: false
+    jenkins.vm.network "private_network", ip: "10.1.1.2"
 
     jenkins.vm.provider "virtualbox" do |v|
       v.name = "voltron-jenkins"
       v.customize ["modifyvm", :id, "--memory", 1024]
       v.customize ["modifyvm", :id, "--cpus", 1]
-      v.customize ["modifyvm", :id, "--groups", "/CERT/CSP"]
+      v.customize ["modifyvm", :id, "--groups", "/CERT"]
     end
   end
 
-  #config.vm.define "gitLab" do |gitLab|
-  #  gitLab.vm.network "private_network", ip: "10.10.0.3", auto_config: false
+  config.vm.define "gitLab" do |gitLab|
+    gitLab.vm.network "private_network", ip: "10.1.1.3"
 
-  #  gitLab.vm.provider "virtualbox" do |v|
-  #    v.name = "voltron-gitLab"
-  #    v.customize ["modifyvm", :id, "--memory", 1024]
-  #    v.customize ["modifyvm", :id, "--cpus", 1]
-  #    v.customize ["modifyvm", :id, "--groups", "/CERT/CSP"]
-  #  end
-  #end
+    gitLab.vm.provider "virtualbox" do |v|
+      v.name = "voltron-gitLab"
+      v.customize ["modifyvm", :id, "--memory", 1024]
+      v.customize ["modifyvm", :id, "--cpus", 1]
+      v.customize ["modifyvm", :id, "--groups", "/CERT"]
+    end
+  end
 
 
   #config.vm.define "selenium" do |selenium|
@@ -43,7 +50,7 @@ Vagrant.configure("2") do |config|
   #    v.name = "voltron-selenium"
   #    v.customize ["modifyvm", :id, "--memory", 1024]
   #    v.customize ["modifyvm", :id, "--cpus", 1]
-  #    v.customize ["modifyvm", :id, "--groups", "/CERT/CSP"]
+  #    v.customize ["modifyvm", :id, "--groups", "/CERT"]
   #  end
   #end
 
@@ -54,7 +61,7 @@ Vagrant.configure("2") do |config|
   #    v.name = "voltron-owaspZap"
   #    v.customize ["modifyvm", :id, "--memory", 1024]
   #    v.customize ["modifyvm", :id, "--cpus", 1]
-  #    v.customize ["modifyvm", :id, "--groups", "/CERT/CSP"]
+  #    v.customize ["modifyvm", :id, "--groups", "/CERT"]
   #  end
   #end
 
@@ -66,7 +73,7 @@ Vagrant.configure("2") do |config|
   #    v.name = "voltron-jenkins"
   #    v.customize ["modifyvm", :id, "--memory", 1024]
   #    v.customize ["modifyvm", :id, "--cpus", 1]
-  #    v.customize ["modifyvm", :id, "--groups", "/CERT/CSP"]
+  #    v.customize ["modifyvm", :id, "--groups", "/CERT"]
   #  end
   #end
 
@@ -77,7 +84,7 @@ Vagrant.configure("2") do |config|
   #    v.name = "voltron-staging"
   #    v.customize ["modifyvm", :id, "--memory", 1024]
   #    v.customize ["modifyvm", :id, "--cpus", 1]
-  #    v.customize ["modifyvm", :id, "--groups", "/CERT/CSP"]
+  #    v.customize ["modifyvm", :id, "--groups", "/CERT"]
   #  end
   #end
 
