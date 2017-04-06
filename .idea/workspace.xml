@@ -2,7 +2,23 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="08e6d956-528c-4cd5-b282-7aedcd5cf66e" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Vagrantfile" afterPath="$PROJECT_DIR$/Vagrantfile" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/.chef-repo.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/.gitignore" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/LICENSE" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/README.md" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/chefignore" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/cookbooks/README.md" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/cookbooks/example/README.md" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/cookbooks/example/attributes/default.rb" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/cookbooks/example/metadata.rb" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/cookbooks/example/recipes/default.rb" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/data_bags/README.md" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/data_bags/example/example_item.json" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/environments/README.md" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/environments/example.json" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/java-1.48.0.tar.gz" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/roles/README.md" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/roles/example.json" afterPath="" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -18,27 +34,17 @@
         <entry file="file://$PROJECT_DIR$/Vagrantfile">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="135">
-              <caret line="9" column="35" lean-forward="true" selection-start-line="9" selection-start-column="35" selection-end-line="9" selection-end-column="35" />
+              <caret line="9" column="35" lean-forward="false" selection-start-line="9" selection-start-column="35" selection-end-line="9" selection-end-column="35" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="metadata.json" pinned="false" current-in-tab="false">
+      <file leaf-file-name="metadata.json" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/metadata.json">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="135">
               <caret line="9" column="46" lean-forward="false" selection-start-line="9" selection-start-column="46" selection-end-line="9" selection-end-column="46" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="knife.rb" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/chef_repo/.chef/knife.rb">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -101,38 +107,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="devops-volktron" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="devops-volktron" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="devops-volktron" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="chef_repo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="devops-volktron" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="devops-volktron" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="chef_repo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value=".chef" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -261,12 +235,12 @@
       <workItem from="1490299686075" duration="55000" />
       <workItem from="1490299754544" duration="5743000" />
       <workItem from="1490377138195" duration="11543000" />
-      <workItem from="1490978585114" duration="8634000" />
+      <workItem from="1490978585114" duration="9223000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="26238000" />
+    <option name="totallyTimeSpent" value="26827000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1920" y="23" width="1920" height="1113" extended-state="0" />
@@ -362,14 +336,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/metadata.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="46" lean-forward="false" selection-start-line="9" selection-start-column="46" selection-end-line="9" selection-end-column="46" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/chef_repo/.chef-repo.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -408,7 +374,7 @@
     <entry file="file://$PROJECT_DIR$/Vagrantfile">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
-          <caret line="9" column="35" lean-forward="true" selection-start-line="9" selection-start-column="35" selection-end-line="9" selection-end-column="35" />
+          <caret line="9" column="35" lean-forward="false" selection-start-line="9" selection-start-column="35" selection-end-line="9" selection-end-column="35" />
           <folding />
         </state>
       </provider>
@@ -417,6 +383,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/metadata.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="46" lean-forward="false" selection-start-line="9" selection-start-column="46" selection-end-line="9" selection-end-column="46" />
           <folding />
         </state>
       </provider>
