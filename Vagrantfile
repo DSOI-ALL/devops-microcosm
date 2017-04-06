@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
   # config.vbguest.no_remote = true
 
   config.vm.box = "cert/centos7_x86_64"
-  config.vm.box_version = "0.1.0"
+  config.vm.box_version = "0.4.0"
 
   config.vm.define "jenkins" do |jenkins|
     jenkins.vm.network "private_network", ip: "10.10.0.2", auto_config: false

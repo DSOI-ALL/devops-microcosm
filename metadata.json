@@ -2,7 +2,7 @@
   "name": "cert/centos7_x86_64",
   "description": "CentOS 7 x86_64",
   "versions": [{
-    "version": "0.1.0",
+    "version": "0.4.0",
     "providers": [{
       "name": "virtualbox",
       "url": "http://docker-base.cs2.cert.org/CentOS-7.2.1511-3.10.0-GA_5.1.2.box",
