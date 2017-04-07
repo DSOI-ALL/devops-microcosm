@@ -1,0 +1,41 @@
+version: "build-{build}"
+
+os: Windows Server 2012 R2
+platform:
+  - x64
+
+environment:
+  machine_user: test_user
+  machine_pass: Pass@word1
+  machine_port: 5985
+  KITCHEN_YAML: .kitchen.appveyor.yml
+  SSL_CERT_FILE: c:\projects\kitchen-machine\certs.pem
+
+  matrix:
+    - ruby_version: "22"
+
+clone_folder: c:\projects\kitchen-machine
+clone_depth: 1
+branches:
+  except:
+    - macosx
+
+install:
+  - ps: net user /add $env:machine_user $env:machine_pass
+  - ps: net localgroup administrators $env:machine_user /add
+  - ps: $env:PATH="C:\Ruby$env:ruby_version\bin;$env:PATH"
+  - ps: gem install bundler --quiet --no-ri --no-rdoc
+  - ps: Invoke-WebRequest -Uri http://curl.haxx.se/ca/cacert.pem -OutFile c:\projects\kitchen-machine\certs.pem
+
+build_script:
+#  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/set-screenresolution.ps1'))
+#  - ps: Set-ScreenResolution 1440 900
+  - bundle install || bundle install || bundle install
+  - bundle exec rake
+  - bundle exec kitchen conv
+#  - shutdown /a
+#  - ps: Restart-Computer -Force
+#  - ps: Start-Sleep -s 10
+#
+#test_script:
+#  - bundle exec kitchen veri

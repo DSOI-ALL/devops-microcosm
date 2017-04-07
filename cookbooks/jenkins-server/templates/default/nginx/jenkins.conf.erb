@@ -1,0 +1,40 @@
+server {
+    server_name <%= node['jenkins-server']['nginx']['server_name'] %>;
+    listen 80 <% if node['jenkins-server']['nginx']['server_default'] %>default_server<% end %>;
+
+    <% if node['jenkins-server']['nginx']['ssl'] %>
+    listen 443 ssl;
+    ssl_certificate      <%= node['jenkins-server']['nginx']['ssl_cert_path'] %>;
+    ssl_certificate_key  <%= node['jenkins-server']['nginx']['ssl_key_path'] %>;
+    <% end %>
+
+    root <%= node['nginx']['default_root'] %>;
+    index index.php index.html index.htm;
+
+    location / {
+        <% if node['jenkins-server']['nginx']['ssl'] %>
+        # Force SSL
+        if ($ssl_protocol = "") {
+            return 301 https://$http_host$request_uri;
+        }
+        <% end %>
+
+        proxy_set_header    Host $host;
+        proxy_set_header    X-Real-IP $remote_addr;
+        proxy_set_header    X-Forwarded-Host $host;
+        proxy_set_header    X-Forwarded-Server $host;
+        proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header    X-Forwarded-Proto $scheme;
+
+        proxy_pass          http://localhost:<%= node['jenkins']['master']['port'] %>;
+        proxy_read_timeout  90;
+
+        # Fix the “It appears that your reverse proxy set up is broken" error
+        proxy_redirect      http://localhost:<%= node['jenkins']['master']['port'] %> $scheme://<%= node['jenkins-server']['nginx']['server_name'] %>;
+    }
+
+    # Deny access to .htaccess files, if Apache's document root concurs with nginx's one
+    location ~ /\.ht {
+        deny  all;
+    }
+}

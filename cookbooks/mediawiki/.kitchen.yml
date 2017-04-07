@@ -1,0 +1,22 @@
+---
+driver:
+  name: vagrant
+  vagrantfile_erb: Vagrantfile.erb
+
+
+provisioner:
+  name: chef_solo
+
+platforms:
+  - name: centos-7.2
+    driver:
+      provider: parallels
+  - name: ubuntu-14.04
+    driver:
+      provider: parallels
+
+suites:
+  - name: default
+    run_list:
+       - recipe[mediawiki]
+    attributes:

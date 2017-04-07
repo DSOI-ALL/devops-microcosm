@@ -1,0 +1,8 @@
+#!/bin/sh
+
+exec 2>&1
+export PATH=<%= @options['install_dir'] %>/node_modules/.bin:$PATH
+cd <%= @options['install_dir'] %>
+exec chpst -u <%= @options['user'] %> -U <%= @options['user'] %> -e "<%= @options[:env_dir] %>" \
+  env HOME="<%= @options['install_dir'] %>" \
+  hubot --name '<%= @options['name'] %>' --adapter <%= @options['adapter'] %>

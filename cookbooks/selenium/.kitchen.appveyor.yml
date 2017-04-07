@@ -1,0 +1,25 @@
+---
+driver:
+  name: proxy
+  host: localhost
+  reset_command: "exit 0"
+  port: <%= ENV["machine_port"] %>
+  username: <%= ENV["machine_user"] %>
+  password: <%= ENV["machine_pass"] %>
+
+provisioner:
+  name: chef_zero
+  require_chef_omnibus: 12
+
+platforms:
+  - name: windows-2012R2
+
+suites:
+  - name: default
+    run_list:
+      - selenium_test::hub
+      - selenium_test::node
+    attributes:
+      selenium_test:
+        username: <%= ENV["machine_user"] %>
+        password: <%= ENV["machine_pass"] %>

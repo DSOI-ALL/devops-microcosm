@@ -1,0 +1,26 @@
+{
+  "capabilities": <%= JSON.pretty_generate(@resource.capabilities) %>,
+  "proxy": "<%= @resource.proxy %>",
+  "maxSession": <%= @resource.maxSession %>,
+  "port": <%= @resource.port %>,
+<% if  @resource.host %>
+  "host": "<%= @resource.host %>",
+<% end %>
+  "register": <%= @resource.register %>,
+  "registerCycle": <%= @resource.registerCycle %>,
+  "servlets": <%= @resource.servlets %>,
+  "withoutServlets": <%= @resource.withoutServlets %>,
+  "timeout": <%= @resource.timeout %>,
+  "debug": <%= @resource.debug %>,
+  "timeout": <%= @resource.timeout %>,
+  "browserTimeout": <%= @resource.browserTimeout %>,
+  "jettyMaxThreads": <%= @resource.jettyMaxThreads %>,
+  "nodeStatusCheckTimeout": <%= @resource.nodeStatusCheckTimeout %>,
+  "nodePolling": <%= @resource.nodePolling %>,
+  "unregisterIfStillDownAfter": <%= @resource.unregisterIfStillDownAfter %>,
+  "downPollingLimit": <%= @resource.downPollingLimit %>,
+<% if  @resource.log %>
+  "log": "<%= @resource.log %>",
+<% end %>
+  "hub": "<%= @resource.hub %>"
+}

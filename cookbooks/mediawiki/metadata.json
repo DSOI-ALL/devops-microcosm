@@ -1,0 +1,49 @@
+{
+  "name": "mediawiki",
+  "description": "Installs/Configures mediawiki",
+  "long_description": "GitHub: https://github.com/spindance-ops/sd.chef.mediawiki\n\n#####Don't have a chef server? Ubuntu/Redhat Installer: https://raw.githubusercontent.com/spindance-ops/sd.chef.mediawiki/master/MediaWikiInstaller.bash\n\nContainerized Mediawiki \n=======================\n###Known Issues and Todos (the short list I'm sure):\n* My semver usage is probably terrible. It's all a patch! \n* I don't know why I don't have exposed confs for php-fpm. An oversight worth fixing. \n* The value of node attributes is dubious at best. Somethings are hard coded, somethings are attributes. \n* Following the prior, conf files need better templatization (any templatization?). \n* I have small changes I make to the mediawiki code base to allow for auto generation of LocalSettings in the base dir. May be a security risk in one form or another. \n* Following the prior, should those changes be maintained in a mediawiki fork, or in this cookbooks files?\n* Right now, docker start/stop container is your init scripts. I'd like to change this. \n* Need to create a build pipeline for releases of various versions of things. \n* Release all the docker files used to build fpm and parsoid (the fpm build is kind of opinionated at the moment). \n\n\n###What is it? \nInstalling mediawiki is a bit of a pain (especially with the visual editor). The directions are sometimes unclear on which packages are required for the php compile. At the very least in a platform agnostic manner. As it stands it should work with either debian or redhat based systems that docker supports (at this very moment only tested on Centos 7.2.)\n\n###Why it's better than the mediawiki sponsored docker setup. \nThe official mediawiki docker image doesn’t really subscribe to the docker ideology. It’s all blob’d into one container. This follows the one service per container concept and is built in a way that that allows for agnostic immutable system setup. I’ll touch on this in the setup section.\n\nSetup\n=======================\nThere are three folders of interest, these will be configured on system initialization by chef:\n\n```\n/var/lib/mysql (Can use existing installation. See Caveat Emptor)\n/var/www/mediawiki (This will be initialized only once. See Caveat Emptor)\n/etc/parsoid (This I think is going to be overridden each time. Todo:fix)\n```\n\nThe following is not required, just a suggestion.\n\nSo ideally your data is on designated data volumes. Our setup is such that there is a mounted data volume mounted on let’s say /app. Then you have all your folders in this folder so:\n\n```\n/app/\n  mediawiki/\n  mysql/\n  parsoid/\n```\n\nFrom here, you’ll use bind mounts because docker doesn’t like symlinks. \n\n```\nmount -o bind /app/parsoid /etc/parsoid\nmount -o bind /app/mysql/ /var/lib/mysql\nmount -o bind /app/mediawiki/ /var/www/mediawiki\n```\n\nThis is nice, because now your system can be truly ephemeral and your data can live wherever.\n\nUsage and Common Tasks\n=======================\n####Starting and Stopping Services \n\ndocker stop CONTAINER_NAME; docker start CONTAINER_NAME\n\n####Accessing Daemon Logs\n\ndocker logs [ -f ] CONTAINER_NAME\n\n####Accessing a Shell\n\ndocker exec -ti CONTAINER_NAME /bin/sh\n\n####Managing the Database\n\ndocker exec -ti mariadb mysql\n\nCaveat Emptor\n=======================\nPer the usual, this is an open source project maintained by some random guy on the internet. Use at your own risk.  \n\n###Things\nThe mariadb container will not reinitialize an existing mysql directory. I have not reviewed their code on how that works. I think I grabbed the latest mariadb image (drop in mysql replacement) so if you have an old mysql and use it as your base dir it may try to upgrade things. I don’t know, I have not tried it. So just be aware and use at your own risk if you’re trying to use and existing mysql install. \n\n\nMediawiki is pulled from git using the chef git resource provider. It does a checkout and only does it once based on a set attribute. Still make backups of important things. It should go without saying. \n\n\nRequirements\n------------\nChef 12+ (probably the latest chef 12 would be best)\n\nAttributes\n----------\nNope, don't use em. You can go poke a bit if you want, but it works out of the box. It'll get better in terms of customization. \n\nContributing\n------------\nFeel free to sumbit bugs, and submit pulls. I'll try to be as engaged as possible. This is my first community project so bear with me. \n\nLicense and Authors\n-------------------\nAuthors: Ryan Lewkowicz \n",
+  "maintainer": "Ryan Lewkowicz",
+  "maintainer_email": "ryan.lewkowicz@spindance.com",
+  "license": "MIT",
+  "platforms": {
+
+  },
+  "dependencies": {
+    "docker": ">= 2.9.2",
+    "ark": ">= 0.0.0"
+  },
+  "recommendations": {
+
+  },
+  "suggestions": {
+
+  },
+  "conflicting": {
+
+  },
+  "providing": {
+
+  },
+  "replacing": {
+
+  },
+  "attributes": {
+
+  },
+  "groupings": {
+
+  },
+  "recipes": {
+
+  },
+  "version": "1.0.14",
+  "source_url": "",
+  "issues_url": "",
+  "privacy": false,
+  "chef_versions": [
+
+  ],
+  "ohai_versions": [
+
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "name": "jenkins-server",
+  "description": "This cookbook installs a complete Jenkins server with plugins and is highly configurable with attributes in this cookbook.",
+  "long_description": "This cookbook installs a complete Jenkins server with plugins and is highly configurable with attributes in this cookbook. It configures settings, plugins, security, slaves and depends on the [Jenkins](https://supermarket.chef.io/cookbooks/jenkins) cookbook that is used as foundation. It also installs (can be disabled) the Jenkins plugins, php-template job and required PHP tools as described on [jenkins-php.org](http://jenkins-php.org).",
+  "maintainer": "Pieter Vogelaar",
+  "maintainer_email": "pieter@pietervogelaar.nl",
+  "license": "MIT",
+  "platforms": {
+    "centos": ">= 6.6",
+    "redhat": ">= 6.6",
+    "ubuntu": ">= 12.04",
+    "debian": ">= 7.0"
+  },
+  "dependencies": {
+    "jenkins": ">= 2.3.1",
+    "java": ">= 0.0.0",
+    "ant": ">= 0.0.0",
+    "git": ">= 0.0.0",
+    "composer": ">= 0.0.0",
+    "nginx": ">= 0.0.0",
+    "chef-vault": ">= 0.0.0"
+  },
+  "recommendations": {
+
+  },
+  "suggestions": {
+
+  },
+  "conflicting": {
+
+  },
+  "providing": {
+
+  },
+  "replacing": {
+
+  },
+  "attributes": {
+
+  },
+  "groupings": {
+
+  },
+  "recipes": {
+
+  },
+  "version": "0.7.5",
+  "source_url": "",
+  "issues_url": "",
+  "privacy": false
+}

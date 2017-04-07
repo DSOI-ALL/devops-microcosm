@@ -1,0 +1,46 @@
+{
+  "name": "hubot",
+  "description": "Deploys and manages an instance of Github's Hubot.",
+  "long_description": "hubot cookbook\n================\n[![Build Status](https://travis-ci.org/tas50/hubot.svg)](https://travis-ci.org/tas50/hubot)\n\nDeploys and manages an instance of [GitHub's Hubot](http://hubot.github.com/).\n\n# Usage\n\nInclude `recipe[hubot]` in your run_list and override the defaults you want\nchanged. See [below](#attributes) for more details. Hubot instances are\nconfigured using environment variables passed to the Hubot process. These\nenvironment variables can be set using the `node['hubot']['config']` attribute.\n\nI hightly recommend integrating this cookbook into your own infrastruce using\nthe\n[library/application cookbook pattern](http://devopsanywhere.blogspot.com/2012/11/how-to-write-reusable-chef-cookbooks.html).\nYou would start by creating a `YOURCOMPANY-hubot` cookbook with a proper\nmetadata depedency on the `hubot` (this) cookbook. A concrete example can be\nfound [on this gist](https://gist.github.com/schisamo/46eafba27d43c4a1e026)\nwhich was created from bits of the internal `opscode-hubot` cookbook which we\nuse to deploy, Paula Deen, Opscode's hubot instance.\n\nOne important item to note is the use of the\n[remote_directory](http://docs.opscode.com/resource_remote_directory.html)\nresource to distribute our internal hubot scripts to the install:\n\n```ruby\nremote_directory \"#{node['hubot']['install_dir']}/scripts\" do\n  source \"scripts\"\n  files_backup 0\n  files_owner node['hubot']['user']\n  files_group node['hubot']['group']\n  files_mode '0644'\n  owner node['hubot']['user']\n  group node['hubot']['group']\n  overwrite true\n  mode '0755'\n  notifies :restart, \"service[hubot]\", :delayed\nend\n```\n\n# Requirements\n\n## Chef\n\nTested on Chef 11/12\n\n## Platform\n\nThe following platforms have been tested with this cookbook, meaning that the\nrecipes and LWRPs run on these platforms without error:\n\n* Ubuntu 10.04+\n* RHEL/Centos 6\n\n## Cookbooks\n\nThis cookbook depends on the following external cookbooks:\n\n* [nodejs](https://supermarket.chef.io/cookbooks/nodejs)\n* [git](https://supermarket.chef.io/cookbooks/git)\n* [runit](https://supermarket.chef.io/cookbooks/runit)\n* [supervisor](https://supermarket.chef.io/cookbooks/supervisor)\n\n# Recipes\n\n## default\n\n* Ensures that Node.js is installed and available using the\n  [nodejs cookbook](http://community.opscode.com/cookbooks/nodejs).\n* Ensures git is installed and available using the\n  [git cookbook](http://community.opscode.com/cookbooks/git).\n* Ensures runit is installed and available using the\n  [runit cookbook](http://community.opscode.com/cookbooks/runit).\n* Creates a user and group to install and run the Hubot instance under.\n* Installs the specified Hubot version from git.\n* Renders instance-specific `package.json`, `external-scripts.json`, `hubot-scripts.json`, and\n `hubot.conf` files.\n* Creates and enables a `hubot` runit service to run the Hubot instance under.\n  The runit service reads the `hubot.conf` file and passes the contents onto\n  the underlying hubot process as configuraiton.\n\n# Attributes\n\nAttribute       | Description |Type | Default\n----------------|-------------|-----|--------\nversion         | Hubot version to install. | String  | 2.11.0      |\nscripts_version | Version of [hubot-scripts](https://github.com/github/hubot-scripts) (community collection of hubot scripts) to install. | String | 2.5.16\ninstall_dir     | Directory the Hubot instance will be installed to. | String | /opt/hubot\nuser            | The user to install and run the Hubot instance under. | String | hubot\ngroup           | The group to install and run the Hubot instance under. | String | hubot\nname            | The name of the robot in chat. | String | hubot\nadapter         | The [Hubot adapter](https://github.com/github/hubot/blob/master/docs/adapters.md) to use. | String | campfire\nconfig          | Hash of values that will be converted into environment variables and passed to the Hubot process. | Hash | Hash.new\ndependencies    | Hash in form `dep_name => dep_version` that will be rendered into Hubot instance's `package.json`. A common dep to set in this attribute is non-Campfire adapters. | Hash | Hash.new\nhubot_scripts   | Scripts to enable from the [community collection of hubot scripts](https://github.com/github/hubot-scripts). | Array | Array.new\nexternal_scripts| External scripts to enable. | Array | Array.new\n\n# Testing\n\nThis cookbook ships with full support for the new alpha version of Opscode's\n`test-kitchen`. [Fletcher Nichol's](https://github.com/fnichol) excellent Jamie\nintegration test runner was\n[recently merged into the test-kitchen codebase](http://lists.opscode.com/sympa/arc/chef-dev/2013-01/msg00038.html).\nThis merge and all new feature work are now taking place in the\n[1.0 branch of test-kitchen](https://github.com/opscode/test-kitchen/tree/1.0).\nEven though many community members have been dogfooding the new `test-kitchen`\ncodebase and it has proven quite stable, it should still be regarded as\npre-release code and YMMV.\n\nRunning integration with test-kitchen is easy. First we'll assume you have a\nsane cookbook development toolchain installed which includes:\n\n* Git\n* Ruby 1.9.x\n* Bundler\n* VirtualBox 4.x\n\nIf you need help setting up this toolchain, take a read through the\n\"[System Setup](http://vialstudios.com/guide-authoring-cookbooks.html#system_setup)\"\nsection of [Jamie Winsor's](https://github.com/reset) excellent cookbook\nauthoring guide.\n\nFirst install all gem dependencies with Bundler:\n\n```shell\n$ bundle install --binstubs\n```\n\nBundler will install all of the dependent RubyGems and guarantee that you have\nthe right versions. Now it's time to get your test on:\n\n```shell\n$ bundle exec kitchen test\n```\n\nThis command will do the following across every platform/version this cookbook\nsupports:\n\n* Use Vagrant to provision a platform-specific VM.\n* Add a `recipe[hubot]` entry to the instance's run_list.\n* Converge the VM with `chef-solo`.\n\nBy default, any VM that successfully converges will automaticallly be cleaned\nup. The full set of `kitchen` subcommands can be viewed by running:\n\n```shell\n$ bundle exec kitchen help\n```\n\n# Development\n\n* Source hosted at [GitHub][repo]\n* Report issues/Questions/Feature requests on [GitHub Issues][issues]\n\nI <3 pull requests! Make sure your patches are well tested. Ideally create a\ntopic branch for every separate feature/fix you make.\n\n# License and Author\n\nAuthor:: [Seth Chisamore][schisamo] (<schisamo@gmail.com>)\n\nAuthor:: [Tim Smith][tas50] (<tsmith84@gmail.com>)\n\nCopyright (c) 2013-2015, Seth Chisamore\n\nCopyright (c) 2015, Tim Smith\n\nLicensed under the Apache License, Version 2.0 (the \"License\");\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an \"AS IS\" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License.\n\n",
+  "maintainer": "Tim Smith",
+  "maintainer_email": "tsmith84@gmail.com",
+  "license": "Apache 2.0",
+  "platforms": {
+    "ubuntu": ">= 10.04",
+    "centos": ">= 6.0",
+    "redhat": ">= 6.0"
+  },
+  "dependencies": {
+    "git": ">= 0.0.0",
+    "nodejs": ">= 0.0.0",
+    "runit": ">= 0.0.0",
+    "supervisor": ">= 0.0.0"
+  },
+  "recommendations": {
+
+  },
+  "suggestions": {
+
+  },
+  "conflicting": {
+
+  },
+  "providing": {
+
+  },
+  "replacing": {
+
+  },
+  "attributes": {
+
+  },
+  "groupings": {
+
+  },
+  "recipes": {
+
+  },
+  "version": "1.0.6",
+  "source_url": "",
+  "issues_url": ""
+}

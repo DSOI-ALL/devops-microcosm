@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson.util.DescribableList>
+  <hudson.node__monitors.ArchitectureMonitor>
+    <ignored><%= node['jenkins-server']['node_monitors']['architecture_monitor']['ignored'] %></ignored>
+  </hudson.node__monitors.ArchitectureMonitor>
+  <hudson.node__monitors.ClockMonitor>
+    <ignored><%= node['jenkins-server']['node_monitors']['clock_monitor']['ignored'] %></ignored>
+  </hudson.node__monitors.ClockMonitor>
+  <hudson.node__monitors.DiskSpaceMonitor>
+    <ignored><%= node['jenkins-server']['node_monitors']['disk_space_monitor']['ignored'] %></ignored>
+    <freeSpaceThreshold><%= node['jenkins-server']['node_monitors']['disk_space_monitor']['free_space_threshold'] %></freeSpaceThreshold>
+  </hudson.node__monitors.DiskSpaceMonitor>
+  <hudson.node__monitors.SwapSpaceMonitor>
+    <ignored><%= node['jenkins-server']['node_monitors']['swap_space_monitor']['ignored'] %></ignored>
+  </hudson.node__monitors.SwapSpaceMonitor>
+  <hudson.node__monitors.TemporarySpaceMonitor>
+    <ignored><%= node['jenkins-server']['node_monitors']['temporary_space_monitor']['ignored'] %></ignored>
+    <freeSpaceThreshold><%= node['jenkins-server']['node_monitors']['temporary_space_monitor']['free_space_threshold'] %></freeSpaceThreshold>
+  </hudson.node__monitors.TemporarySpaceMonitor>
+  <hudson.node__monitors.ResponseTimeMonitor>
+    <ignored><%= node['jenkins-server']['node_monitors']['response_time_monitor']['ignored'] %></ignored>
+  </hudson.node__monitors.ResponseTimeMonitor>
+</hudson.util.DescribableList>

@@ -22,6 +22,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "jenkins" do |jenkins|
     jenkins.vm.network "private_network", ip: "10.1.1.2"
+    jenkins.vm.network :forwarded_port, guest:8080, host:8081
 
     jenkins.vm.provider "virtualbox" do |v|
       v.name = "voltron-jenkins"
@@ -29,18 +30,28 @@ Vagrant.configure("2") do |config|
       v.customize ["modifyvm", :id, "--cpus", 1]
       v.customize ["modifyvm", :id, "--groups", "/CERT"]
     end
-  end
 
-  config.vm.define "gitLab" do |gitLab|
-    gitLab.vm.network "private_network", ip: "10.1.1.3"
+    jenkins.vm.provision :chef_zero do |chef|
 
-    gitLab.vm.provider "virtualbox" do |v|
-      v.name = "voltron-gitLab"
-      v.customize ["modifyvm", :id, "--memory", 1024]
-      v.customize ["modifyvm", :id, "--cpus", 1]
-      v.customize ["modifyvm", :id, "--groups", "/CERT"]
+      chef.cookbooks_path = "cookbooks"
+      chef.nodes_path = "./nodes"
+      chef.roles_path = "./roles"
+      #chef.environments_path = "./environments"
+
     end
+
   end
+
+  #config.vm.define "gitLab" do |gitLab|
+  #  gitLab.vm.network "private_network", ip: "10.1.1.3"
+
+  #  gitLab.vm.provider "virtualbox" do |v|
+  #    v.name = "voltron-gitLab"
+  #    v.customize ["modifyvm", :id, "--memory", 1024]
+  #    v.customize ["modifyvm", :id, "--cpus", 1]
+  #    v.customize ["modifyvm", :id, "--groups", "/CERT"]
+  #  end
+  #end
 
 
   #config.vm.define "selenium" do |selenium|

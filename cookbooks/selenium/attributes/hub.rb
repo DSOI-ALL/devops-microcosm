@@ -1,0 +1,17 @@
+default['selenium']['hub']['servicename'] = 'selenium_hub' # used by hub recipe only
+default['selenium']['hub']['host'] = nil
+default['selenium']['hub']['port'] = 4444
+default['selenium']['hub']['jvm_args'] = nil
+default['selenium']['hub']['newSessionWaitTimeout'] = -1
+default['selenium']['hub']['prioritizer'] = nil
+default['selenium']['hub']['servlets'] = []
+default['selenium']['hub']['withoutServlets'] = []
+default['selenium']['hub']['capabilityMatcher'] = 'org.openqa.grid.internal.utils.DefaultCapabilityMatcher'
+default['selenium']['hub']['throwOnCapabilityNotPresent'] = true
+default['selenium']['hub']['cleanUpCycle'] = 5000
+default['selenium']['hub']['debug'] = true
+default['selenium']['hub']['timeout'] = 1800
+default['selenium']['hub']['browserTimeout'] = 0
+default['selenium']['hub']['maxSession'] = 5
+default['selenium']['hub']['jettyMaxThreads'] = 0
+default['selenium']['hub']['log'] = nil

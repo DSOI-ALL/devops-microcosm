@@ -2,23 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="08e6d956-528c-4cd5-b282-7aedcd5cf66e" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/.chef-repo.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/.gitignore" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/LICENSE" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/README.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/chefignore" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/cookbooks/README.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/cookbooks/example/README.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/cookbooks/example/attributes/default.rb" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/cookbooks/example/metadata.rb" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/cookbooks/example/recipes/default.rb" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/data_bags/README.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/data_bags/example/example_item.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/environments/README.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/environments/example.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/java-1.48.0.tar.gz" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/roles/README.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/chef_repo/roles/example.json" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.vagrant/machines/gitLab/virtualbox/action_provision" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.vagrant/machines/gitLab/virtualbox/action_set_name" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.vagrant/machines/gitLab/virtualbox/creator_uid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.vagrant/machines/gitLab/virtualbox/id" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.vagrant/machines/gitLab/virtualbox/index_uuid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.vagrant/machines/gitLab/virtualbox/synced_folders" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.vagrant/machines/jenkins/virtualbox/action_provision" afterPath="$PROJECT_DIR$/.vagrant/machines/jenkins/virtualbox/action_provision" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.vagrant/machines/jenkins/virtualbox/action_set_name" afterPath="$PROJECT_DIR$/.vagrant/machines/jenkins/virtualbox/action_set_name" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.vagrant/machines/jenkins/virtualbox/id" afterPath="$PROJECT_DIR$/.vagrant/machines/jenkins/virtualbox/id" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.vagrant/machines/jenkins/virtualbox/index_uuid" afterPath="$PROJECT_DIR$/.vagrant/machines/jenkins/virtualbox/index_uuid" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.vagrant/machines/jenkins/virtualbox/synced_folders" afterPath="$PROJECT_DIR$/.vagrant/machines/jenkins/virtualbox/synced_folders" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Vagrantfile" afterPath="$PROJECT_DIR$/Vagrantfile" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -30,21 +26,11 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Vagrantfile" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Vagrantfile" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Vagrantfile">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" column="35" lean-forward="false" selection-start-line="9" selection-start-column="35" selection-end-line="9" selection-end-column="35" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="metadata.json" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/metadata.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" column="46" lean-forward="false" selection-start-line="9" selection-start-column="46" selection-end-line="9" selection-end-column="46" />
+            <state relative-caret-position="270">
+              <caret line="18" column="31" lean-forward="true" selection-start-line="18" selection-start-column="31" selection-end-line="18" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -64,6 +50,10 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/metadata.json" />
+        <option value="$PROJECT_DIR$/chef_repo/Berksfile" />
+        <option value="$PROJECT_DIR$/chef_repo/site-cookbooks/jenkins/metadata.rb" />
+        <option value="$PROJECT_DIR$/chef_repo/site-cookbooks/jenkins/recipes/default.rb" />
+        <option value="$PROJECT_DIR$/chef_repo/site-cookbooks/jenkins-server/metadata.rb" />
         <option value="$PROJECT_DIR$/Vagrantfile" />
       </list>
     </option>
@@ -107,6 +97,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="devops-volktron" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="devops-volktron" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="devops-volktron" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="cookbooks" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -235,12 +239,12 @@
       <workItem from="1490299686075" duration="55000" />
       <workItem from="1490299754544" duration="5743000" />
       <workItem from="1490377138195" duration="11543000" />
-      <workItem from="1490978585114" duration="9223000" />
+      <workItem from="1490978585114" duration="16263000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="26827000" />
+    <option name="totallyTimeSpent" value="33867000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1920" y="23" width="1920" height="1113" extended-state="0" />
@@ -371,14 +375,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Vagrantfile">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="35" lean-forward="false" selection-start-line="9" selection-start-column="35" selection-end-line="9" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/chef_repo/.chef/knife.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -387,10 +383,130 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/chef_repo/site-cookbooks/jenkins/Berksfile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/chef_repo/site-cookbooks/jenkins/recipes/default.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/metadata.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
           <caret line="9" column="46" lean-forward="false" selection-start-line="9" selection-start-column="46" selection-end-line="9" selection-end-column="46" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/chef_repo/site-cookbooks/jenkins/metadata.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/chef_repo/site-cookbooks/jenkins-server/metadata.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="14" column="17" lean-forward="false" selection-start-line="14" selection-start-column="17" selection-end-line="14" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/chef_repo/Berksfile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="24" lean-forward="true" selection-start-line="2" selection-start-column="24" selection-end-line="2" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cookbooks/jenkins-server/Berksfile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cookbooks/jenkins-server/metadata.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="19" column="20" lean-forward="true" selection-start-line="19" selection-start-column="20" selection-end-line="19" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cookbooks/hubot/Vagrantfile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cookbooks/gitlab/Berksfile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cookbooks/jenkins-server/attributes/default.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="495">
+          <caret line="33" column="65" lean-forward="false" selection-start-line="33" selection-start-column="65" selection-end-line="33" selection-end-column="65" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cookbooks/mediawiki/Vagrantfile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1335">
+          <caret line="89" column="3" lean-forward="false" selection-start-line="89" selection-start-column="3" selection-end-line="89" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cookbooks/jenkins-server/recipes/user.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cookbooks/jenkins-server/recipes/master.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cookbooks/jenkins-server/recipes/security.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Vagrantfile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="18" column="31" lean-forward="true" selection-start-line="18" selection-start-column="31" selection-end-line="18" selection-end-column="31" />
           <folding />
         </state>
       </provider>

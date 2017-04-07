@@ -1,0 +1,3 @@
+[
+  <%= @external_scripts.sort.map{|s| %Q("#{s}") }.join(",\n  ")  %>
+]

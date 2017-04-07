@@ -1,0 +1,36 @@
+{
+  "name":        "chef-managed-hubot",
+  "version":     "<%= @version %>",
+  "author":      "hubot",
+  "private":     <%= @private %>,
+  "keywords":    "github hubot campfire bot",
+  "description": "A simple helpful Robot for your Company",
+  "licenses":     [{
+    "type":       "MIT",
+    "url":        "http://github.com/github/hubot/raw/master/LICENSE"
+  }],
+
+  "repository" : {
+    "type": "git",
+    "url":  "https://github.com/github/hubot.git"
+  },
+
+  "dependencies": {
+    "hubot": "<%= @version %>",
+    "hubot-scripts": "<%= @scripts_version %>",
+    <%- @dependencies.each_pair do |dep, version| -%>
+    "<%= dep %>": "<%= version %>",
+    <%- end -%>
+    "coffee-script": "1.9.2",
+    "optparse": "1.0.5",
+    "scoped-http-client": "0.10.3",
+    "log": "1.4.0",
+    "express": "4.12.3",
+    "readline-history": "~1.2.0"
+  },
+
+  "engines": {
+    "node": ">= 0.8.x",
+    "npm": "1.1.x"
+  }
+}

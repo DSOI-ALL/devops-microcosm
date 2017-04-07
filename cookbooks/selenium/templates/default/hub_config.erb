@@ -1,0 +1,24 @@
+{
+<% if  @resource.host %>
+  "host": "<%= @resource.host %>",
+<% end %>
+  "newSessionWaitTimeout": <%= @resource.newSessionWaitTimeout %>,
+<% if  @resource.prioritizer %>
+  "prioritizer": <%= @resource.prioritizer %>,
+<% end %>
+  "servlets": <%= @resource.servlets %>,
+  "withoutServlets": <%= @resource.withoutServlets %>,
+  "capabilityMatcher": "<%= @resource.capabilityMatcher %>",
+  "throwOnCapabilityNotPresent": <%= @resource.throwOnCapabilityNotPresent %>,
+  "cleanUpCycle": <%= @resource.cleanUpCycle %>,
+  "timeout": <%= @resource.timeout %>,
+  "debug": <%= @resource.debug %>,
+  "timeout": <%= @resource.timeout %>,
+  "browserTimeout": <%= @resource.browserTimeout %>,
+  "maxSession": <%= @resource.maxSession %>,
+  "jettyMaxThreads": <%= @resource.jettyMaxThreads %>,
+<% if  @resource.log %>
+  "log": "<%= @resource.log %>",
+<% end %>
+  "port": <%= @resource.port %>
+}
