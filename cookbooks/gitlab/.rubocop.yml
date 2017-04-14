@@ -1,8 +1,0 @@
-AllCops:
-  Exclude:
-    - '.kitchen/*'
-    - '.vagrant/*'
-Encoding:
-  Enabled: False
-LineLength:
-  Max: 200

@@ -1,8 +1,0 @@
-.idea
-.DS_Store
-
-Berksfile.lock
-Gemfile.lock
-.kitchen/
-.kitchen.local.yml
-.bundle/
