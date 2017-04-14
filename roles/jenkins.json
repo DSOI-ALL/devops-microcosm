@@ -1,0 +1,14 @@
+{
+  "name": "jenkins",
+  "default_attributes": {
+  },
+  "json_class": "Chef::Role",
+  "description": "JENKINS",
+  "chef_type": "role",
+  "run_list": [
+    "recipe[yum]",
+    "recipe[network::net-tools]",
+    "recipe[network::disable-firewall]",
+    "recipe[jenkins::jenkins-server]"
+  ]
+}

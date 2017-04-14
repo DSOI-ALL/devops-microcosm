@@ -1,0 +1,13 @@
+{
+  "name": "owaspZap",
+  "default_attributes": {
+  },
+  "json_class": "Chef::Role",
+  "description": "OWASPZAP",
+  "chef_type": "role",
+  "run_list": [
+    "recipe[yum]",
+    "recipe[network::net-tools]",
+    "recipe[owaspzap::owaspZap-server]"
+  ]
+}

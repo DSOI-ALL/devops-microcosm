@@ -1,0 +1,13 @@
+{
+  "name": "gitlab",
+  "default_attributes": {
+  },
+  "json_class": "Chef::Role",
+  "description": "GITLAB",
+  "chef_type": "role",
+  "run_list": [
+    "recipe[yum]",
+    "recipe[network::net-tools]",
+    "recipe[gitlab::gitlab-server]"
+  ]
+}
