@@ -38,27 +38,27 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  #config.vm.define "gitlab" do |gitlab|
-  #  gitlab.vm.network "private_network", ip: "10.1.1.3"
+  config.vm.define "gitlab" do |gitlab|
+    gitlab.vm.network "private_network", ip: "10.1.1.3"
+    gitlab.vm.network :forwarded_port, guest:80, host:8082
 
-  #  gitlab.vm.provider "virtualbox" do |v|
-  #    v.name = "voltron-gitlab"
-  #    v.customize ["modifyvm", :id, "--memory", 1024]
-  #    v.customize ["modifyvm", :id, "--cpus", 1]
-  #    v.customize ["modifyvm", :id, "--groups", "/CERT"]
-  #  end
+    gitlab.vm.provider "virtualbox" do |v|
+      v.name = "voltron-gitlab"
+      v.customize ["modifyvm", :id, "--memory", 1024]
+      v.customize ["modifyvm", :id, "--cpus", 1]
+      v.customize ["modifyvm", :id, "--groups", "/CERT"]
+    end
 
-  #  gitlab.vm.provision :chef_zero do |chef|
+    gitlab.vm.provision :chef_zero do |chef|
 
-  #    chef.cookbooks_path = "cookbooks"
-  #    chef.nodes_path = "./nodes"
-  #    chef.roles_path = "./roles"
+      chef.cookbooks_path = "cookbooks"
+      chef.nodes_path = "./nodes"
+      chef.roles_path = "./roles"
       #chef.environments_path = "./environments"
 
-  #    chef.add_role "gitlab"
-  #  end
-
-  #end
+      chef.add_role "gitlab"
+    end
+  end
 
 
   #config.vm.define "selenium" do |selenium|

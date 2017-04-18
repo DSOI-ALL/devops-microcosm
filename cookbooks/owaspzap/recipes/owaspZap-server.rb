@@ -18,7 +18,7 @@ end
 
 bash "start owasp-zap service" do
   code <<-EOH
-		service owasp-zap
+		service owasp-zap start
   EOH
   user "root"
   action :run
