@@ -1,13 +1,14 @@
 {
-  "name": "selenium",
+  "name": "mediawiki",
   "default_attributes": {
   },
   "json_class": "Chef::Role",
-  "description": "SELENIUM",
+  "description": "MEDIAWIKI",
   "chef_type": "role",
   "run_list": [
     "recipe[yum]",
     "recipe[network::net-tools]",
-    "recipe[selenium::selenium-server]"
+    "recipe[lamp::lampstack]",
+    "recipe[mediawiki::mediawiki]"
   ]
 }

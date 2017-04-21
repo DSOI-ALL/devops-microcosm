@@ -17,7 +17,7 @@ Vagrant.configure("2") do |config|
   config.ssh.insert_key = false
 
   config.vm.define "jenkins" do |jenkins|
-    jenkins.vm.network "private_network", ip: "10.1.1.2"
+    jenkins.vm.network "private_network", ip: "10.0.2.2"
     jenkins.vm.network :forwarded_port, guest:8080, host:8080
 
     jenkins.vm.provider "virtualbox" do |v|
@@ -67,7 +67,7 @@ Vagrant.configure("2") do |config|
 
     selenium.vm.provider "virtualbox" do |v|
       v.name = "voltron-selenium"
-      v.gui = true
+      #v.gui = true
       v.customize ["modifyvm", :id, "--memory", 1024]
       v.customize ["modifyvm", :id, "--cpus", 1]
       v.customize ["modifyvm", :id, "--groups", "/CERT"]
@@ -106,17 +106,28 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  # mediaWiki VM also has Issue Tracking and Hubot
-  #config.vm.define "mediaWiki" do |mediaWiki|
-  #  mediaWiki.vm.network "private_network", ip: "10.10.0.6", auto_config: false
+   #mediaWiki VM also has Issue Tracking and Hubots
+  config.vm.define "mediaWiki" do |mediaWiki|
+    mediaWiki.vm.network "private_network", ip: "10.1.1.6", auto_config: false
+    mediaWiki.vm.network :forwarded_port, guest:80, host:8083
 
-  #  mediaWiki.vm.provider "virtualbox" do |v|
-  #    v.name = "voltron-jenkins"
-  #    v.customize ["modifyvm", :id, "--memory", 1024]
-  #    v.customize ["modifyvm", :id, "--cpus", 1]
-  #    v.customize ["modifyvm", :id, "--groups", "/CERT"]
-  #  end
-  #end
+    mediaWiki.vm.provider "virtualbox" do |v|
+      v.name = "voltron-mediaWiki"
+      v.customize ["modifyvm", :id, "--memory", 1024]
+      v.customize ["modifyvm", :id, "--cpus", 1]
+      v.customize ["modifyvm", :id, "--groups", "/CERT"]
+    end
+
+    mediaWiki.vm.provision :chef_zero do |chef|
+
+      chef.cookbooks_path = "cookbooks"
+      chef.nodes_path = "./nodes"
+      chef.roles_path = "./roles"
+      #chef.environments_path = "./environments"
+
+      chef.add_role "mediaWiki"
+    end
+  end
 
   #config.vm.define "staging" do |staging|
   #  staging.vm.network "private_network", ip: "10.10.0.7", auto_config: false
