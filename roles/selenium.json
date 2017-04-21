@@ -1,0 +1,11 @@
+{
+  "name": "selenium",
+  "default_attributes": {
+  },
+  "json_class": "Chef::Role",
+  "description": "SELENIUM",
+  "chef_type": "role",
+  "run_list": [
+    "recipe[slenium::selenium-server]"
+  ]
+}
