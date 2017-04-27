@@ -1,0 +1,11 @@
+{
+  "name": "hubot",
+  "default_attributes": {
+  },
+  "json_class": "Chef::Role",
+  "description": "HUBOT",
+  "chef_type": "role",
+  "run_list": [
+    "recipe[hubots::hubot]"
+  ]
+}

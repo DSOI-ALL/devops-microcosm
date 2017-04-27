@@ -17,7 +17,7 @@ Vagrant.configure("2") do |config|
   config.ssh.insert_key = false
 
   config.vm.define "jenkins" do |jenkins|
-    jenkins.vm.network "private_network", ip: "10.0.2.2"
+    jenkins.vm.network "private_network", ip: "10.1.1.2"
     jenkins.vm.network :forwarded_port, guest:8080, host:8080
 
     jenkins.vm.provider "virtualbox" do |v|
@@ -126,6 +126,8 @@ Vagrant.configure("2") do |config|
       #chef.environments_path = "./environments"
 
       chef.add_role "mediaWiki"
+      chef.add_role "hubot"
+      #chef.add_role "bugzilla"
     end
   end
 

@@ -25,7 +25,7 @@ bash "create database" do
   code <<-EOH
    mysql -u root -e "CREATE DATABASE my_wiki;"
    mysql -u root -e "GRANT INDEX, CREATE, SELECT, INSERT, UPDATE, DELETE, ALTER, LOCK TABLES ON my_wiki.* TO 'tartan'@'localhost' IDENTIFIED BY 'password';"    
-   mysql -u root -e "FLUSH PRIVILEGES;;"
+   mysql -u root -e "FLUSH PRIVILEGES;"
   EOH
   user "root"
   action :run
