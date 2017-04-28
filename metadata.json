@@ -5,7 +5,7 @@
     "version": "0.1.0",
     "providers": [{
       "name": "virtualbox",
-      "url": "https://cmu.box.com/s/8gfko5y7lqdwoi2mkacczc8qbvfny7oo",
+      "url": "https://cmu.box.com/shared/static/8gfko5y7lqdwoi2mkacczc8qbvfny7oo.box",
       "checksum_type": "sha1",
       "checksum": "52ba88ab3214a4fe26646adce229734d390be0e4"
     }]
