@@ -127,7 +127,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "staging" do |staging|
   
     staging.vm.network "private_network", ip: "10.1.1.7", auto_config: false
-    staging.vm.synced_folder "./projects" "/home/vagrant/projects"
+    staging.vm.synced_folder "./projects", "/home/vagrant/projects"
 
     staging.vm.provider "virtualbox" do |v|
       v.name = "voltron-staging"
