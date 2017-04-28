@@ -9,6 +9,7 @@
     "recipe[yum]",
     "recipe[network::net-tools]",
     "recipe[network::disable-firewall]",
-    "recipe[jenkins::jenkins-server]"
+    "recipe[jenkins::jenkins-server]",
+    "recipe[ansible::ansible]"
   ]
 }
