@@ -1,0 +1,4 @@
+.vagrant
+nodes/vagrant-*.json
+*.tar.gz
+.idea/workspace.xml

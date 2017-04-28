@@ -7,7 +7,6 @@ bash "install epel-repo" do
 end
 
 bash "install Node.js" do
-  cwd "/usr/local/src"
   code <<-EOH
     yum -y install nodejs
   EOH
@@ -31,12 +30,5 @@ bash "install Hubot" do
   action :run
 end
 
-bash "create hubot directory and create hubot" do
-  code <<-EOH
-    mkdir myhubot
-    cd myhubot
-    yo hubot --defaults
-  EOH
-  user "root"
-  action :run
-end
+
+

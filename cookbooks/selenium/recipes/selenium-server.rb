@@ -8,19 +8,18 @@ end
 
 bash "download selenium standalone server" do
   code <<-EOH
-		mkdir /opt/selenium/2.53
+		mkdir /opt/selenium
+    mkdir /opt/selenium/2.53
     cd /opt/selenium/2.53
     wget http://selenium-release.storage.googleapis.com/2.53/selenium-server-standalone-2.53.0.jar
-    ln -s /opt/selenium/2.53/selenium-server-standalone-2.53.0.jar /opt/selenium/selenium
   EOH
   user "root"
   action :run
-  not_if do ::File.exists?("/opt/selenium/2.53/selenium-server-standalone-2.53.0.jar") end
 end
 
 bash "start selenium standalone server" do
   code <<-EOH
-    java -jar /opt/selenium/selenium &
+    java -jar /opt/selenium/2.53/selenium-server-standalone-2.53.0.jar &
   EOH
   user "root"
   action :run
