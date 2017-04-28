@@ -4,3 +4,5 @@ nodes/vagrant-*.json
 .idea/workspace.xml
 ./projects/*
 !./projects/.githold
+./nodes/*
+!./nodes/.githold

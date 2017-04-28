@@ -6,6 +6,11 @@ PREREQUISITES
 		- click 'Generate..'
 		- select 'Public repo'
 
+	vagrant box add metadata.json
+
+	Vagrant 1.9.3
+	VirtualBox 5.1.18
+
 SETUP
 
 	git pull voltron
