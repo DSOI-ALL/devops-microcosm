@@ -13,9 +13,10 @@ SETUP
 		- jenkins
 		- gitlab
 		- selenium
-		- owasp (DEV BOX?)
+		- owasp 
 		- mediawiki (+ bugzilla + hubot)
 		- UNCOMMENT STAGING VM -> fix IP, forwarded ports, etc for Tomcat
+			(DEV BOX?)
 
 POST
 
@@ -32,7 +33,7 @@ POST
 		on command line in ./projects
 			git clone <HTTP clone URL> 
 				- if HOST, then CHANGE 'localhost' to 'localhost:8082' 
-				- if in VM, then CHANGE 'localhost' to '10.1.1.3' (:80)
+				- if in VM (STAGING VM), then CHANGE 'localhost' to '10.1.1.3' (:80)
 				- NEED TO DECIDE one or the other - whichever is done, pull/push from that point forward need to be in the same environment
 
 	JENKINS : http://localhost:8080
