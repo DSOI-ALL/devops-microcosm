@@ -1,6 +1,6 @@
 Vagrant.configure("2") do |config|
 
-  config.vbguest.auto_update = true
+  # config.vbguest.auto_update = true
   # config.vbguest.no_remote = true
 
   config.vm.box = "cmu/centos72_x86_64"
