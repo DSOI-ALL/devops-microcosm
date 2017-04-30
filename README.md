@@ -25,7 +25,7 @@ VirtualBox 5.1.18
 - selenium
 - owasp 
 - mediawiki (+ bugzilla + hubot)
-- staging (+ dev box)
+- staging
 
 ## Dev/Build/Deploy Configuration
 
