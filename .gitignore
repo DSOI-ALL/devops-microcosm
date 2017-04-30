@@ -2,7 +2,7 @@
 nodes/vagrant-*.json
 *.tar.gz
 .idea/workspace.xml
-./projects/*
+projects/**/*
 !./projects/.githold
 ./nodes/*
 !./nodes/.githold

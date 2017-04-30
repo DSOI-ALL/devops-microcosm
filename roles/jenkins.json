@@ -8,7 +8,7 @@
   "run_list": [
     "recipe[yum]",
     "recipe[network::net-tools]",
-    "recipe[network::disable-firewall]",
+    "recipe[network::firewall-allow-http]",    
     "recipe[jenkins::jenkins-server]",
     "recipe[ansible::ansible]"
   ]

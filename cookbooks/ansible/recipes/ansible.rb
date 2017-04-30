@@ -6,3 +6,9 @@ bash "install epel-repo & ansible" do
   user "root"
   action :run
 end
+
+template "/etc/ansible/hosts" do
+  source "hosts.erb"
+  user "root"
+  group "root"
+end

@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "jenkins" do |jenkins|
     jenkins.vm.network "private_network", ip: "10.1.1.2"
-    jenkins.vm.network :forwarded_port, guest:8080, host:8080
+    jenkins.vm.network :forwarded_port, guest:8080, host:8082
 
     jenkins.vm.provider "virtualbox" do |v|
       v.name = "voltron-jenkins"
@@ -19,8 +19,6 @@ Vagrant.configure("2") do |config|
       v.customize ["modifyvm", :id, "--cpus", 1]
       v.customize ["modifyvm", :id, "--groups", "/CERT"]
     end
-
-    jenkins.vm.provision "file", source: "./deploy.yml", destination: "/home/vagrant/deploy.yml"
 
     jenkins.vm.provision :chef_zero do |chef|
 
@@ -35,7 +33,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "gitlab" do |gitlab|
     gitlab.vm.network "private_network", ip: "10.1.1.3"
-    gitlab.vm.network :forwarded_port, guest:80, host:8082
+    gitlab.vm.network :forwarded_port, guest:80, host:8083
 
     gitlab.vm.provider "virtualbox" do |v|
       v.name = "voltron-gitlab"
@@ -80,7 +78,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "owaspZap" do |owaspZap|
     owaspZap.vm.network "private_network", ip: "10.1.1.5", auto_config: false
-    owaspZap.vm.network :forwarded_port, guest:8080, host:8081
+    owaspZap.vm.network :forwarded_port, guest:8080, host:8085
 
     owaspZap.vm.provider "virtualbox" do |v|
       v.name = "voltron-owaspZap"
@@ -104,7 +102,7 @@ Vagrant.configure("2") do |config|
    #mediaWiki VM also has Issue Tracking and Hubots
   config.vm.define "mediaWiki" do |mediaWiki|
     mediaWiki.vm.network "private_network", ip: "10.1.1.6", auto_config: false
-    mediaWiki.vm.network :forwarded_port, guest:80, host:8083
+    mediaWiki.vm.network :forwarded_port, guest:80, host:8086
 
     mediaWiki.vm.provider "virtualbox" do |v|
       v.name = "voltron-mediaWiki"
@@ -128,8 +126,8 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "staging" do |staging|
   
-    staging.vm.network "private_network", ip: "10.1.1.7", auto_config: false
-    staging.vm.synced_folder "./projects", "/home/vagrant/projects"
+    staging.vm.network "private_network", ip: "10.1.1.7"
+    staging.vm.network :forwarded_port, guest:8080, host:8087
 
     staging.vm.provider "virtualbox" do |v|
       v.name = "voltron-staging"

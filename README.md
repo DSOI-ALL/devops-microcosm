@@ -1,94 +1,147 @@
-PREREQUISITES
+# Voltron: A DevOps Pipeline Example via IaC
 
-	set up personal access token with github.com
-		- top-right menu -> Settings
-		- left menu (bottom) -> Personal access tokens
-		- click 'Generate..'
-		- select 'Public repo'
+## Prerequisites
 
+### personal access token with github.com
+
+- top-right menu -> Settings
+- left menu (bottom) -> Personal access tokens
+- click 'Generate..'
+- select 'Public repo'
+
+### Vagrant and VirtualBox recommended versions
+
+Vagrant 1.9.3
+VirtualBox 5.1.18
+
+## Environment Creation via IaC
+
+	git clone https://github.com/SLS-ALL/devops-voltron.git
+	cd devops-voltron	
 	vagrant box add metadata.json
 
-	Vagrant 1.9.3
-	VirtualBox 5.1.18
+- jenkins
+- gitlab
+- selenium
+- owasp 
+- mediawiki (+ bugzilla + hubot)
+- staging (+ dev box)
 
-SETUP
+## Dev/Build/Deploy Configuration
 
-	git pull voltron
-	vagrant up
-		- jenkins
-		- gitlab
-		- selenium
-		- owasp 
-		- mediawiki (+ bugzilla + hubot)
-		- UNCOMMENT STAGING VM -> fix IP, forwarded ports, etc for Tomcat
-			(DEV BOX?)
+To get started, first bring up the three VMs 'jenkins', 'gitlab', and 'staging'.
 
-POST
+	vagrant up gitlab jenkins staging
 
-	GITLAB : http://localhost:8082
+When each VM is ready, proceed with the configuration steps below for each.
 
-		set password on gitlab 
-			- username (default): root
-			- password: 1amd3v0p5
-		create new project on gitlab
-			pull from github.com
-			enter personal access token (created above)
-			import spring-petclinic
-			nav to project, select HTTP clone URL
-		on command line in ./projects
+### on 'gitlab' VM : http://localhost:8083
+
+1. Visit http://localhost:8083
+2. set root password on gitlab 
+	- username (default): root
+	- password: 1amd3v0p5 (or your own choice)
+3. register new account
+4. add `spring-petclinic` project
+	1. on GitLab dashboard, click 'new project'
+	2. click 'import project from github'
+	3. enter personal access token (created above)
+	2. click 'import' next to 'spring-petclinic' to import
+	3. nav to project and select HTTP clone URL for the next step
+5. clone project into dev box
+	- on your host command line in ./projects - NOTE: you must change 'localhost' to 'localhost:8083' in the HTTP clone URL
+	
 			git clone <HTTP clone URL> 
-				- if HOST, then CHANGE 'localhost' to 'localhost:8082' 
-				- if in VM (STAGING VM), then CHANGE 'localhost' to '10.1.1.7' (:80)
-				- NEED TO DECIDE one or the other - whichever is done, pull/push from that point forward need to be in the same environment
+		
+6. (optional) add 'github' as additional remote for upstream changes
 
-	JENKINS : http://localhost:8080
+	This local clone is connected to your GitLab VM and simulates the ability to collaborate changes with your development team, however the real 'spring-petclinic' repository at GitHub.com may undergo real changes. Adding this remote enables you to sync upstream changes:	
+
+		git remote add github https://github.com/SLS-ALL/spring-petclinic.git
+		
+	After this, sync upstream changes with:
 	
-	  - Ansible playbook to deploy the built "petclinic.war" file has been placed on the VM in /home/vagrant
+		git pull github master # - pull github changes to this checkout
+		git pull # - ensure you are synced with your gitlab VM repo 
+		git push # - push any commits that were pulled from the github repo to your gitlab VM repo
+
+That's it! You now have a local GitLab server running and holding your project code. You also have a clone of your project checked-out and ready for development.
+
+### on 'jenkins' VM : http://localhost:8082
+
+1. Visit http://localhost:8082
+1. Validate Jenkins install, initial plugins and user account	    
+	- copy administrator password from /var/log/jenkins/jenkins.log and paste into form when prompted
 	
-	    *Until chef template is scripted:
-	    
-	    -Once machine is successfully built/provisioned after vagrant up, ssh into VM using "vagrant ssh jenkins"
-	    - Type "sudo vi /etc/ansible/hosts". By default, this entire file will be commented out.
-	    - Define a host group (examples in the file are provided), called [DevOps] and on the next line type "10.1.1.7" (IP address of the staging VM)
-	    - Save the file & exit 
-	     
+			vagrant ssh jenkins
+			sudo tail -n 30 /var/log/jenkins/jenkins.log
+		
+	- click to install 'suggested plugins'
+	- register new account
+		- click 'Save and Finish'!
 
-		Pull Jenkins administrator password from log (/var/log/jenkins) and click through configuration
-		manage jenkins ->
-		- click "Global Tool Configuration"
-		- scroll to bottom and click "Add Maven": Enter "petclinic" as name. Click apply and save
-		- click "Back to Manage Jenkins"
-		-> click "Manage Plugins"
-			- search: owasp
-			- select: Official OWASP ZAP Jenkins Plugin
-			- search: Maven Integration Plugin
-			- select: Maven Integration Plugin - click "install without restart at bottom of page"
-			    - check box next to "Restart Jenkins when installation is complete and no jobs are running."
-		click "New Item" -> enter "petclinic" as name & choose "Maven Project"
-			Add Jenkins credentials -> root:1amd3v0p5
-			Repository URL: http://10.1.1.7/root/spring-petclinic.git
-			Under "Build": enter "/var/lib/jenkins/workspace/petclinic/pom.xml"
-			Select 'root' credentials
-			click "Build Now" on left hand side of screen
-			
-		-Deploy created "petclinic.war" to Staging VM
-		    - ssh into the jenkins vm with "vagrant ssh jenkins" (you will be in /home/vagrant where "deploy.yml" is located)
-		    - from this location, run "ansible-playbook deploy.yml --ask-become-pass --ask-pass" to run the commands in the ansible playbook
-		        - you should be prompted for an ssh password and for a sudo password. Enter "vagrant" for the ssh password, and press "enter" for the sudo password prompt
-		        
-		- To validate that "petclinic.war" deployed successfully, ssh into the Staging VM and navigate to "/var/lib/webapps". The "petclinic.war" file should be there.        
+2. Add Maven Tool
+	- click "Manage Jenkins"
+	- click "Global Tool Configuration"
+	- click "Add Maven"
+		- the form may not expand the first time. sometimes one or more page refreshes is required before this works. 
+	- enter "petclinic" as name
+	- click Apply and then click Save
 
-	MEDIAWIKI
+3. Install Additional Plugins
+	- click "Manage Jenkins"
+	- click "Manage Plugins"
+	- select 'Available' tab
+	- search: "owasp"
+	- select: Official OWASP ZAP Jenkins Plugin
+	- search: "maven"
+	- select: Maven Integration Plugin 
+	- click "install without restart" at bottom of page
+    - check box next to "Restart Jenkins when installation is complete and no jobs are running."
+    - at top-left menu, click "back to Dashboard"
+    - NOTE: Jenkins will restart in the background and the UI may appear to be hung - you may need to refresh the page
 
-		HUBOT FAILING
-		APACHE ALIAS CONFIG FOR BUGZILLA/MEDIAWIKI
+4. Add spring-petclinic project
+	- click "New Item", enter "petclinic" as name, choose "Freestyle", and click OK
+	- under Source Code Management, select 'git'
+	- beside Credentials, click Add -> Jenkins
+	- select "Username with password"
+	- enter your GitLab credentials (see 'gitlab' VM instructions above) and click Add
+	- enter repository URL: http://<username>@<gitlab VM private network IP>/<username>/spring-petclinic.git
+		- NOTE: this is the HTTP URL from the GitLab project page where 'localhost' is replaced by the 'gitlab' VM's private network IP (in this case 10.1.1.3)
+	- select appropriate credentials 
+	- Add build step -> Invoke top-level Maven targets
+		- Leave default values
+	- click Apply and then click Save
 
-	OWASP 
+## Workflow
 
-		CONFIGURE FOR STAGING FRONT END
-		FIGURE OUT HOW TO GET RESULTS IN A NICE WAY
+1. Develop!
+2. Build!
+	- In the Jenkins UI project view, click "Build Now" on left hand side of screen, or on the main dashboard click the icon to schedule a build
+3. Deploy!
+    - ssh into the jenkins vm:
+    
+    		vagrant ssh jenkins
+    		
+    - run
+    	
+    		ansible-playbook /var/lib/jenkins/workspace/<jenkins project name>/deploy.yml
+    		
+4. Visit http://localhost:8087/petclinic/
 
-	SELENIUM
+## Document/Test Configuration
 
+### on 'selenium' VM: port 4444
 
+Coming Soon
 
+### on 'owaspZap' VM: http://localhost:8085
+
+Coming Soon
+
+### on 'mediaWiki' VM: http://localhost:8086
+
+#### Wiki (Mediawiki), Issue Tracker (Bugzilla), Chat Server (Hubot)
+
+Coming Soon

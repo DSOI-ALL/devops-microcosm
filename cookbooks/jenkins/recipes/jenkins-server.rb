@@ -23,3 +23,16 @@ bash "start jenkins service" do
   user "root"
   action :run
 end
+
+%w{ git maven }.each do |p|
+  package p
+end
+
+remote_file "/home/vagrant/.ssh/id_rsa" do 
+  source "https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant"
+  mode '0400'
+  owner 'vagrant'
+  group 'vagrant'
+  action :create
+end
+
