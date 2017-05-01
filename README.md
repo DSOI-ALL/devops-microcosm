@@ -96,6 +96,8 @@ That's it! You now have a local GitLab server running and holding your project c
 	- select: Official OWASP ZAP Jenkins Plugin
 	- search: "maven"
 	- select: Maven Integration Plugin 
+	- search: "ansible"
+	- select: Ansible plugin
 	- click "install without restart" at bottom of page
     - check box next to "Restart Jenkins when installation is complete and no jobs are running."
     - at top-left menu, click "back to Dashboard"
@@ -112,6 +114,14 @@ That's it! You now have a local GitLab server running and holding your project c
 	- select appropriate credentials 
 	- Add build step -> Invoke top-level Maven targets
 		- Leave default values
+	- Add build step -> Invoke Ansible Playbook
+		- Playbook path: deploy.yml
+		- Inventory: File or host list: /etc/ansible/hosts
+		- beside Credentials, click Add -> Jenkins
+			- select "SSH Username with private key"
+			- Username: vagrant
+			- Private Key: "From a file on Jenkins master": /etc/ansible/vagrant_id_rsa
+		- Credentials: select 'vagrant'
 	- click Apply and then click Save
 
 ## Workflow
