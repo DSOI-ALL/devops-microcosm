@@ -1,0 +1,11 @@
+{
+  "name": "bugzilla",
+  "default_attributes": {
+  },
+  "json_class": "Chef::Role",
+  "description": "BUGZILLA",
+  "chef_type": "role",
+  "run_list": [
+    "recipe[bugzilla::bugzilla]"
+  ]
+}

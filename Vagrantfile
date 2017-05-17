@@ -120,7 +120,7 @@ Vagrant.configure("2") do |config|
 
       chef.add_role "mediaWiki"
       chef.add_role "hubot"
-      #chef.add_role "bugzilla"
+      chef.add_role "bugzilla"
     end
   end
 
