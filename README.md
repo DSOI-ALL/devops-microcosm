@@ -154,4 +154,22 @@ Coming Soon
 
 #### Wiki (Mediawiki), Issue Tracker (Bugzilla), Chat Server (Hubot)
 
-Coming Soon
+##### -  Manual configuration steps for Bugzilla
+
+1. Upon a successful "vagrant up", ssh into the VM using "vagrant ssh mediaWiki".
+
+2. Escalate to root.
+
+3. Navigate to "/var/www/html/bugzilla-5.0" and run the "./checksetup.pl" setup script.
+    - Enter the email, name, and password for the Bugzilla administrator account, when prompted. 
+  
+4. Run "sed -i 's/^Options -Indexes$/#Options -Indexes/g' ./.htaccess" while still in /var/www/html/bugzilla-5.0 to comment out a line in the .htaccess file that the 
+    Bugzilla installation script created.
+    
+5. Run "systemctl restart httpd.service" to apply the newly created "bugzilla.conf" file to Apache.
+
+6. Exit the VM and from the host machine, restart the mediaWiki VM with "vagrant reload mediaWiki".
+
+7. Type "http://localhost:8086/bugzilla-5.0/" in your browser to access the Bugzilla web interface.
+
+8. Login to the administrator account with the credentials used in step 2 to configure your issue tracking service.

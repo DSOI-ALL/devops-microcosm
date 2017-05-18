@@ -6,7 +6,6 @@ bash "set SElinux to Permissive & reboot to apply" do
   action :run
 end
 
-
 bash "download bugzilla" do
   cwd "/var/www/html"
   code <<-EOH
@@ -58,30 +57,14 @@ bash "modify './localconfig' to apply proper database credentials" do
   cwd "/var/www/html/bugzilla-5.0"
   code <<-EOH
   ./checksetup.pl
-  sed -i "/db_pass/c\$/db_pass = 'password';" /var/www/html/bugzilla-5.0/localconfig
+  sed -i "/db_pass/c\`printf "\x24"`db_pass = 'password';" /var/www/html/bugzilla-5.0/localconfig
   EOH
   user "root"
   action :run
 end
 
-=begin
 template "/etc/httpd/conf.d/bugzilla.conf" do
-  source "bugzilla.erb"
+  source "bugzilla.conf.erb"
   user "root"
   group "root"
-end
-=end
-
-bash "restart apache to apply bugzilla.conf change" do
-  code <<-EOH
-   systemctl restart httpd.service
-  EOH
-  user "root"
-  action :run
-end
-
-reboot 'app_requires_reboot' do
-  action :request_reboot
-  reason 'Need to reboot when the run completes successfully to apply SElinux config changes.'
-  delay_mins 5
 end
