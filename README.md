@@ -163,13 +163,8 @@ Coming Soon
 3. Navigate to "/var/www/html/bugzilla-5.0" and run the "./checksetup.pl" setup script.
     - Enter the email, name, and password for the Bugzilla administrator account, when prompted. 
   
-4. Run "sed -i 's/^Options -Indexes$/#Options -Indexes/g' ./.htaccess" while still in /var/www/html/bugzilla-5.0 to comment out a line in the .htaccess file that the 
-    Bugzilla installation script created.
-    
-5. Run "systemctl restart httpd.service" to apply the newly created "bugzilla.conf" file to Apache.
+4. Exit the VM and from the host machine, restart the mediaWiki VM with "vagrant reload mediaWiki".
 
-6. Exit the VM and from the host machine, restart the mediaWiki VM with "vagrant reload mediaWiki".
+5. Type "http://localhost:8086/bugzilla-5.0/" in your browser to access the Bugzilla web interface.
 
-7. Type "http://localhost:8086/bugzilla-5.0/" in your browser to access the Bugzilla web interface.
-
-8. Login to the administrator account with the credentials used in step 2 to configure your issue tracking service.
+6. Login to the administrator account with the credentials used in step 3 to configure your issue tracking service.

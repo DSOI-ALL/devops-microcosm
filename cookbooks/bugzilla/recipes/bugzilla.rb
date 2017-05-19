@@ -63,8 +63,25 @@ bash "modify './localconfig' to apply proper database credentials" do
   action :run
 end
 
+bash "comment out a line in the .htaccess file that the Bugzilla installation script created." do
+  cwd "/var/www/html/bugzilla-5.0"
+  code <<-EOH
+  sed -i 's/^Options -Indexes$/#Options -Indexes/g' ./.htaccess
+  EOH
+  user "root"
+  action :run
+end
+
 template "/etc/httpd/conf.d/bugzilla.conf" do
   source "bugzilla.conf.erb"
   user "root"
   group "root"
+end
+
+bash "restart Apache to apply the bugzilla.conf file" do
+  code <<-EOH
+  systemctl restart httpd.service
+  EOH
+  user "root"
+  action :run
 end
