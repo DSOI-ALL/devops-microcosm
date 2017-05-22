@@ -30,5 +30,12 @@ bash "install Hubot" do
   action :run
 end
 
-
+bash "create directory for hubot" do
+  cwd "/home/vagrant"
+  code <<-EOH
+    mkdir myhubot
+  EOH
+  user "vagrant"
+  action :run
+end
 

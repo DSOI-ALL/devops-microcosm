@@ -168,3 +168,13 @@ Coming Soon
 5. Type "http://localhost:8086/bugzilla-5.0/" in your browser to access the Bugzilla web interface.
 
 6. Login to the administrator account with the credentials used in step 3 to configure your issue tracking service.
+
+##### -  Manual configuration steps for Hubot
+
+1. Upon a successful "vagrant up", ssh into the VM using "vagrant ssh mediaWiki".
+
+2. Navigate to "/home/vagrant/myhubot" as the vagrant user.
+
+3. Type "yo hubot --defaults" to create a hubot with the default settings.
+
+4. The "myhubot>" prompt should appear. Type "myhubot help" for a list of available commands.
