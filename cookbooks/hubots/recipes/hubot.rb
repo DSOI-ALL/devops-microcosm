@@ -17,6 +17,7 @@ end
 bash "install npm" do
   code <<-EOH
     yum -y install npm
+    yum -y install http-parser.x86_64
   EOH
   user "root"
   action :run

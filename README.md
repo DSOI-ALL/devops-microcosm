@@ -177,4 +177,6 @@ Coming Soon
 
 3. Type "yo hubot --defaults" to create a hubot with the default settings.
 
+4. Type "bin/hubot" while in the hubot directory to start your hubot bot.
+
 4. The "myhubot>" prompt should appear. Type "myhubot help" for a list of available commands.
