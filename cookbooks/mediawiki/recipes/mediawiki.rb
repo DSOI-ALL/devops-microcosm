@@ -1,9 +1,10 @@
-bash "set up server" do
+bash "set up server and disable apache welcome page" do
   code <<-EOH
     yum -y install php-xml 
     yum -y install php-intl 
     yum -y install php-gd  
-    yum -y install epel-release 
+    yum -y install epel-release
+    sed -i '8,22 s/^/#/' /etc/httpd/conf.d/welcome.conf 
     systemctl restart httpd.service
   EOH
   user "root"
@@ -16,6 +17,7 @@ bash "download mediawiki" do
     mv mediawiki-1.24.1.tar.gz /var/www/html
     cd /var/www/html
     tar -xvzf mediawiki-1.24.1.tar.gz
+    rm -f mediawiki-1.24.1.tar.gz
     mv mediawiki-1.24.1 wiki
   EOH
   user "root"

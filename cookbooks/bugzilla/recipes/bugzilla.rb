@@ -11,6 +11,7 @@ bash "download bugzilla" do
   code <<-EOH
     wget 'https://ftp.mozilla.org/pub/mozilla.org/webtools/bugzilla-5.0.tar.gz'
     tar -xvzf bugzilla-5.0.tar.gz
+    rm -f bugzilla-5.0.tar.gz
   EOH
   user "root"
   action :run
