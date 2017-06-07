@@ -16,6 +16,7 @@ bash "download mediawiki" do
     mv mediawiki-1.24.1.tar.gz /var/www/html
     cd /var/www/html
     tar -xvzf mediawiki-1.24.1.tar.gz
+    mv mediawiki-1.24.1 wiki
   EOH
   user "root"
   action :run
@@ -29,4 +30,14 @@ bash "create database" do
   EOH
   user "root"
   action :run
+end
+
+
+bash "modify-mediawiki-settings" do
+  cwd "/var/www/html/wiki"
+  code <<-EOH
+    php maintenance/install.php --dbname my_wiki --dbpass password --dbserver localhost --dbuser tartan --dbtype mysql --installdbpass password --pass password --installdbuser tartan "mediawiki-1.24.1" "admin"
+  EOH
+  action :run
+  user "root"
 end

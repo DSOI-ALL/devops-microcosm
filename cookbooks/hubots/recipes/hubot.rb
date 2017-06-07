@@ -38,5 +38,5 @@ bash "create directory for hubot" do
   EOH
   user "vagrant"
   action :run
+  not_if do ::File.exists?("/home/vagrant/myhubot") end
 end
-

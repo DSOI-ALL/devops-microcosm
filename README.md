@@ -154,6 +154,12 @@ Coming Soon
 
 #### Wiki (Mediawiki), Issue Tracker (Bugzilla), Chat Server (Hubot)
 
+##### - Documentation for MediaWiki
+
+1. Browse to "http://localhost:8086/wiki" to access the MediaWiki web interface.
+
+2. Login with the administrator credentials specified in the MediaWiki cookbook to begin customization.
+
 ##### -  Manual configuration steps for Bugzilla
 
 1. Upon a successful "vagrant up", ssh into the VM using "vagrant ssh mediaWiki".
