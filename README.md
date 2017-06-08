@@ -57,6 +57,7 @@ When each VM is ready, proceed with the configuration steps below for each.
 
 	This local clone is connected to your GitLab VM and simulates the ability to collaborate changes with your development team, however the real 'spring-petclinic' repository at GitHub.com may undergo real changes. Adding this remote enables you to sync upstream changes:	
 
+		cd spring-petclinic
 		git remote add github https://github.com/SLS-ALL/spring-petclinic.git
 		
 	After this, sync upstream changes with:
