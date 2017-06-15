@@ -160,20 +160,11 @@ Coming Soon
 
 2. Login with the administrator credentials specified in the MediaWiki cookbook to begin customization.
 
-##### -  Manual configuration steps for Bugzilla
+##### - Documentation for Bugzilla
 
-1. Upon a successful "vagrant up", ssh into the VM using "vagrant ssh mediaWiki".
+1. Type "http://localhost:8086/bugzilla-5.0/" in your browser to access the Bugzilla web interface.
 
-2. Escalate to root.
-
-3. Navigate to "/var/www/html/bugzilla-5.0" and run the "./checksetup.pl" setup script.
-    - Enter the email, name, and password for the Bugzilla administrator account, when prompted. 
-  
-4. Exit the VM and from the host machine, restart the mediaWiki VM with "vagrant reload mediaWiki".
-
-5. Type "http://localhost:8086/bugzilla-5.0/" in your browser to access the Bugzilla web interface.
-
-6. Login to the administrator account with the credentials used in step 3 to configure your issue tracking service.
+2. Login to the administrator account with the credentials used in the "checksetup_config.erb" recipe template to configure your issue tracking service.
 
 ##### -  Manual configuration steps for Hubot
 

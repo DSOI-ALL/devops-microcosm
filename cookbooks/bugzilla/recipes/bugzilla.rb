@@ -54,11 +54,17 @@ bash "install required missing perl modules & execute setup script" do
   action :run
 end
 
-bash "modify './localconfig' to apply proper database credentials" do
+template "/var/www/html/bugzilla-5.0/checksetup_config" do
+  source "checksetup_config.erb"
+  user "root"
+  group "root"
+end
+
+bash "run ./checksetup.pl from command line with input from config file. Must run twice to apply configuration." do
   cwd "/var/www/html/bugzilla-5.0"
   code <<-EOH
-  ./checksetup.pl
-  sed -i "/db_pass/c\`printf "\x24"`db_pass = 'password';" /var/www/html/bugzilla-5.0/localconfig
+  ./checksetup.pl checksetup_config
+  ./checksetup.pl checksetup_config
   EOH
   user "root"
   action :run
@@ -85,4 +91,9 @@ bash "restart Apache to apply the bugzilla.conf file" do
   EOH
   user "root"
   action :run
+end
+
+reboot 'app_requires_reboot' do
+  action :request_reboot
+  reason 'Need to reboot when the run completes successfully to complete bugzilla provision.'
 end
