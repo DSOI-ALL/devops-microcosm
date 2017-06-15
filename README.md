@@ -1,4 +1,4 @@
-# Voltron: A DevOps Pipeline Example via IaC
+# Microcosm: A Secure DevOps Pipeline Example via IaC
 
 ## Prerequisites
 

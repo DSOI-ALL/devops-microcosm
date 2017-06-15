@@ -14,7 +14,7 @@ Vagrant.configure("2") do |config|
     jenkins.vm.network :forwarded_port, guest:8080, host:8082
 
     jenkins.vm.provider "virtualbox" do |v|
-      v.name = "voltron-jenkins"
+      v.name = "microcosm-jenkins"
       v.customize ["modifyvm", :id, "--memory", 1024]
       v.customize ["modifyvm", :id, "--cpus", 1]
       v.customize ["modifyvm", :id, "--groups", "/CERT"]
@@ -36,7 +36,7 @@ Vagrant.configure("2") do |config|
     gitlab.vm.network :forwarded_port, guest:80, host:8083
 
     gitlab.vm.provider "virtualbox" do |v|
-      v.name = "voltron-gitlab"
+      v.name = "microcosm-gitlab"
       v.customize ["modifyvm", :id, "--memory", 1024]
       v.customize ["modifyvm", :id, "--cpus", 1]
       v.customize ["modifyvm", :id, "--groups", "/CERT"]
@@ -59,7 +59,7 @@ Vagrant.configure("2") do |config|
     selenium.vm.network :forwarded_port, guest:4444, host:4444
 
     selenium.vm.provider "virtualbox" do |v|
-      v.name = "voltron-selenium"
+      v.name = "microcosm-selenium"
       v.customize ["modifyvm", :id, "--memory", 1024]
       v.customize ["modifyvm", :id, "--cpus", 1]
       v.customize ["modifyvm", :id, "--groups", "/CERT"]
@@ -81,7 +81,7 @@ Vagrant.configure("2") do |config|
     owaspZap.vm.network :forwarded_port, guest:8080, host:8085
 
     owaspZap.vm.provider "virtualbox" do |v|
-      v.name = "voltron-owaspZap"
+      v.name = "microcosm-owaspZap"
       v.customize ["modifyvm", :id, "--memory", 1024]
       v.customize ["modifyvm", :id, "--cpus", 1]
       v.customize ["modifyvm", :id, "--groups", "/CERT"]
@@ -105,7 +105,7 @@ Vagrant.configure("2") do |config|
     mediaWiki.vm.network :forwarded_port, guest:80, host:8086
 
     mediaWiki.vm.provider "virtualbox" do |v|
-      v.name = "voltron-mediaWiki"
+      v.name = "microcosm-mediaWiki"
       v.customize ["modifyvm", :id, "--memory", 1024]
       v.customize ["modifyvm", :id, "--cpus", 1]
       v.customize ["modifyvm", :id, "--groups", "/CERT"]
@@ -130,7 +130,7 @@ Vagrant.configure("2") do |config|
     staging.vm.network :forwarded_port, guest:8080, host:8087
 
     staging.vm.provider "virtualbox" do |v|
-      v.name = "voltron-staging"
+      v.name = "microcosm-staging"
       v.customize ["modifyvm", :id, "--memory", 1024]
       v.customize ["modifyvm", :id, "--cpus", 1]
       v.customize ["modifyvm", :id, "--groups", "/CERT"]
