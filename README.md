@@ -57,6 +57,7 @@ When each VM is ready, proceed with the configuration steps below for each.
 
 	This local clone is connected to your GitLab VM and simulates the ability to collaborate changes with your development team, however the real 'spring-petclinic' repository at GitHub.com may undergo real changes. Adding this remote enables you to sync upstream changes:	
 
+		cd spring-petclinic
 		git remote add github https://github.com/SLS-ALL/spring-petclinic.git
 		
 	After this, sync upstream changes with:
@@ -127,18 +128,9 @@ That's it! You now have a local GitLab server running and holding your project c
 ## Workflow
 
 1. Develop!
-2. Build!
+2. Build and Deploy!
 	- In the Jenkins UI project view, click "Build Now" on left hand side of screen, or on the main dashboard click the icon to schedule a build
-3. Deploy!
-    - ssh into the jenkins vm:
-    
-    		vagrant ssh jenkins
-    		
-    - run
-    	
-    		ansible-playbook /var/lib/jenkins/workspace/<jenkins project name>/deploy.yml
-    		
-4. Visit http://localhost:8087/petclinic/
+3. Visit http://localhost:8087/petclinic/
 
 ## Document/Test Configuration
 
