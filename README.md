@@ -16,8 +16,8 @@ VirtualBox 5.1.18
 
 ## Environment Creation via IaC
 
-	git clone https://github.com/SLS-ALL/devops-voltron.git
-	cd devops-voltron	
+	git clone https://github.com/SLS-ALL/devops-microcosm.git
+	cd devops-microcosm	
 	vagrant box add metadata.json
 
 - jenkins
