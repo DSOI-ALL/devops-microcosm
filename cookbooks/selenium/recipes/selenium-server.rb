@@ -16,11 +16,3 @@ bash "download selenium standalone server" do
   user "root"
   action :run
 end
-
-bash "start selenium standalone server" do
-  code <<-EOH
-    java -jar /opt/selenium/2.53/selenium-server-standalone-2.53.0.jar &
-  EOH
-  user "root"
-  action :run
-end

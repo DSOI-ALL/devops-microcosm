@@ -53,13 +53,13 @@ Vagrant.configure("2") do |config|
     end
   end
 
-
   config.vm.define "selenium" do |selenium|
     selenium.vm.network "private_network", ip: "10.1.1.4", auto_config: false
     selenium.vm.network :forwarded_port, guest:4444, host:4444
 
     selenium.vm.provider "virtualbox" do |v|
       v.name = "microcosm-selenium"
+      v.gui = true
       v.customize ["modifyvm", :id, "--memory", 1024]
       v.customize ["modifyvm", :id, "--cpus", 1]
       v.customize ["modifyvm", :id, "--groups", "/CERT"]
@@ -82,6 +82,7 @@ Vagrant.configure("2") do |config|
 
     owaspZap.vm.provider "virtualbox" do |v|
       v.name = "microcosm-owaspZap"
+      v.gui = true
       v.customize ["modifyvm", :id, "--memory", 1024]
       v.customize ["modifyvm", :id, "--cpus", 1]
       v.customize ["modifyvm", :id, "--groups", "/CERT"]
@@ -136,5 +137,4 @@ Vagrant.configure("2") do |config|
       v.customize ["modifyvm", :id, "--groups", "/CERT"]
     end
   end
-
 end

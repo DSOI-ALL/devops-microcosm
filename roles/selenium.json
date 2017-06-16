@@ -8,6 +8,7 @@
   "run_list": [
     "recipe[yum]",
     "recipe[network::net-tools]",
-    "recipe[selenium::selenium-server]"
+    "recipe[selenium::selenium-server]",
+    "recipe[centosGUI::centosGUI]"
   ]
 }

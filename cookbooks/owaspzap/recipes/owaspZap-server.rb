@@ -17,13 +17,3 @@ bash "download Owasp Zap" do
   action :run
   not_if do ::File.exists?("/opt/zapproxy/ZAP_2.6.0_Linux") end
 end
-
-bash "start owasp-zap" do
-  cwd "/opt/zapproxy"
-  code <<-EOH
-		cd ZAP_2.6.0
-    ./zap.sh -daemon &
-  EOH
-  user "root"
-  action :run
-end

@@ -134,13 +134,27 @@ That's it! You now have a local GitLab server running and holding your project c
 
 ## Document/Test Configuration
 
-### on 'selenium' VM: port 4444
+### on 'selenium' VM: http://localhost:4444/wd/hub
 
-Coming Soon
+##### - Documentation for Selenium Standalone Server
 
-### on 'owaspZap' VM: http://localhost:8085
+1. Login to the Desktop VirtualBox instance of the selenium VM created upon a "vagrant up" with default vagrant credentials.
 
-Coming Soon
+2. Open a terminal and escalate to root.
+
+3. Type "java -jar /opt/selenium/2.53/selenium-server-standalone-2.53.0.jar &" to run the Selenium standalone server as a background process.
+
+4. Enter "localhost:4444/wd/hub" in the browser to access the Selenium Standalone Server web interface.
+
+### on 'owaspZap' VM:
+
+##### - Documentation for Owasp Zap
+
+1. Login to the Desktop VirtualBox instance of the owaspZap VM created upon a "vagrant up" with default vagrant credentials.
+
+2. Open a terminal and escalate to root.
+  
+3. Type "/opt/zapproxy/ZAP_2.6.0/./zap.sh" to launch the Owasp Zap application.  
 
 ### on 'mediaWiki' VM: http://localhost:8086
 

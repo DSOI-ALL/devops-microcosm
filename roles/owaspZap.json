@@ -8,6 +8,7 @@
   "run_list": [
     "recipe[yum]",
     "recipe[network::net-tools]",
-    "recipe[owaspzap::owaspZap-server]"
+    "recipe[owaspzap::owaspZap-server]",
+    "recipe[centosGUI::centosGUI]"
   ]
 }
