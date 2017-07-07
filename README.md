@@ -29,14 +29,17 @@ VirtualBox 5.1.18
 
 ## Dev/Build/Deploy Configuration
 
-To get started, first bring up all  VMs (i.e. 'jenkins', 'gitlab', 'staging', 'selenium', 'owaspZap', 'mediaWiki' 
+To get started, first bring up all  VMs (i.e. 'jenkins', 'gitlab', 'staging', 'selenium', 'owaspZap', 'mediaWiki' )
 
 	vagrant up 
 
 When each VM is ready, proceed with the configuration steps below for each.
 
-Note: You can also create VM one at a time by runnngin vagrant up <VMName> like vagrant up gitlab
+Note: You can also create each VM , one at a time by running  'vagrant up <VMName>' like 
 
+      vagrant up gitlab 
+
+      
 ### on 'gitlab' VM : http://localhost:8083
 
 1. Visit http://localhost:8083
