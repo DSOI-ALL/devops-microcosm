@@ -71,7 +71,7 @@ That's it! You now have a local GitLab server running and holding your project c
 ### on 'jenkins' VM : http://localhost:8082
 
 1. Visit http://localhost:8082
-1. Validate Jenkins install, initial plugins and user account	    
+2. Validate Jenkins install, initial plugins and user account	    
 	- copy administrator password from /var/log/jenkins/jenkins.log and paste into form when prompted
 	
 			vagrant ssh jenkins
@@ -81,7 +81,7 @@ That's it! You now have a local GitLab server running and holding your project c
 	- register new account
 		- click 'Save and Finish'!
 
-2. Add Maven Tool
+3. Add Maven Tool
 	- click "Manage Jenkins"
 	- click "Global Tool Configuration"
 	- click "Add Maven"
@@ -89,29 +89,43 @@ That's it! You now have a local GitLab server running and holding your project c
 	- enter "petclinic" as name
 	- click Apply and then click Save
 
-3. Install Additional Plugins
+4. Install Additional Plugins
 	- click "Manage Jenkins"
-	- click "Manage Plugins"
 	- select 'Available' tab
 	- search: "owasp"
 	- select: Official OWASP ZAP Jenkins Plugin
+	- search: Git Plugin
+	- select Git Plugin
 	- search: "maven"
 	- select: Maven Integration Plugin 
 	- search: "ansible"
 	- select: Ansible plugin
+	- seach: "custom tools"
+	- select: "Custom Tools Plugin"
 	- click "install without restart" at bottom of page
     - check box next to "Restart Jenkins when installation is complete and no jobs are running."
     - at top-left menu, click "back to Dashboard"
     - NOTE: Jenkins will restart in the background and the UI may appear to be hung - you may need to refresh the page
 
-4. Add spring-petclinic project
+5. Create Custom Tool for Owasp Zap Plugin
+    - click "Manage Jenkins"
+    - click "Global Tool Configuration"
+    - click "Custom Tool Installations"
+    - click "Add Custom tool"
+    - enter "ZAP_2.6.0" in the "name" field
+    - click the "Install automatically" checkbox
+    - enter "https://github.com/zaproxy/zaproxy/releases/download/2.6.0/ZAP_2.6.0_Linux.tar.gz" in the "Download URL for binary archive" field
+    - enter "ZAP_2.6.0" in the "Subdirectory of extracted archive" field
+    - click apply and then click save
+
+6. Add spring-petclinic project & add OwaspZap build step
 	- click "New Item", enter "petclinic" as name, choose "Freestyle", and click OK
 	- under Source Code Management, select 'git'
 	- beside Credentials, click Add -> Jenkins
 	- select "Username with password"
 	- enter your GitLab credentials (see 'gitlab' VM instructions above) and click Add
 	- enter repository URL: http://<username>@<gitlab VM private network IP>/<username>/spring-petclinic.git
-		- NOTE: this is the HTTP URL from the GitLab project page where 'localhost' is replaced by the 'gitlab' VM's private network IP (in this case 10.1.1.3)
+		- NOTE: this is the HTTP URL from the GitLab project page where 'localhost' is replaced by the 'gitlab' VM's private network IP (ex: http://10.1.1.3/root/spring-petclinic.git)
 	- select appropriate credentials 
 	- Add build step -> Invoke top-level Maven targets
 		- Leave default values
@@ -123,7 +137,26 @@ That's it! You now have a local GitLab server running and holding your project c
 			- Username: vagrant
 			- Private Key: "From a file on Jenkins master": /etc/ansible/vagrant_id_rsa
 		- Credentials: select 'vagrant'
-	- click Apply and then click Save
+    - click "add build step" and select "Execute ZAP"
+    - Under "Admin Configurations" enter:
+        - localhost in the "Override Host" field
+        - 8090 in the "Override Port" field 
+    - Under "Java" "InheritFromJob" should automatically be chosen in the JDK field
+    - Under "Installation Method" choose "Custom Tools Installation"
+        - Choose "ZAP_2.6.0" (the name of the custom tool that was created in step 5)
+    - Under "ZAP Home Directory" enter:
+        - "~/.ZAP" for Linux
+        - "~/Library/Application Support/ZAP" for Mac OS
+        - "C:\Users\<username>\OWASP ZAP" for Windows 7/8
+        - "C:\Documents and Settings\<username>\OWASP ZAP" for Windows XP
+    - Under "Session Management" select "Persist Session"
+        - Enter the name of the ZAP session file created after running an initial Spider scan or manually mapping the petclinic web app (petclinicSession)
+    - Under "Session Properties" enter:
+        - "myContext" in the "Context Name" field
+        - "http://10.1.1.7:8080/petclinic.*" in the "Include in Context" field
+    - Under "Attack Mode" enter "http://10.1.1.7:8080/petclinic" in the "Starting Point" field
+        - click the "Spider Scan" and "Recurse" checkboxes
+    - click Apply and then click Save
 
 ## Workflow
 
@@ -176,10 +209,12 @@ That's it! You now have a local GitLab server running and holding your project c
 
 1. Upon a successful "vagrant up", ssh into the VM using "vagrant ssh mediaWiki".
 
-2. Navigate to "/home/vagrant/myhubot" as the vagrant user.
+2. Type "sudo npm -y install -g yo generator-hubot" to install hubot via npm.
 
-3. Type "yo hubot --defaults" to create a hubot with the default settings.
+3. Navigate to "/home/vagrant/myhubot" as the vagrant user.
 
-4. Type "bin/hubot" while in the hubot directory to start your hubot bot.
+4. Type "yo hubot --defaults" to create a hubot with the default settings.
 
-5. The "myhubot>" prompt should appear. Type "myhubot help" for a list of available commands.
+5. Type "bin/hubot" while in the hubot directory to start your hubot bot.
+
+6. The "myhubot>" prompt should appear. Type "myhubot help" for a list of available commands.

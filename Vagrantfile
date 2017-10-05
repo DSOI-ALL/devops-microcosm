@@ -54,7 +54,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "selenium" do |selenium|
-    selenium.vm.network "private_network", ip: "10.1.1.4", auto_config: false
+    selenium.vm.network "private_network", ip: "10.1.1.4"
     selenium.vm.network :forwarded_port, guest:4444, host:4444
 
     selenium.vm.provider "virtualbox" do |v|
@@ -77,7 +77,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "owaspZap" do |owaspZap|
-    owaspZap.vm.network "private_network", ip: "10.1.1.5", auto_config: false
+    owaspZap.vm.network "private_network", ip: "10.1.1.5"
     owaspZap.vm.network :forwarded_port, guest:8080, host:8085
 
     owaspZap.vm.provider "virtualbox" do |v|
@@ -87,7 +87,6 @@ Vagrant.configure("2") do |config|
       v.customize ["modifyvm", :id, "--cpus", 1]
       v.customize ["modifyvm", :id, "--groups", "/CERT"]
     end
-
 
     owaspZap.vm.provision :chef_zero do |chef|
 
@@ -102,7 +101,7 @@ Vagrant.configure("2") do |config|
 
    #mediaWiki VM also has Issue Tracking and Hubots
   config.vm.define "mediaWiki" do |mediaWiki|
-    mediaWiki.vm.network "private_network", ip: "10.1.1.6", auto_config: false
+    mediaWiki.vm.network "private_network", ip: "10.1.1.6"
     mediaWiki.vm.network :forwarded_port, guest:80, host:8086
 
     mediaWiki.vm.provider "virtualbox" do |v|
@@ -120,8 +119,9 @@ Vagrant.configure("2") do |config|
       #chef.environments_path = "./environments"
 
       chef.add_role "mediaWiki"
-      chef.add_role "hubot"
       chef.add_role "bugzilla"
+      #chef.add_role "hubot"
+
     end
   end
 
