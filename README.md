@@ -107,6 +107,12 @@ That's it! You now have a local GitLab server running and holding your project c
 	- select: Ansible plugin
 	- seach: "custom tools"
 	- select: "Custom Tools Plugin"
+	- search: "Export Report"
+	- select: "Export Report Plugin"
+	- search "Summary Report"
+	- select "Summary Report Plugin"
+	- search "HTML Publisher"
+	- select "HTML Publisher Plugin"
 	- click "install without restart" at bottom of page
     - check box next to "Restart Jenkins when installation is complete and no jobs are running."
     - at top-left menu, click "back to Dashboard"
@@ -158,17 +164,26 @@ That's it! You now have a local GitLab server running and holding your project c
         - Enter the name of the ZAP session file created after running an initial Spider scan or manually mapping the petclinic web app (petclinicSession)
     - Under "Session Properties" enter:
         - "myContext" in the "Context Name" field
-        - "http://10.1.1.7:8080/petclinic.*" in the "Include in Context" field
-    - Under "Attack Mode" enter "http://10.1.1.7:8080/petclinic" in the "Starting Point" field
+        - "http://10.1.1.7:8080/petclinic/*" in the "Include in Context" field
+    - Under "Attack Mode" enter "http://10.1.1.7:8080/petclinic/" in the "Starting Point" field
         - click the "Spider Scan" and "Recurse" checkboxes
-    - click Apply and then click Save
+    - Under "Finalize Run" click the "Generate Reports", "Clean Workdpsave Reports", and "Generate Report" radio butotns
+        - Enter JENKINS_ZAP_VULNERABILITY_REPORT in the "Filename" field
+        - Select "html" under the "Format" field
+    - Click "Add post-built action" and select "Publish HTML reports"
+    - Under "Publish HTML reports" enter:
+        - "/var/lib/jenkins/workspace/petclinic/reports/" in the "HTML directory to archive" field
+        - "JENKINS_ZAP_VULNERABILITY_REPORT.html" in the "Index page[s]" field
+        - "Last ZAP Vulnerability Report" in the "Report title" field
+    - Click Apply and then click Save
 
 ## Workflow
 
 1. Develop!
 2. Build and Deploy!
 	- In the Jenkins UI project view, click "Build Now" on left hand side of screen, or on the main dashboard click the icon to schedule a build
-3. Visit http://localhost:8087/petclinic/
+3. To view the most recent ZAP Vulnerability Report, click "Last ZAP Vulnerability report" 	
+4. Visit http://localhost:8087/petclinic/
 
 ## Document/Test Configuration
 
