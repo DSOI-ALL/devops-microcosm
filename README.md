@@ -5,7 +5,7 @@
 ### personal access token with github.com
 
 - top-right menu -> Settings
-- left menu (bottom) -> Personal access tokens
+- left menu (Developer Settings) -> Personal access tokens
 - click 'Generate..'
 - select 'Public repo'
 
@@ -107,10 +107,10 @@ That's it! You now have a local GitLab server running and holding your project c
 	- select: Ansible plugin
 	- seach: "custom tools"
 	- select: "Custom Tools Plugin"
-	- search: "Export Report"
-	- select: "Export Report Plugin"
-	- search "Summary Report"
-	- select "Summary Report Plugin"
+	- search "Summary Display"
+	- select "Summary Display Plugin"
+	- search: "Selenium HTML Report"
+	- select "Selenium HTML Report"
 	- search "HTML Publisher"
 	- select "HTML Publisher Plugin"
 	- click "install without restart" at bottom of page
@@ -129,7 +129,7 @@ That's it! You now have a local GitLab server running and holding your project c
     - enter "ZAP_2.6.0" in the "Subdirectory of extracted archive" field
     - click apply and then click save
 
-6. Add spring-petclinic project & add OwaspZap build step
+6. Add spring-petclinic project 
 	- click "New Item", enter "petclinic" as name, choose "Freestyle", and click OK
 	- under Source Code Management, select 'git'
 	- beside Credentials, click Add -> Jenkins
@@ -148,6 +148,18 @@ That's it! You now have a local GitLab server running and holding your project c
 			- Username: vagrant
 			- Private Key: "From a file on Jenkins master": /etc/ansible/vagrant_id_rsa
 		- Credentials: select 'vagrant'
+    - Click Apply and then click Save
+7. Build and Deploy!
+    - In the Jenkins UI project view, click "Build Now" on left hand side of screen, or on the main dashboard click the icon to schedule a build
+        - NOTE: One initial build must be completed in order to create the appropriate Jenkins workspace. This is workspace will be the home os the ZAP session files generated through 
+        ZAP GUI, as well as the ZAP vulnerability Reports.
+    
+8. Add OwaspZap build step
+    - Navigate to the desktop instance of the "Jenkins" VM which contains owaspZap and launch a terminal
+    - Type "/opt/zapproxy/ZAP_2.6.0/./zap.sh" to launch the owasZap GUI
+    - The user will be promtped to persist the current session of ZAP
+        - Click "Yes" to persist the session and specify the Jenkins workspace that was created upon the initial successful build of petclinic as the place to save the ZAP session files
+        - ex: petclinicSession.session 
     - click "add build step" and select "Execute ZAP"
     - Under "Admin Configurations" enter:
         - localhost in the "Override Host" field
@@ -161,7 +173,7 @@ That's it! You now have a local GitLab server running and holding your project c
         - "C:\Users\<username>\OWASP ZAP" for Windows 7/8
         - "C:\Documents and Settings\<username>\OWASP ZAP" for Windows XP
     - Under "Session Management" select "Persist Session"
-        - Enter the name of the ZAP session file created after running an initial Spider scan or manually mapping the petclinic web app (petclinicSession)
+        - Enter the name of the ZAP session file created after choosing to persist the session upon launching ZAP (petclinicSession)
     - Under "Session Properties" enter:
         - "myContext" in the "Context Name" field
         - "http://10.1.1.7:8080/petclinic/*" in the "Include in Context" field
@@ -172,7 +184,7 @@ That's it! You now have a local GitLab server running and holding your project c
         - Select "html" under the "Format" field
     - Click "Add post-built action" and select "Publish HTML reports"
     - Under "Publish HTML reports" enter:
-        - "/var/lib/jenkins/workspace/petclinic/reports/" in the "HTML directory to archive" field
+        - "/var/lib/jenkins/workspace/petclinic/" in the "HTML directory to archive" field
         - "JENKINS_ZAP_VULNERABILITY_REPORT.html" in the "Index page[s]" field
         - "Last ZAP Vulnerability Report" in the "Report title" field
     - Click Apply and then click Save

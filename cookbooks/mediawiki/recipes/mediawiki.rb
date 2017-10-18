@@ -19,6 +19,7 @@ bash "download mediawiki" do
     tar -xvzf mediawiki-1.24.1.tar.gz
     rm -f mediawiki-1.24.1.tar.gz
     mv mediawiki-1.24.1 wiki
+    rm -rf mediawiki-1.24.1
   EOH
   user "root"
   action :run
@@ -42,4 +43,5 @@ bash "modify-mediawiki-settings" do
   EOH
   action :run
   user "root"
+  not_if do ::File.exists?("/var/html/www/wiki/mediawiki-1.24.1") end
 end
