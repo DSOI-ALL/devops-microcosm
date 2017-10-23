@@ -20,10 +20,8 @@ VirtualBox 5.1.18
 	cd devops-microcosm	
 	vagrant box add metadata.json
 
-- jenkins
+- jenkins (+ owaspZAP + selenium)
 - gitlab
-- selenium
-- owasp 
 - mediawiki (+ bugzilla + hubot)
 - staging
 
@@ -151,7 +149,7 @@ That's it! You now have a local GitLab server running and holding your project c
     - Click Apply and then click Save
 7. Build and Deploy!
     - In the Jenkins UI project view, click "Build Now" on left hand side of screen, or on the main dashboard click the icon to schedule a build
-        - NOTE: One initial build must be completed in order to create the appropriate Jenkins workspace. This is workspace will be the home os the ZAP session files generated through 
+        - NOTE: One initial build must be completed in order to create the appropriate Jenkins workspace. This is workspace will be the home of the ZAP session files generated through 
         ZAP GUI, as well as the ZAP vulnerability Reports.
     
 8. Add OwaspZap build step
@@ -198,28 +196,6 @@ That's it! You now have a local GitLab server running and holding your project c
 4. Visit http://localhost:8087/petclinic/
 
 ## Document/Test Configuration
-
-### on 'selenium' VM: http://localhost:4444/wd/hub
-
-##### - Documentation for Selenium Standalone Server
-
-1. Login to the Desktop VirtualBox instance of the selenium VM created upon a "vagrant up" with default vagrant credentials.
-
-2. Open a terminal and escalate to root.
-
-3. Type "java -jar /opt/selenium/2.53/selenium-server-standalone-2.53.0.jar &" to run the Selenium standalone server as a background process.
-
-4. Enter "localhost:4444/wd/hub" in the browser to access the Selenium Standalone Server web interface.
-
-### on 'owaspZap' VM:
-
-##### - Documentation for Owasp Zap
-
-1. Login to the Desktop VirtualBox instance of the owaspZap VM created upon a "vagrant up" with default vagrant credentials.
-
-2. Open a terminal and escalate to root.
-  
-3. Type "/opt/zapproxy/ZAP_2.6.0/./zap.sh" to launch the Owasp Zap application.  
 
 ### on 'mediaWiki' VM: http://localhost:8086
 
