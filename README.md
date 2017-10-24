@@ -154,7 +154,7 @@ That's it! You now have a local GitLab server running and holding your project c
     
 8. Add OwaspZap build step
     - Navigate to the desktop instance of the "Jenkins" VM which contains owaspZap and launch a terminal
-    - Type "/opt/zapproxy/ZAP_2.6.0/./zap.sh" to launch the owasZap GUI
+    - Type "sudo /opt/zapproxy/ZAP_2.6.0/./zap.sh" to launch the owasZap GUI as root
     - The user will be promtped to persist the current session of ZAP
         - Click "Yes" to persist the session and specify the Jenkins workspace that was created upon the initial successful build of petclinic as the place to save the ZAP session files
         - ex: petclinicSession.session 
