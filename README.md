@@ -71,7 +71,7 @@ Note: You can also create each VM , one at a time by running  'vagrant up <VMNam
 
 That's it! You now have a local GitLab server running and holding your project code. You also have a clone of your project checked-out and ready for development.
 
-### on 'jenkins' VM : http://localhost:8082
+### on 'jenkins' VM : http://localhost:8088
 
 1. Visit http://localhost:8082
 2. Validate Jenkins install, initial plugins and user account	    
