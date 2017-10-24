@@ -73,7 +73,7 @@ That's it! You now have a local GitLab server running and holding your project c
 
 ### on 'jenkins' VM : http://localhost:8088
 
-1. Visit http://localhost:8082
+1. Visit http://localhost:8088
 2. Validate Jenkins install, initial plugins and user account	    
 	- copy administrator password from /var/log/jenkins/jenkins.log and paste into form when prompted
 	
