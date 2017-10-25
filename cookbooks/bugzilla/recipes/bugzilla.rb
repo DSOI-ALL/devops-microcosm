@@ -9,13 +9,13 @@ end
 bash "download bugzilla" do
   cwd "/var/www/html"
   code <<-EOH
-    wget 'https://ftp.mozilla.org/pub/mozilla.org/webtools/bugzilla-5.0.tar.gz'
-    tar -xvzf bugzilla-5.0.tar.gz
-    rm -f bugzilla-5.0.tar.gz
+    wget 'https://ftp.mozilla.org/pub/mozilla.org/webtools/bugzilla-5.0.3.tar.gz'
+    tar -xvzf bugzilla-5.0.3.tar.gz
+    rm -f bugzilla-5.0.3.tar.gz
   EOH
   user "root"
   action :run
-  not_if do ::File.exists?("/var/html/www/bugzilla-5.0") end
+  not_if do ::File.exists?("/var/html/www/bugzilla-5.0.3") end
 end
 
 bash "create database" do
@@ -45,7 +45,7 @@ bash "install additional perl packages" do
 end
 
 bash "install required missing perl modules & execute setup script" do
-  cwd "/var/www/html/bugzilla-5.0"
+  cwd "/var/www/html/bugzilla-5.0.3"
   code <<-EOH
   ./checksetup.pl
    /usr/bin/perl install-module.pl --all
@@ -54,14 +54,14 @@ bash "install required missing perl modules & execute setup script" do
   action :run
 end
 
-template "/var/www/html/bugzilla-5.0/checksetup_config" do
+template "/var/www/html/bugzilla-5.0.3/checksetup_config" do
   source "checksetup_config.erb"
   user "root"
   group "root"
 end
 
 bash "run ./checksetup.pl from command line with input from config file. Must run twice to apply configuration." do
-  cwd "/var/www/html/bugzilla-5.0"
+  cwd "/var/www/html/bugzilla-5.0.3"
   code <<-EOH
   ./checksetup.pl checksetup_config
   ./checksetup.pl checksetup_config
@@ -71,7 +71,7 @@ bash "run ./checksetup.pl from command line with input from config file. Must ru
 end
 
 bash "comment out a line in the .htaccess file that the Bugzilla installation script created." do
-  cwd "/var/www/html/bugzilla-5.0"
+  cwd "/var/www/html/bugzilla-5.0.3"
   code <<-EOH
   sed -i 's/^Options -Indexes$/#Options -Indexes/g' ./.htaccess
   EOH
