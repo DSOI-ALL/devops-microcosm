@@ -1,9 +1,5 @@
 bash "set up server and disable apache welcome page" do
   code <<-EOH
-    yum -y install php-xml 
-    yum -y install php-intl 
-    yum -y install php-gd  
-    yum -y install epel-release
     sed -i '8,22 s/^/#/' /etc/httpd/conf.d/welcome.conf 
     systemctl restart httpd.service
   EOH
@@ -13,13 +9,13 @@ end
 
 bash "download mediawiki" do
   code <<-EOH
-    wget http://releases.wikimedia.org/mediawiki/1.24/mediawiki-1.24.1.tar.gz
-    mv mediawiki-1.24.1.tar.gz /var/www/html
+    wget http://releases.wikimedia.org/mediawiki/1.29/mediawiki-1.29.0.tar.gz
+    mv mediawiki-1.29.0.tar.gz /var/www/html
     cd /var/www/html
-    tar -xvzf mediawiki-1.24.1.tar.gz
-    rm -f mediawiki-1.24.1.tar.gz
-    mv mediawiki-1.24.1 wiki
-    rm -rf mediawiki-1.24.1
+    tar -xvzf mediawiki-1.29.0.tar.gz
+    rm -f mediawiki-1.29.0.tar.gz
+    mv mediawiki-1.29.0 wiki
+    rm -rf mediawiki-1.29.0
   EOH
   user "root"
   action :run
@@ -39,9 +35,9 @@ end
 bash "modify-mediawiki-settings" do
   cwd "/var/www/html/wiki"
   code <<-EOH
-    php maintenance/install.php --dbname my_wiki --dbpass password --dbserver localhost --dbuser tartan --dbtype mysql --installdbpass password --pass password --installdbuser tartan "mediawiki-1.24.1" "admin"
+    php maintenance/install.php --dbname my_wiki --dbpass password --dbserver localhost --dbuser tartan --dbtype mysql --installdbpass password --pass password --installdbuser tartan "mediawiki-1.29.0" "admin"
   EOH
   action :run
   user "root"
-  not_if do ::File.exists?("/var/html/www/wiki/mediawiki-1.24.1") end
+  not_if do ::File.exists?("/var/html/www/wiki/mediawiki-1.29.0") end
 end
