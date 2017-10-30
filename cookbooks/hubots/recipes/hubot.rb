@@ -6,7 +6,7 @@ bash "install epel-repo" do
   action :run
 end
 
-bash "install Node.js" do
+bash "install Node.js (npm is included along with http_parser.86_64 dependency)" do
   code <<-EOH
     yum -y install nodejs
   EOH
@@ -14,10 +14,10 @@ bash "install Node.js" do
   action :run
 end
 
-bash "install npm" do
+bash "install/start redis" do
   code <<-EOH
-    yum -y install npm
-    yum -y install http-parser.x86_64
+    yum -y install redis
+    systemctl start redis
   EOH
   user "root"
   action :run

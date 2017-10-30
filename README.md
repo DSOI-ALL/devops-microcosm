@@ -199,7 +199,7 @@ That's it! You now have a local GitLab server running and holding your project c
 
 ### on 'mediaWiki' VM: http://localhost:8086
 
-#### Wiki (Mediawiki), Issue Tracker (Bugzilla), Chat Server (Hubot)
+#### Wiki (Mediawiki), Issue Tracker (Bugzilla), Chat Bot (Hubot)
 
 ##### - Documentation for MediaWiki
 
@@ -209,7 +209,7 @@ That's it! You now have a local GitLab server running and holding your project c
 
 ##### - Documentation for Bugzilla
 
-1. Type "http://localhost:8086/bugzilla-5.0/" in your browser to access the Bugzilla web interface.
+1. Type "http://localhost:8086/bugzilla-5.0.3/" in your browser to access the Bugzilla web interface.
 
 2. Login to the administrator account with the credentials used in the "checksetup_config.erb" recipe template to configure your issue tracking service.
 
@@ -217,12 +217,10 @@ That's it! You now have a local GitLab server running and holding your project c
 
 1. Upon a successful "vagrant up", ssh into the VM using "vagrant ssh mediaWiki".
 
-2. Type "sudo npm -y install -g yo generator-hubot" to install hubot via npm.
+2. Navigate to "/home/vagrant/myhubot" as the vagrant user.
 
-3. Navigate to "/home/vagrant/myhubot" as the vagrant user.
+3. Type "yo hubot --defaults" to create a hubot with the default settings.
 
-4. Type "yo hubot --defaults" to create a hubot with the default settings.
+4. Type "bin/hubot" while in the myhubot directory to start your hubot bot.
 
-5. Type "bin/hubot" while in the hubot directory to start your hubot bot.
-
-6. The "myhubot>" prompt should appear. Type "myhubot help" for a list of available commands.
+5. The "myhubot>" prompt should appear. Type "myhubot help" for a list of available commands.
