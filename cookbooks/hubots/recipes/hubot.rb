@@ -41,15 +41,6 @@ bash "create directory for hubot" do
   not_if do ::File.exists?("/home/vagrant/myhubot") end
 end
 
-bash "export hubot_jenkins url/creds" do
-  code <<-EOH
-    export HUBOT_JENKINS_AUTH="admin:tartans"
-    export HUBOT_JENKINS_URL="http://10.1.1.8:8080/"
-  EOH
-  user "root"
-  action :run
-end
-
 template "/home/vagrant/myhubot/jenkins.coffee" do
   source "jenkins.coffee.erb"
   user "root"
