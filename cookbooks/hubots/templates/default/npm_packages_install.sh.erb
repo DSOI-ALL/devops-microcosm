@@ -1,0 +1,19 @@
+#!/bin/bash
+# This script is to be executed in the /home/vagrant/myhubot/ directory AFTER the "yo hubot --adapter slack" command has been entered and the user has entered all config information for the chat bot
+# It was attempted to bake these install steps into the chef recipe, but the hubot must first be created in order for hubot to detect the npm packages, for whatever reason
+# Further investigating. --> perhaps a lack of understanding of how npm packages are managed?
+
+# Checks to ensure that the user has actually created the hubot using "yo hubot --adapter slack"
+if [ -d "/home/vagrant/myhubot/scripts" ]; then
+  sudo npm install -g yo generator-hubot
+  sudo npm install coffee-script --save
+  sudo npm install hubot-slack --save
+  sudo npm install hubot-jenkins --save
+  sudo npm install hubot-jenkins-slack --save
+  sudo npm install hubot-slack-attachment --save
+  mv jenkins.coffee hubot.coffee /home/vagrant/myhubot/scripts
+  rm hubot-scripts.json
+  sed -i '11 a ,"hubot-jenkins",\n"hubot-jenkins-slack",\n"hubot-slack-attachment"' external-scripts.json
+else
+  echo You must run the 'yo hubot --adapter slack' command in order to install the required hubot npm packages and create the /home/vagrant/myhubot/scripts directory
+fi

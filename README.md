@@ -9,6 +9,18 @@
 - click 'Generate..'
 - select 'Public repo'
 
+### create free Slack workspace and add Hubot/Jenkins Slack apps
+
+- go to "https://slack.com/get-started" and follow the instructions to creeate a new Slack workspace if you don't have one already
+- once a workspace ahs been created, navigate to the "browse apps" page within your workspace
+- for Hubot:
+    - search for "Hubot" and fill out the appropriate fields to generate a Hubot app within slack
+        - Note the "HUBOT_SLACK_TOKEN" that begins with xoxb. This will be need to be included with initiating the Hubot bot from the command line 
+        to connect your local Hubot bot to the Slack workspace
+- for Jenkins:    
+    - follow the instructions given at "https://www.youtube.com/watch?v=TWwvxn2-J7E" to install the Jenkins Slack app
+        - Note: "Team Domain" will be replaced with Jenkins Base URL
+    
 ### Vagrant and VirtualBox recommended versions
 
 Vagrant 1.9.3
@@ -27,7 +39,7 @@ VirtualBox 5.1.18
 
 ## Dev/Build/Deploy Configuration
 
-To get started, first bring up all  VMs (i.e. 'jenkins', 'gitlab', 'staging', 'selenium', 'owaspZap', 'mediaWiki' )
+To get started, first bring up all  VMs (i.e. 'jenkins', 'gitlab', 'staging', 'mediaWiki' )
 
 	vagrant up 
 
@@ -111,6 +123,8 @@ That's it! You now have a local GitLab server running and holding your project c
 	- select "Selenium HTML Report"
 	- search "HTML Publisher"
 	- select "HTML Publisher Plugin"
+	- search "Slack Notification Plugin"
+	- select "Slack notification Plugin"
 	- click "install without restart" at bottom of page
     - check box next to "Restart Jenkins when installation is complete and no jobs are running."
     - at top-left menu, click "back to Dashboard"
@@ -126,8 +140,12 @@ That's it! You now have a local GitLab server running and holding your project c
     - enter "https://github.com/zaproxy/zaproxy/releases/download/2.6.0/ZAP_2.6.0_Linux.tar.gz" in the "Download URL for binary archive" field
     - enter "ZAP_2.6.0" in the "Subdirectory of extracted archive" field
     - click apply and then click save
+    
+6. Add Global Slack Notifier Configurations    
+    - follow the instructions given at "https://www.youtube.com/watch?v=TWwvxn2-J7E" to enter the appropriate configuration information in Jenkins to
+    link the Jenkins service to your Slack workspace
 
-6. Add spring-petclinic project 
+7. Add spring-petclinic project 
 	- click "New Item", enter "petclinic" as name, choose "Freestyle", and click OK
 	- under Source Code Management, select 'git'
 	- beside Credentials, click Add -> Jenkins
@@ -147,12 +165,12 @@ That's it! You now have a local GitLab server running and holding your project c
 			- Private Key: "From a file on Jenkins master": /etc/ansible/vagrant_id_rsa
 		- Credentials: select 'vagrant'
     - Click Apply and then click Save
-7. Build and Deploy!
+8. Build and Deploy!
     - In the Jenkins UI project view, click "Build Now" on left hand side of screen, or on the main dashboard click the icon to schedule a build
         - NOTE: One initial build must be completed in order to create the appropriate Jenkins workspace. This is workspace will be the home of the ZAP session files generated through 
         ZAP GUI, as well as the ZAP vulnerability Reports.
     
-8. Add OwaspZap build step
+9. Add OwaspZap build step
     - Navigate to the desktop instance of the "Jenkins" VM which contains owaspZap and launch a terminal
     - Type "sudo /opt/zapproxy/ZAP_2.6.0/./zap.sh" to launch the owasZap GUI as root
     - The user will be promtped to persist the current session of ZAP
@@ -213,14 +231,22 @@ That's it! You now have a local GitLab server running and holding your project c
 
 2. Login to the administrator account with the credentials used in the "checksetup_config.erb" recipe template to configure your issue tracking service.
 
-##### -  Manual configuration steps for Hubot
+##### -  Manual configuration steps for Hubot bot creation and to Integrate Hubot with Jenkins via Slack
 
 1. Upon a successful "vagrant up", ssh into the VM using "vagrant ssh mediaWiki".
 
 2. Navigate to "/home/vagrant/myhubot" as the vagrant user.
 
-3. Type "yo hubot --defaults" to create a hubot with the default settings.
+3. Type "yo hubot --adapter slack" to create a Hubot bot that can integrate with your Slack workspace
 
-4. Type "bin/hubot" while in the myhubot directory to start your hubot bot.
+4. While in the "/home/vagrant/myhubot" directory, execute the "npm_packages_install.sh" script to install the necessary npm packages to allow your
+ hubot to integrate with Jenkins and Slack
+    - This must be done BEFORE launching the Hubot bot
+ 
+5. Export HUBOT_JENKINS_AUTH, HUBOT_JENKINS_URL, and HUBOT_SLACK_TOKEN variables
+    - HUBOT_JENKINS_AUTH should be in "username:password" format (use jenkins account credentials)
+6. Launch the previously created Hubot by passing all of the appropriate command line flags
+    - ex: HUBOT_SLACK_TOKEN=$HUBOT_SLACK_TOKEN HUBOT_JENKINS_URL=$HUBOT_JENKINS_URL 
+    HUBOT_JENKINS_AUTH=$HUBOT_JENKINS_AUTH ./bin/hubot --adapter slack
+7. You will now be able to chat with your Hubot via your Slack workspace, as well as kick off Jenkins builds of the petclinic application
 
-5. The "myhubot>" prompt should appear. Type "myhubot help" for a list of available commands.
