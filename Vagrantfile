@@ -9,7 +9,7 @@ Vagrant.configure("2") do |config|
   config.ssh.pty = true
   config.ssh.insert_key = false
 
-  config.vm.define "jenkins" do |jenkins|
+  config.vm.define "newJenkins" do |jenkins|
     jenkins.vm.network "private_network", ip: "10.1.1.8"
     jenkins.vm.network :forwarded_port, guest:8080, host:8088
 
@@ -91,6 +91,38 @@ Vagrant.configure("2") do |config|
       v.customize ["modifyvm", :id, "--memory", 1024]
       v.customize ["modifyvm", :id, "--cpus", 1]
       v.customize ["modifyvm", :id, "--groups", "/CERT"]
+    end
+  end
+
+  config.vm.define "docker" do |docker|
+
+    docker.vm.network "private_network", ip: "10.1.1.9"
+    docker.vm.network :forwarded_port, guest:8080, host:8088
+    docker.vm.network :forwarded_port, guest:80, host:8083
+    docker.vm.network :forwarded_port, guest:8081, host:8081
+
+    docker.vm.provider "virtualbox" do |v|
+      v.name = "microcosm-docker"
+      v.customize ["modifyvm", :id, "--memory", 2048]
+      v.customize ["modifyvm", :id, "--cpus", 1]
+      v.customize ["modifyvm", :id, "--groups", "/CERT"]
+    end
+
+    docker.vm.provision "docker" do |d|
+      d.run "jenkins/jenkins",
+          args: "-p 8080:8080 -v jenkins_home:/var/jenkins_home"
+      d.run "gitlab/gitlab-ce",
+          args: " --detach \
+                  --hostname gitlab.example.com \
+                  --publish 443:443 --publish 80:80 \
+                  --name gitlab \
+                  --restart always \
+                  --volume /srv/gitlab/config:/etc/gitlab \
+                  --volume /srv/gitlab/logs:/var/log/gitlab \
+                  --volume /srv/gitlab/data:/var/opt/gitlab \
+                "
+      d.run "owasp/zap2docker-stable",
+          args: "-u zap -p 8081:8080 -p 8090:8090 -i owasp/zap2docker-stable zap-webswing.sh"
     end
   end
 end
