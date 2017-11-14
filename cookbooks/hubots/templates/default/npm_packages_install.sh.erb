@@ -5,7 +5,6 @@
 
 # Checks to ensure that the user has actually created the hubot using "yo hubot --adapter slack"
 if [ -d "/home/vagrant/myhubot/scripts" ]; then
-  sudo npm install -g yo generator-hubot
   sudo npm install coffee-script --save
   sudo npm install hubot-slack --save
   sudo npm install hubot-jenkins --save
