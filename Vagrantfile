@@ -100,6 +100,8 @@ Vagrant.configure("2") do |config|
     docker.vm.network :forwarded_port, guest:8080, host:8088
     docker.vm.network :forwarded_port, guest:80, host:8083
     docker.vm.network :forwarded_port, guest:8081, host:8081
+    docker.vm.network :forwarded_port, guest:82, host:8082
+    docker.vm.network :forwarded_port, guest:8084, host:8084
 
     docker.vm.provider "virtualbox" do |v|
       v.name = "microcosm-docker"
@@ -123,6 +125,16 @@ Vagrant.configure("2") do |config|
                 "
       d.run "owasp/zap2docker-stable",
           args: "-u zap -p 8081:8080 -p 8090:8090 -i owasp/zap2docker-stable zap-webswing.sh"
+      d.run "bugzilla/bugzilla-dev",
+          args: " -d \ -p 82:80 -p 5900:5900 --name bugzilla \
+                "
+      d.run "mediawiki",
+          args: "--detach \
+                 --name somewiki \
+                 -p 8084:80 \
+                "
+      # d.run "mysql",
+      #     args: " --name some-mysql -e MYSQL_ROOT_PASSWORD=tartans --restart always -d mysql:8.0.3"
     end
   end
 end
