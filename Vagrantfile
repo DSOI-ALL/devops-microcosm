@@ -154,8 +154,9 @@ Vagrant.configure("2") do |config|
       # The IP address entered for HUBOT_JENKINS_URL will change each time the Jenkins container is created.
       # The command "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' jenkins-jenkins"
       # can be used once ssh'd inside of the Docker VM to print the IP address of the Jenkins container
+      # Additionally, you will need to replace the HUBOT_SLACK_TOKEN value with the value genterated in your own Slack Workspace
       d.run "gillax/hubot-slack-jenkins",
-          args: "-e HUBOT_SLACK_TOKEN=xoxb-265951433927-Tv3TwUfYibpZR1nxwZxtFUXd \
+          args: "-e HUBOT_SLACK_TOKEN=REPLACE_WITH_UNIQUE_SLACK_INTEGRATION_TOKEN \
                  -e HUBOT_JENKINS_URL=http://172.17.0.3:8080 \
                  -e HUBOT_JENKINS_AUTH=admin:tartans \
                  --link jenkins-jenkins \
