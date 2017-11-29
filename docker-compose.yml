@@ -1,0 +1,67 @@
+version: '3'
+
+services:
+
+  jenkins:
+    image: jenkins/jenkins
+    container_name: jenkins
+    ports:
+      - "8080:8080"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+
+  gitlab:
+    image: gitlab/gitlab-ce
+    container_name: gitlab
+    ports:
+      - "443:443"
+      - "80:80"
+    restart: always
+    volumes:
+      - /srv/gitlab/config:/etc/gitlab
+      - /srv/gitlab/logs:/var/log/gitlab
+      - /srv/gitlab/data:/var/opt/gitlab
+    links:
+      - jenkins
+
+  owaspZAP:
+    image: owasp/zap2docker-stable
+    container_name: owaspzap
+    ports:
+      - "8081:8080"
+      - "8090:8090"
+    entrypoint: zap-webswing.sh
+
+  bugzilla:
+    image: dklawren/docker-bugzilla
+    container_name: bugzilla
+    ports:
+      - "82:80"
+      - "5900:5900"
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+
+  mediawiki:
+    image: mediawiki
+    container_name: somewiki
+    ports:
+      - "8084:80"
+    environment:
+      - MEDIAWIKI__SITE_SERVER=http://localhost:8084
+      - MEDIAWIKI_SITE_NAME=MediaWiki
+      - MEDIAWIKI_SITE_LANG=en
+      - MEDIAWIKI_ADMIN_USER=admin
+      - MEDIAWIKI_ADMIN_PASS=tartans
+      - MEDIAWIKI_UPDATE=false
+      - MEDIAWIKI_SLEEP=0
+
+  hubot:
+    image: gillax/hubot-slack-jenkins
+    environment:
+      - HUBOT_SLACK_TOKEN=xoxb-265951433927-x6Yb2XSaOX2UWjTpohQ9q3zh
+      - HUBOT_JENKINS_URL=http://172.17.0.3:8080
+      - HUBOT_JENKINS_AUTH=admin:tartans
+    links:
+      - jenkins
+    depends_on:
+      - jenkins
