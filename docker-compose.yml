@@ -58,7 +58,7 @@ services:
   hubot:
     image: gillax/hubot-slack-jenkins
     environment:
-      - HUBOT_SLACK_TOKEN=xoxb-265951433927-x6Yb2XSaOX2UWjTpohQ9q3zh
+      - HUBOT_SLACK_TOKEN=REPLACE_WITH_SLACK_INTEGRATION_TOKEN
       - HUBOT_JENKINS_URL=http://172.17.0.3:8080
       - HUBOT_JENKINS_AUTH=admin:tartans
     links:
