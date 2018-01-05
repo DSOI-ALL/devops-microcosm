@@ -26,7 +26,12 @@
 Vagrant 1.9.3
 VirtualBox 5.1.18
 
-## Environment Creation via IaC
+### Docker and Docker-Compose recommended versions
+
+Docker 17.09.0-ce
+Docker-Compose 1.16.1
+
+## Environment Creation via IaC Using Separate VMs
 
 	git clone https://github.com/SLS-ALL/devops-microcosm.git
 	cd devops-microcosm	
@@ -250,3 +255,92 @@ That's it! You now have a local GitLab server running and holding your project c
     HUBOT_JENKINS_AUTH=$HUBOT_JENKINS_AUTH ./bin/hubot --adapter slack
 7. You will now be able to chat with your Hubot via your Slack workspace, as well as kick off Jenkins builds of the petclinic application
 
+## Environment Creation via IaC Using Docker-Compose
+
+To get started, bring up the "docker-compose" VM. Upon the creation of the VM through Vagrant, Docker and Docker-Compose will automatically be installed 
+through the Docker-Compose Vagrant Provisioner (vagrant-docker-compose vagrant plugin). 
+
+Through the Docker-Compose Vagrant Provisioner a "docker-compose.yml" file, 
+which contains the configuration specifications for each service/container in the Microcosm pipeline, is specified.
+ 
+
+        vagrant plugin install vagrant-docker-compose
+        vagrant up docker-compose
+
+### Port Forwarding Explanation
+
+It is important to understand the port forwarding that is going on behind the scenes with the Dockerized version of Microcosm. As opposed to the "strictly VM" version of Microcosm,
+there are two levels of port forwarding that occur.
+
+At the service level, the initial layer of port forwarding occurs between each container and the Centos 7 VM that is running Docker-Compose. This can be seen for each container definition 
+in the "docker-compose.yml" file, as shown below for the Jenkins container:
+
+        jenkins:
+            image: h1kkan/jenkins-docker:lts
+            container_name: jenkins
+            ports:
+              - "8080:8080"
+            volumes:
+              - jenkins_home:/var/jenkins_home
+            extra_hosts:
+             - "staging:10.1.1.7"
+             
+Note the values assigned to the "ports" argument: 8080:8080. The port to the right of the colon specifies the port in which the service is listening on within the container. 
+The port to the left of the colon specifies forwarded port in which the Centos 7 VM is listening on.
+
+The second layer of port forwarding now occurs between the Centos 7 VM and the host machine that is running Vagrant. This takes place in the VM definition within the Vagrantfile:
+
+        docker.vm.network :forwarded_port, guest:8080, host:8088
+        
+The Centos 7 VM re-forwards its forwarded port to the specified port on the host machine. Jenkins is therefore available at "localhost:8088" via a browser on the host machine.
+
+### Additional Instructions for Jenkins Container (providing a future workaround to avoid manual steps)
+
+The Jenkins Docker imaged used is fortunately packaged with Ansible pre-installed, but a few steps must be taken to create the "/etc/ansible/hosts" file for remote deployment, as well
+as the /etc/ansible/vagrant_id_rsa" key to allow jenkins to ssh into the Staging server during the execution of the Ansible playbook.
+
+1. SSH into the VM using "vagrant ssh docker-compose"
+2. Enter the Jenkins container as root using a bash shell:
+        
+        docker exec -it --user root jenkins bash
+        
+3. Update apt-get with:
+
+        apt-get update
+        
+4. Install VIM to author the "/etc/ansible/hosts" file:
+
+        apt-get install vim
+        
+5. Create the "/etc/ansible" directory:
+
+        mkdir /etc/ansible
+        
+6. Author the "/etc/ansible/hosts" file
+
+        vi /etc/ansible/hosts
+        
+        Inside the file:
+        
+       [DevOps]
+       10.1.1.7
+       
+7. While in the "/etc/ansible/" directory, download the Vagrant RSA key needed for deployment:
+
+        curl -o vagrant_id_rsa https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant
+
+        
+### Hubot Container Notes
+
+The environment arguments for the Hubot container defined in "docker-compose.yml" will change.
+
+- HUBOT_JENKINS_URL=http://IP_ADDRESS_OF_JENKINS_CONTAINER:8080
+    - Print IP address of container while in "docker-compose" VM with:
+            
+            docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' NAME_OF_CONTAINER
+
+- HUBOT_JENKINS_AUTH=JENKINS_USERNAME:PASSWORD
+
+       
+
+             
