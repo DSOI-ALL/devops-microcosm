@@ -74,7 +74,7 @@ Vagrant.configure("2") do |config|
       chef.roles_path = "./roles"
       #chef.environments_path = "./environments"
 
-      chef.add_role "mediaWiki"
+      chef.add_role "mediawiki"
       chef.add_role "bugzilla"
       chef.add_role "hubot"
 
