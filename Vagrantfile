@@ -99,19 +99,20 @@ Vagrant.configure("2") do |config|
     docker.vm.network "private_network", ip: "10.1.1.10"
 
     # Two levels of port forwarding occur. The inital port forward from the docker container to the host Centos 7 VM,
-    # then the port forward from the Centos 7 VM to the user's host machine
+    # then the port forward from the Centos 7 VM to the user's host machine.
+    # The ports for the docker container services are 10 ports above their VM version equivalent
     # Port forward for jenkins service
-    docker.vm.network :forwarded_port, guest:8080, host:8088
+    docker.vm.network :forwarded_port, guest:8080, host:8098
     # Port forward for GitLab service
-    docker.vm.network :forwarded_port, guest:80, host:8083
+    docker.vm.network :forwarded_port, guest:80, host:8093
     # Port forward for OwaspZAP service
     docker.vm.network :forwarded_port, guest:8081, host:8081
     # Port forward for Bugzilla service
-    docker.vm.network :forwarded_port, guest:82, host:8082
+    docker.vm.network :forwarded_port, guest:82, host:8097
     # Port forward for MediaWiki service
-    docker.vm.network :forwarded_port, guest:8084, host:8084
+    docker.vm.network :forwarded_port, guest:8084, host:8096
     # Port forward for Selenium Grid Hub service
-    docker.vm.network :forwarded_port, guest:4444, host:4444
+    # docker.vm.network :forwarded_port, guest:4444, host:4444
 
     docker.vm.provider "virtualbox" do |v|
       v.name = "microcosm-docker-compose"
