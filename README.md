@@ -26,11 +26,6 @@
 Vagrant 1.9.3
 VirtualBox 5.1.18
 
-### Docker and Docker-Compose recommended versions
-
-Docker 17.09.0-ce
-Docker-Compose 1.16.1
-
 ## Environment Creation via IaC Using Separate VMs
 
 	git clone https://github.com/SLS-ALL/devops-microcosm.git
@@ -44,9 +39,9 @@ Docker-Compose 1.16.1
 
 ## Dev/Build/Deploy Configuration
 
-To get started, first bring up all  VMs (i.e. 'jenkins', 'gitlab', 'staging', 'mediaWiki' )
+To get started, first bring up all  VMs (i.e. 'newJenkins', 'gitlab', 'staging', 'mediaWiki' )
 
-	vagrant up 
+	vagrant up newJenkins gitlab mediaWiki staging
 
 When each VM is ready, proceed with the configuration steps below for each.
 
@@ -54,6 +49,7 @@ Note: You can also create each VM , one at a time by running  'vagrant up <VMNam
 
       vagrant up gitlab 
 
+Note: If you wish to use the Microservice (Docker-Compose) version of Microcosm, See the instructions under "Environment Creation via IaC Using Docker-Compose", below.
       
 ### on 'gitlab' VM : http://localhost:8083
 
@@ -265,7 +261,7 @@ which contains the configuration specifications for each service/container in th
  
 
         vagrant plugin install vagrant-docker-compose
-        vagrant up docker-compose
+        vagrant up docker-compose staging
 
 ### Port Forwarding Explanation
 
@@ -290,9 +286,9 @@ The port to the left of the colon specifies forwarded port in which the Centos 7
 
 The second layer of port forwarding now occurs between the Centos 7 VM and the host machine that is running Vagrant. This takes place in the VM definition within the Vagrantfile:
 
-        docker.vm.network :forwarded_port, guest:8080, host:8088
+        docker.vm.network :forwarded_port, guest:8080, host:8098
         
-The Centos 7 VM re-forwards its forwarded port to the specified port on the host machine. Jenkins is therefore available at "localhost:8088" via a browser on the host machine.
+The Centos 7 VM re-forwards its forwarded port to the specified port on the host machine. Jenkins is therefore available at "localhost:8098" via a browser on the host machine.
 
 ### Additional Instructions for Jenkins Container (providing a future workaround to avoid manual steps)
 
