@@ -90,8 +90,8 @@ That's it! You now have a local GitLab server running and holding your project c
 2. Validate Jenkins install, initial plugins and user account	    
 	- copy administrator password from /var/log/jenkins/jenkins.log and paste into form when prompted
 	
-			vagrant ssh jenkins
-			sudo tail -n 30 /var/log/jenkins/jenkins.log
+			vagrant ssh newJenkins
+			sudo tail -n 30 /var/lib/jenkins/secrets/initialAdminPassword
 		
 	- click to install 'suggested plugins'
 	- register new account
@@ -106,7 +106,7 @@ That's it! You now have a local GitLab server running and holding your project c
 	- click Apply and then click Save
 
 4. Install Additional Plugins
-	- click "Manage Jenkins"
+	- click "Manage Plugins"
 	- select 'Available' tab
 	- search: "owasp"
 	- select: Official OWASP ZAP Jenkins Plugin
