@@ -177,6 +177,9 @@ That's it! You now have a local GitLab server running and holding your project c
     - The user will be promtped to persist the current session of ZAP
         - Click "Yes" to persist the session and specify the Jenkins workspace that was created upon the initial successful build of petclinic as the place to save the ZAP session files
         - ex: petclinicSession.session 
+    - Open a new terminal tab (necessary for ZAP HTML Reports)
+        - Create “/var/lib/jenkins/jobs/htmlreports” directory and change ownership to jenkins user-> chown jenkins:jenkins htmlreports
+        - Create “/var/lib/jenkins/workspace/petclinic/reports/html” directory and change ownership to jenkins user -> chown jenkins:jenkins html
     - click "add build step" and select "Execute ZAP"
     - Under "Admin Configurations" enter:
         - localhost in the "Override Host" field
