@@ -170,8 +170,22 @@ That's it! You now have a local GitLab server running and holding your project c
     - In the Jenkins UI project view, click "Build Now" on left hand side of screen, or on the main dashboard click the icon to schedule a build
         - NOTE: One initial build must be completed in order to create the appropriate Jenkins workspace. This is workspace will be the home of the ZAP session files generated through 
         ZAP GUI, as well as the ZAP vulnerability Reports.
+        
+9. Add SonarQube Scanner build step
+    - Complete the "SonarQube Integration with Jenkins Instructions" steps founds at the end of the README.md
+    - Click "Add build step" and select "Execute SonarQube Scanner"
+    - Under "Analysis properties" enter:
+            
+            sonar.projectKey=petclinic
+            sonar.projectName=petclinic
+            sonar.sources=/var/jenkins_home/workspace/petclinic/src/
+            sonar.java.binaries=/var/jenkins_home/workspace/petclinic/src/
     
-9. Add OwaspZap build step
+    - Click Apply and Save
+    - After a successful build, the static code analysis will be available at "http://localhost:9000/dashboard/index/petclinic"
+            
+    
+10. Add OwaspZap build step
     - Navigate to the desktop instance of the "Jenkins" VM which contains owaspZap and launch a terminal
     - Type "sudo /opt/zapproxy/ZAP_2.6.0/./zap.sh" to launch the owasZap GUI as root
     - The user will be promtped to persist the current session of ZAP
@@ -328,6 +342,25 @@ as the /etc/ansible/vagrant_id_rsa" key to allow jenkins to ssh into the Staging
 
         curl -o vagrant_id_rsa https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant
 
+### SonarQube Integration with Jenkins Instructions
+
+1. Install the SonarQube Scanner for Jenkins via the Jenkins Plugin Manager
+
+2. Go to Manage Jenkins -> Configure System
+    - Enter "SonarQube" in the "Name" field
+    - ssh into the docker-compose VM and use the "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' NAME_OF_CONTAINER" command to find the 
+      IP address of the SonarQube container. Enter the returned IP address under the "Server URL" field. 
+            
+            ex: http://SonarQube_Container_IP_Address:9000
+3. Select "5.3 or higher" for the "Server version" field
+4. Enter the authentication token that was generated upon logging into the SonarQube web interface in the "Server authentication token" field
+5. Click Apply and Save
+6. Go to Manage Jenkins -> Global Tool Configuration
+7. Enter "SonarQube" in the "Name" field
+8. Check "Install automatically"
+    - Choose the most recent version of SonarQube Scanner
+9. Click Apply and Save
+        
         
 ### Hubot Container Notes
 
