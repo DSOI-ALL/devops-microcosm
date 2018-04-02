@@ -118,7 +118,7 @@ Vagrant.configure("2") do |config|
 
     docker.vm.provider "virtualbox" do |v|
       v.name = "microcosm-docker-compose"
-      v.customize ["modifyvm", :id, "--memory", 5120]
+      v.customize ["modifyvm", :id, "--memory", 6144]
       v.customize ["modifyvm", :id, "--cpus", 2]
       v.customize ["modifyvm", :id, "--groups", "/CERT"]
     end
