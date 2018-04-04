@@ -15,12 +15,12 @@
 - once a workspace ahs been created, navigate to the "browse apps" page within your workspace
 - for Hubot:
     - search for "Hubot" and fill out the appropriate fields to generate a Hubot app within slack
-        - Note the "HUBOT_SLACK_TOKEN" that begins with xoxb. This will be need to be included with initiating the Hubot bot from the command line 
+        - Note the "HUBOT_SLACK_TOKEN" that begins with xoxb. This will be need to be included with initiating the Hubot bot from the command line
         to connect your local Hubot bot to the Slack workspace
 - for Jenkins:    
     - follow the instructions given at "https://www.youtube.com/watch?v=TWwvxn2-J7E" to install the Jenkins Slack app
         - Note: "Team Domain" will be replaced with Jenkins Base URL
-    
+
 ### Vagrant and VirtualBox recommended versions
 
 Vagrant 1.9.3
@@ -29,7 +29,7 @@ VirtualBox 5.1.18
 ## Environment Creation via IaC Using Separate VMs
 
 	git clone https://github.com/SLS-ALL/devops-microcosm.git
-	cd devops-microcosm	
+	cd devops-microcosm
 	vagrant box add metadata.json
 
 - jenkins (+ owaspZAP + selenium)
@@ -45,16 +45,16 @@ To get started, first bring up all  VMs (i.e. 'newJenkins', 'gitlab', 'staging',
 
 When each VM is ready, proceed with the configuration steps below for each.
 
-Note: You can also create each VM , one at a time by running  'vagrant up <VMName>' like 
+Note: You can also create each VM , one at a time by running  'vagrant up <VMName>' like
 
-      vagrant up gitlab 
+      vagrant up gitlab
 
 Note: If you wish to use the Microservice (Docker-Compose) version of Microcosm, See the instructions under "Environment Creation via IaC Using Docker-Compose", below.
-      
+
 ### on 'gitlab' VM : http://localhost:8083
 
 1. Visit http://localhost:8083
-2. set root password on gitlab 
+2. set root password on gitlab
 	- username (default): root
 	- password: 1amd3v0p5 (or your own choice)
 3. register new account
@@ -66,20 +66,20 @@ Note: If you wish to use the Microservice (Docker-Compose) version of Microcosm,
 	3. nav to project and select HTTP clone URL for the next step
 5. clone project into dev box
 	- on your host command line in ./projects - NOTE: you must change 'localhost' to 'localhost:8083' in the HTTP clone URL
-	
-			git clone <HTTP clone URL> 
-		
+
+			git clone <HTTP clone URL>
+
 6. (optional) add 'github' as additional remote for upstream changes
 
-	This local clone is connected to your GitLab VM and simulates the ability to collaborate changes with your development team, however the real 'spring-petclinic' repository at GitHub.com may undergo real changes. Adding this remote enables you to sync upstream changes:	
+	This local clone is connected to your GitLab VM and simulates the ability to collaborate changes with your development team, however the real 'spring-petclinic' repository at GitHub.com may undergo real changes. Adding this remote enables you to sync upstream changes:
 
 		cd spring-petclinic
 		git remote add github https://github.com/SLS-ALL/spring-petclinic.git
-		
+
 	After this, sync upstream changes with:
-	
+
 		git pull github master # - pull github changes to this checkout
-		git pull # - ensure you are synced with your gitlab VM repo 
+		git pull # - ensure you are synced with your gitlab VM repo
 		git push # - push any commits that were pulled from the github repo to your gitlab VM repo
 
 That's it! You now have a local GitLab server running and holding your project code. You also have a clone of your project checked-out and ready for development.
@@ -89,10 +89,10 @@ That's it! You now have a local GitLab server running and holding your project c
 1. Visit http://localhost:8088
 2. Validate Jenkins install, initial plugins and user account	    
 	- copy administrator password from /var/log/jenkins/jenkins.log and paste into form when prompted
-	
+
 			vagrant ssh newJenkins
 			sudo tail -n 30 /var/lib/jenkins/secrets/initialAdminPassword
-		
+
 	- click to install 'suggested plugins'
 	- register new account
 		- click 'Save and Finish'!
@@ -101,7 +101,7 @@ That's it! You now have a local GitLab server running and holding your project c
 	- click "Manage Jenkins"
 	- click "Global Tool Configuration"
 	- click "Add Maven"
-		- the form may not expand the first time. sometimes one or more page refreshes is required before this works. 
+		- the form may not expand the first time. sometimes one or more page refreshes is required before this works.
 	- enter "petclinic" as name
 	- click Apply and then click Save
 
@@ -113,7 +113,7 @@ That's it! You now have a local GitLab server running and holding your project c
 	- search: Git Plugin
 	- select Git Plugin
 	- search: "maven"
-	- select: Maven Integration Plugin 
+	- select: Maven Integration Plugin
 	- search: "ansible"
 	- select: Ansible plugin
 	- seach: "custom tools"
@@ -141,12 +141,12 @@ That's it! You now have a local GitLab server running and holding your project c
     - enter "https://github.com/zaproxy/zaproxy/releases/download/2.6.0/ZAP_2.6.0_Linux.tar.gz" in the "Download URL for binary archive" field
     - enter "ZAP_2.6.0" in the "Subdirectory of extracted archive" field
     - click apply and then click save
-    
+
 6. Add Global Slack Notifier Configurations    
     - follow the instructions given at "https://www.youtube.com/watch?v=TWwvxn2-J7E" to enter the appropriate configuration information in Jenkins to
     link the Jenkins service to your Slack workspace
 
-7. Add spring-petclinic project 
+7. Add spring-petclinic project
 	- click "New Item", enter "petclinic" as name, choose "Freestyle", and click OK
 	- under Source Code Management, select 'git'
 	- beside Credentials, click Add -> Jenkins
@@ -154,7 +154,7 @@ That's it! You now have a local GitLab server running and holding your project c
 	- enter your GitLab credentials (see 'gitlab' VM instructions above) and click Add
 	- enter repository URL: http://<username>@<gitlab VM private network IP>/<username>/spring-petclinic.git
 		- NOTE: this is the HTTP URL from the GitLab project page where 'localhost' is replaced by the 'gitlab' VM's private network IP (ex: http://10.1.1.3/root/spring-petclinic.git)
-	- select appropriate credentials 
+	- select appropriate credentials
 	- Add build step -> Invoke top-level Maven targets
 		- Leave default values
 	- Add build step -> Invoke Ansible Playbook
@@ -168,36 +168,36 @@ That's it! You now have a local GitLab server running and holding your project c
     - Click Apply and then click Save
 8. Build and Deploy!
     - In the Jenkins UI project view, click "Build Now" on left hand side of screen, or on the main dashboard click the icon to schedule a build
-        - NOTE: One initial build must be completed in order to create the appropriate Jenkins workspace. This is workspace will be the home of the ZAP session files generated through 
+        - NOTE: One initial build must be completed in order to create the appropriate Jenkins workspace. This is workspace will be the home of the ZAP session files generated through
         ZAP GUI, as well as the ZAP vulnerability Reports.
-        
+
 9. Add SonarQube Scanner build step
     - Complete the "SonarQube Integration with Jenkins Instructions" steps founds at the end of the README.md
     - Click "Add build step" and select "Execute SonarQube Scanner"
     - Under "Analysis properties" enter:
-            
+
             sonar.projectKey=petclinic
             sonar.projectName=petclinic
             sonar.sources=/var/jenkins_home/workspace/petclinic/src/
             sonar.java.binaries=/var/jenkins_home/workspace/petclinic/src/
-    
+
     - Click Apply and Save
     - After a successful build, the static code analysis will be available at "http://localhost:9000/dashboard/index/petclinic"
-            
-    
+
+
 10. Add OwaspZap build step
     - Navigate to the desktop instance of the "Jenkins" VM which contains owaspZap and launch a terminal
     - Type "sudo /opt/zapproxy/ZAP_2.6.0/./zap.sh" to launch the owasZap GUI as root
     - The user will be promtped to persist the current session of ZAP
         - Click "Yes" to persist the session and specify the Jenkins workspace that was created upon the initial successful build of petclinic as the place to save the ZAP session files
-        - ex: petclinicSession.session 
+        - ex: petclinicSession.session
     - Open a new terminal tab (necessary for ZAP HTML Reports)
         - Create “/var/lib/jenkins/jobs/htmlreports” directory and change ownership to jenkins user-> chown jenkins:jenkins htmlreports
         - Create “/var/lib/jenkins/workspace/petclinic/reports/html” directory and change ownership to jenkins user -> chown jenkins:jenkins html
     - click "add build step" and select "Execute ZAP"
     - Under "Admin Configurations" enter:
         - localhost in the "Override Host" field
-        - 8090 in the "Override Port" field 
+        - 8090 in the "Override Port" field
     - Under "Java" "InheritFromJob" should automatically be chosen in the JDK field
     - Under "Installation Method" choose "Custom Tools Installation"
         - Choose "ZAP_2.6.0" (the name of the custom tool that was created in step 5)
@@ -260,32 +260,38 @@ That's it! You now have a local GitLab server running and holding your project c
 4. While in the "/home/vagrant/myhubot" directory, execute the "npm_packages_install.sh" script to install the necessary npm packages to allow your
  hubot to integrate with Jenkins and Slack
     - This must be done BEFORE launching the Hubot bot
- 
+
 5. Export HUBOT_JENKINS_AUTH, HUBOT_JENKINS_URL, and HUBOT_SLACK_TOKEN variables
     - HUBOT_JENKINS_AUTH should be in "username:password" format (use jenkins account credentials)
 6. Launch the previously created Hubot by passing all of the appropriate command line flags
-    - ex: HUBOT_SLACK_TOKEN=$HUBOT_SLACK_TOKEN HUBOT_JENKINS_URL=$HUBOT_JENKINS_URL 
+    - ex: HUBOT_SLACK_TOKEN=$HUBOT_SLACK_TOKEN HUBOT_JENKINS_URL=$HUBOT_JENKINS_URL
     HUBOT_JENKINS_AUTH=$HUBOT_JENKINS_AUTH ./bin/hubot --adapter slack
 7. You will now be able to chat with your Hubot via your Slack workspace, as well as kick off Jenkins builds of the petclinic application
 
 ## Environment Creation via IaC Using Docker-Compose
 
-To get started, bring up the "docker-compose" VM. Upon the creation of the VM through Vagrant, Docker and Docker-Compose will automatically be installed 
-through the Docker-Compose Vagrant Provisioner (vagrant-docker-compose vagrant plugin). 
+Provided in this repository is one simple one-stop script to setup MediaWiki, `IaC-setup-script.sh`.  It singlehandedly automates the IaC pipeline to start up a development project, which is the MediaWiki application in this case.
 
-Through the Docker-Compose Vagrant Provisioner a "docker-compose.yml" file, 
-which contains the configuration specifications for each service/container in the Microcosm pipeline, is specified.
- 
+The setup script operates in two layers.  Above, we used Vagrant to generate four VMs for our environment (i.e. newJenkins, gitlab, mediaWiki, and staging).  Instead, in our first layer of abstraction, we spin up two VMs, staging and docker-compose, the latter of which automatically contains six containers (e.g. mediaWiki, jenkins, gitlab, ...).  The second stage then installs MediaWiki with pre-determined settings on the mediaWiki container.
+
+As such, the `IaC-setup-script.sh` copies `copy-to-mediawiki.sh` and `mediawiki-setup.sh` to the docker-compose VM.  Then, `copy-to-mediawiki.sh` is executed remotely, which copies `mediawiki-setup.sh` from the _docker-compose_ VM to the _somewiki_ container (with the mediaWiki image) and executes the script, installing MediaWiki.  Once MediaWiki is installed on the _somewiki_ container, users may access the application via http://localhost:8096/index.php/Main_Page .
+
+Although this script handles all grunt work effortlessly, understanding the underlying levels of abstraction and details of the scripts is imperative.  It is also important to note IaC-setup-script.sh automatically installs the vagrant-docker-compose vagrant plugin via the command:
 
         vagrant plugin install vagrant-docker-compose
-        vagrant up docker-compose staging
+
+If necessary, one may destroy any vagrant VMs and start from scratch via the command:
+
+        vagrant destroy -f
+
+Finally, the "docker-compose.yml" file contains configuration specifications for each service/container in the Microcosm pipline.  Most noticeably, the _somewiki_ container lies within the specifications, utilizing the mediaWiki image.
 
 ### Port Forwarding Explanation
 
 It is important to understand the port forwarding that is going on behind the scenes with the Dockerized version of Microcosm. As opposed to the "strictly VM" version of Microcosm,
 there are two levels of port forwarding that occur.
 
-At the service level, the initial layer of port forwarding occurs between each container and the Centos 7 VM that is running Docker-Compose. This can be seen for each container definition 
+At the service level, the initial layer of port forwarding occurs between each container and the Centos 7 VM that is running Docker-Compose. This can be seen for each container definition
 in the "docker-compose.yml" file, as shown below for the Jenkins container:
 
         jenkins:
@@ -297,14 +303,14 @@ in the "docker-compose.yml" file, as shown below for the Jenkins container:
               - jenkins_home:/var/jenkins_home
             extra_hosts:
              - "staging:10.1.1.7"
-             
-Note the values assigned to the "ports" argument: 8080:8080. The port to the right of the colon specifies the port in which the service is listening on within the container. 
+
+Note the values assigned to the "ports" argument: 8080:8080. The port to the right of the colon specifies the port in which the service is listening on within the container.
 The port to the left of the colon specifies forwarded port in which the Centos 7 VM is listening on.
 
 The second layer of port forwarding now occurs between the Centos 7 VM and the host machine that is running Vagrant. This takes place in the VM definition within the Vagrantfile:
 
         docker.vm.network :forwarded_port, guest:8080, host:8098
-        
+
 The Centos 7 VM re-forwards its forwarded port to the specified port on the host machine. Jenkins is therefore available at "localhost:8098" via a browser on the host machine.
 
 ### Additional Instructions for Jenkins Container (providing a future workaround to avoid manual steps)
@@ -314,30 +320,30 @@ as the /etc/ansible/vagrant_id_rsa" key to allow jenkins to ssh into the Staging
 
 1. SSH into the VM using "vagrant ssh docker-compose"
 2. Enter the Jenkins container as root using a bash shell:
-        
+
         docker exec -it --user root jenkins bash
-        
+
 3. Update apt-get with:
 
         apt-get update
-        
+
 4. Install VIM to author the "/etc/ansible/hosts" file:
 
         apt-get install vim
-        
+
 5. Create the "/etc/ansible" directory:
 
         mkdir /etc/ansible
-        
+
 6. Author the "/etc/ansible/hosts" file
 
         vi /etc/ansible/hosts
-        
+
         Inside the file:
-        
+
        [DevOps]
        10.1.1.7
-       
+
 7. While in the "/etc/ansible/" directory, download the Vagrant RSA key needed for deployment:
 
         curl -o vagrant_id_rsa https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant
@@ -348,9 +354,9 @@ as the /etc/ansible/vagrant_id_rsa" key to allow jenkins to ssh into the Staging
 
 2. Go to Manage Jenkins -> Configure System
     - Enter "SonarQube" in the "Name" field
-    - ssh into the docker-compose VM and use the "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' NAME_OF_CONTAINER" command to find the 
-      IP address of the SonarQube container. Enter the returned IP address under the "Server URL" field. 
-            
+    - ssh into the docker-compose VM and use the "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' NAME_OF_CONTAINER" command to find the
+      IP address of the SonarQube container. Enter the returned IP address under the "Server URL" field.
+
             ex: http://SonarQube_Container_IP_Address:9000
 3. Select "5.3 or higher" for the "Server version" field
 4. Enter the authentication token that was generated upon logging into the SonarQube web interface in the "Server authentication token" field
@@ -360,19 +366,15 @@ as the /etc/ansible/vagrant_id_rsa" key to allow jenkins to ssh into the Staging
 8. Check "Install automatically"
     - Choose the most recent version of SonarQube Scanner
 9. Click Apply and Save
-        
-        
+
+
 ### Hubot Container Notes
 
 The environment arguments for the Hubot container defined in "docker-compose.yml" will change.
 
 - HUBOT_JENKINS_URL=http://IP_ADDRESS_OF_JENKINS_CONTAINER:8080
     - Print IP address of container while in "docker-compose" VM with:
-            
+
             docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' NAME_OF_CONTAINER
 
 - HUBOT_JENKINS_AUTH=JENKINS_USERNAME:PASSWORD
-
-       
-
-             
