@@ -84,10 +84,7 @@ services:
 
 volumes:
   jenkins_home:
-<<<<<<< HEAD
-=======
   sonarqube_conf:
   sonarqube_data:
   sonarqube_extensions:
   sonarqube_bundled-plugins:
->>>>>>> 2d74f51b100ae61575e1b8dd136a16624511c84e
