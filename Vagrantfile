@@ -111,13 +111,15 @@ Vagrant.configure("2") do |config|
     docker.vm.network :forwarded_port, guest:82, host:8097
     # Port forward for MediaWiki service
     docker.vm.network :forwarded_port, guest:8084, host:8096
+    # Port forward for Sonarqube service
+    docker.vm.network :forwarded_port, guest:9000, host:9000
     # Port forward for Selenium Grid Hub service
     # docker.vm.network :forwarded_port, guest:4444, host:4444
 
     docker.vm.provider "virtualbox" do |v|
       v.name = "microcosm-docker-compose"
-      v.customize ["modifyvm", :id, "--memory", 4096]
-      v.customize ["modifyvm", :id, "--cpus", 1]
+      v.customize ["modifyvm", :id, "--memory", 6144]
+      v.customize ["modifyvm", :id, "--cpus", 2]
       v.customize ["modifyvm", :id, "--groups", "/CERT"]
     end
 
