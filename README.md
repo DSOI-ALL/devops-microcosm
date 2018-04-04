@@ -373,6 +373,12 @@ The environment arguments for the Hubot container defined in "docker-compose.yml
 
 - HUBOT_JENKINS_AUTH=JENKINS_USERNAME:PASSWORD
 
+### OwaspZap Container Notes
+
+- The ZAP web interface is available at: http://localhost:8081/?anonym=true&app=ZAP
+- In order to integrate with jenkins, a ZAP session must be created in the same manner described above in the "Add OwasZap build step" section.
+- Once a Zap session is created, the "petclinic.Session" file must be secure copied from the ZAP container to the Jenkins container, in the petclinic workspace
+
        
 
              

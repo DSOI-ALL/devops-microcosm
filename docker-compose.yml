@@ -7,6 +7,7 @@ services:
     container_name: jenkins
     ports:
       - "8080:8080"
+    restart: on-failure
     volumes:
       - jenkins_home:/var/jenkins_home
     extra_hosts:
@@ -82,9 +83,46 @@ services:
     depends_on:
       - jenkins
 
+  selenium-hub:
+    image: selenium/hub
+    container_name: selenium_hub
+    ports:
+      - "4444:4444"
+    restart: on-failure
+
+  # Chrome node for Selenium Grid
+  chrome:
+    image: selenium/node-chrome
+    container_name: selenium_chrome_node
+    links:
+      - selenium-hub:hub
+    volumes:
+    - /dev/shm:/dev/shm # Mitigates the Chromium issue described at https://code.google.com/p/chromium/issues/detail?id=519952
+    restart: on-failure
+
+  # Firefox node for Selenium Grid
+  firefox:
+    image: selenium/node-firefox
+    container_name: selenium_firefox_node
+    environment:
+      HUB_PORT_4444_TCP_ADDR: hub
+    links:
+      - selenium-hub:hub
+    restart: on-failure
+
+  nexus:
+    image: sonatype/nexus
+    container_name: sonatype_nexus
+    volumes:
+      - "nexus-data:/sonatype-work"
+    ports:
+      - "8082:8081"
+    restart: on-failure
+
 volumes:
   jenkins_home:
   sonarqube_conf:
   sonarqube_data:
   sonarqube_extensions:
   sonarqube_bundled-plugins:
+  nexus-data: {}

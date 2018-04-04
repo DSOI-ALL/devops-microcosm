@@ -114,7 +114,9 @@ Vagrant.configure("2") do |config|
     # Port forward for Sonarqube service
     docker.vm.network :forwarded_port, guest:9000, host:9000
     # Port forward for Selenium Grid Hub service
-    # docker.vm.network :forwarded_port, guest:4444, host:4444
+    docker.vm.network :forwarded_port, guest:4444, host:4444
+    # Port forward for Sonatype Nexus service
+    docker.vm.network :forwarded_port, guest:8082, host:8082
 
     docker.vm.provider "virtualbox" do |v|
       v.name = "microcosm-docker-compose"
