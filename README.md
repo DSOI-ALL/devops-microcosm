@@ -348,7 +348,7 @@ as the /etc/ansible/vagrant_id_rsa" key to allow jenkins to ssh into the Staging
 
         curl -o vagrant_id_rsa https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant
 
-### SonarQube Integration with Jenkins Instructions
+### SonarQube Jenkins Integration Instructions
 
 1. Install the SonarQube Scanner for Jenkins via the Jenkins Plugin Manager
 
@@ -367,7 +367,60 @@ as the /etc/ansible/vagrant_id_rsa" key to allow jenkins to ssh into the Staging
     - Choose the most recent version of SonarQube Scanner
 9. Click Apply and Save
 
+### SonaType Nexus Jenkins Integration Instructions
 
+1. Install the Nexus Platform plugin via the Jenkins Plugin Manager
+    - Select Manage Jenkins from the left-navigation menu
+    - Select Manage Plugins from the list of configuration options
+    - In the Plugin Manager window, select the Available tab and enter "nexus platform plugin" in the Filter: search box
+    - Select the Install checkbox next to Nexus Platform Plugin and then click either the Install without restart or Download now and install after restart button
+    
+2. Modify the "settings.xml" file on the Jenkins container
+    - Enter the Jenkins container as root using a bash shell:
+      
+              docker exec -it --user root jenkins bash 
+              
+    - Open the Maven "settings.xml" file located at "/var/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/petclinic/conf/settings.xml" 
+        - Note: A generic successful build of 
+          petclinic with Maven must be completed for the "settings.xml" file to be generated
+    - Under the <servers> section, locate the following <server> xml tag definition and change the value of <username> to "admin" and <password> to "admin123":
+      
+           <server>
+             <id>deploymentRepo</id>
+             <username>admin</username>
+             <password>admin123</password>
+            </server> 
+    
+    - Write/quit "settings.xml" and exit the Jenkins container
+
+2. Use the following instructions to configure Jenkins to connect to Nexus Repository Manager:
+    1. Select Manage Jenkins from the Dashboard’s left-navigation menu
+    2. Select Configure System from the list of configuration options
+    3. In the Sonatype Nexus section, click the Add Nexus Repository Manager Server dropdown menu and then select Nexus Repository Manager 2.x Server. Enter the following:
+        - Display Name: Name of the server you want shown when selecting Nexus Repository Manager instances for build jobs
+        - Server ID: A unique ID used to reference Nexus Repository Manager in Build Pipeline scripts. It should be alphanumeric without spaces
+        - Server URL: Location of your Nexus Repository Manager server (ex: http://NEXUS_IP_ADDRESS:8081/nexus)
+        - Credentials: Select the Add button to enter your Nexus Repository Manager username and password (defaults = admin/admin123) using the Jenkins Provider Credentials: Jenkins modal window. 
+          Once added, select your Nexus Repository Manager username and password from the Credentials dropdown list
+    4. Click the Test Connection button
+    5. After a successful connection to Nexus Repository Manager, click the Save button
+    
+3.  Add Nexus Repository Manager Publisher as a build step in the freestyle project Jenkins job
+    1. In the Build section of the configuration screen, click the Add Build Step dropdown button and then select Nexus Repository Manager Publisher, after you have added the "Invoke
+       lop-level Maven Targets step. Enter the following parameters:
+       - Nexus Instance: Enter "Nexus"
+       - Nexus Repository: Select the "Releases" repository
+       - Packages: Select packages to publish to Nexus Repository Manager during your freestyle build. For this example, use the Add Package dropdown to select a Maven Package
+            - For Group enter: "petclinic-main"
+            - For Artifact enter: "petclinic.war"
+            - For Version enter: 2.3
+            - For Packaging enter: "war"
+            - Click "Add Artifact Path" and choose "Maven Artifact"
+            - For Filepath enter: "/var/jenkins_home/workspace/petclinic/target/petclinic.war"
+       - Complete your freestyle build as desired and click Save
+       
+4. After a successful Jenkins build, view your selected packages in the Nexus Repository manager web UI under the "Releases" repository
+   
 ### Hubot Container Notes
 
 The environment arguments for the Hubot container defined in "docker-compose.yml" will change.
@@ -378,7 +431,6 @@ The environment arguments for the Hubot container defined in "docker-compose.yml
             docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' NAME_OF_CONTAINER
 
 - HUBOT_JENKINS_AUTH=JENKINS_USERNAME:PASSWORD
-<<<<<<< HEAD
 
 ### OwaspZap Container Notes
 
