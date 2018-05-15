@@ -2,6 +2,7 @@
 
 # Install the docker-compose plugin for vagrant
 vagrant plugin install vagrant-docker-compose
+vagrant plugin install vagrant-scp
 
 # Bring up docker-compose and staging VMs
 vagrant up docker-compose staging
