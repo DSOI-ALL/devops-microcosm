@@ -438,6 +438,149 @@ The environment arguments for the Hubot container defined in "docker-compose.yml
 - In order to integrate with jenkins, a ZAP session must be created in the same manner described above in the "Add OwasZap build step" section.
 - Once a Zap session is created, the "petclinic.Session" file must be secure copied from the ZAP container to the Jenkins container, in the petclinic workspace
 
+## Environment Creation Using Kubernetes with Minikube
+
+### Prerequisites
+
+- Download and install kubectl for your appropriate operating system: https://kubernetes.io/docs/tasks/tools/install-kubectl/
+    - Verify install with: 
+
+                kubectl version 
+
+- Download and install Minikube for your appropriate OS: https://github.com/kubernetes/minikube/releases
+    - Verify install with: 
+    
+                minikube version
+    
+### Creation of Minikube VM to Host Local Kubernestes Cluster
+
+1. Create the Minikube VM using:
+        
+        minikube start --memory 6144
+        
+    The minikube start command creates a “kubectl context” called “minikube”. This context contains the configuration to communicate with your minikube cluster.
+        
+2. Upon successful creeation of the minikube VM and local Kubernetes cluster, type:
+     
+       kubectl cluster-info
+       
+   This will displayer the URL's and IP addresses/ports that the Kubernetes master and KubeDNS services are listening on.
+   
+3. All of the definitions for each service in the Microcosm pipeline are defined in the "deployment.yml" file. 
+ Each service has a corresponding "deployment" and "service" definition that are required by Kubernetes. Below is
+ an example of the deployment and service definitions for Jenkins in the "deployment.yml" file:
+ 
+        apiVersion: extensions/v1beta1
+        kind: Deployment
+        metadata:
+          name: jenkins
+        spec:
+          replicas: 1
+          template:
+            metadata:
+              labels:
+                app: jenkins
+            spec:
+              containers:
+              - name: jenkins
+                image: jenkins:2.60.3
+                ports:
+                - containerPort: 8080
+        ---
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: jenkins
+        spec:
+          type: NodePort
+          ports:
+            - port: 8080
+              targetPort: 8080
+          selector:
+            app: jenkins
+ 
+    The explanations of how deployments and services work within Kubernetes can be found here: 
+    - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+    - https://kubernetes.io/docs/concepts/services-networking/service/
+    
+4. To create a node with separate pods for each service in the Microcosm pipeline, type:
+    
+        kubectl create -f deployment.yml
+        
+    The following output should be displayed to verify each deployment and service was successfully created:
+    
+        deployment.extensions "jenkins" created
+        service "jenkins" created
+        deployment.extensions "gitlab" created
+        service "gitlab" created
+        deployment.extensions "sonarqube" created
+        service "sonarqube" created
+        deployment.extensions "bugzilla" created
+        service "bugzilla" created
+        deployment.extensions "mediawiki" created
+        service "mediawiki" created
+        deployment.extensions "nexus" created
+        service "nexus" created
+        deployment.extensions "owaspzap" created
+        service "owaspzap" created
+        
+5. The command "kubectl get" allows for easy, readable configuration information about your Kubernetes cluster.
+For example, see the following output below for displayed information about the cluster's nodes, pods, deployments,
+and services:
+
+    - kubectl get nodes
+    
+          NAME       STATUS    ROLES     AGE       VERSION
+          minikube   Ready     master    1h        v1.10.0  
+          
+    - kubectl get pods 
+    
+           bugzilla-79dc49848d-l7757    1/1       Running   0          10m
+           gitlab-77cbfb478d-w7lhv      1/1       Running   0          10m
+           jenkins-85c7b4dd5-nt6q8      1/1       Running   0          10m
+           mediawiki-7cd77758c6-c7qbs   1/1       Running   0          10m
+           nexus-7fbc798674-fl7nt       1/1       Running   0          10m
+           owaspzap-95964c559-ncqr2     1/1       Running   0          10m
+           sonarqube-5fb87cb946-xv2gt   1/1       Running   0          10m 
+           
+    - kubectl get deployments
+    
+            NAME        DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+            bugzilla    1         1         1            1           10m
+            gitlab      1         1         1            1           10m
+            jenkins     1         1         1            1           10m
+            mediawiki   1         1         1            1           10m
+            nexus       1         1         1            1           10m
+            owaspzap    1         1         1            1           10m
+            sonarqube   1         1         1            1           10m
+            
+    - kubectl get services
+    
+            NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+            bugzilla     NodePort    10.101.28.145   <none>        80:30482/TCP     10m
+            gitlab       NodePort    10.105.19.60    <none>        80:30616/TCP     10m
+            jenkins      NodePort    10.108.138.95   <none>        8080:32608/TCP   10m
+            kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP          50m
+            mediawiki    NodePort    10.102.13.181   <none>        80:32168/TCP     10m
+            nexus        NodePort    10.111.48.107   <none>        8081:32540/TCP   10m
+            owaspzap     NodePort    10.108.136.62   <none>        8090:31022/TCP   10m
+            sonarqube    NodePort    10.110.146.33   <none>        9000:30611/TCP   10m
+            
+6. To acess these services via a web browser on the host machine, the IP address of the minikube VM must be used.
+The "CLUSTER IP" of each service shown in the results of "kubectl get services" is the corresponding IP address of
+each pod within the Kubernetes node (the minikube VM). The appropriate service definition exposes the port that 
+the container is listening on inside of the pod (8080 for Jenkins), and allows it to be accessible from an 
+external source outside of the node.
+
+    - For example, use:
+    
+            minikube ip
+            
+        to display the IP address of the minikube VM. This displays "192.168.99.100", so therefore the Jenkins
+        service is available in a browser at http://192.168.99.100:32608.
+        
+        
+
        
 
          
