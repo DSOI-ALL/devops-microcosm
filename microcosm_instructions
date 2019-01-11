@@ -4,8 +4,7 @@ Download Docker: https://hub.docker.com/editions/community/docker-ce-desktop-win
 
 git clone https://github.com/SLS-ALL/devops-microcosm.git
 cd devops-microcosm
-vagrant box add metadata.json
-vagrant plugin install 
+vagrant box add metadata.json 
 vagrant up newJenkins
 vagrant up gitlab
 vagrant up staging
