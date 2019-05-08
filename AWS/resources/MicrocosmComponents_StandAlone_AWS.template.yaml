@@ -1,0 +1,551 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  HUBOTSLACKTOKEN:
+    Type: String
+    Description: Slack Hubot Token
+  HUBOTJENKINSURL:
+    Type: String
+    Description: http://[**JENKINS_URL OR IP**]:8080
+Resources:
+  IAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ecsTaskExecutionRoleTST
+      AssumeRolePolicyDocument:
+        Version: '2008-10-17'
+        Statement:
+        - Sid: ''
+          Effect: Allow
+          Principal:
+            Service: ecs-tasks.amazonaws.com
+          Action: sts:AssumeRole
+      ManagedPolicyArns: 
+        - arn:aws:iam::aws:policy/AmazonEC2FullAccess
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AWSCodeDeployRoleForECS
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+        - arn:aws:iam::aws:policy/AmazonECS_FullAccess
+        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/24
+  Subnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.0.0/25
+  VPCSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      VpcId: !Ref VPC
+      GroupDescription: "VPC Security Group"
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+        Description: Gitlab
+      - IpProtocol: tcp
+        FromPort: 8080
+        ToPort: 8080
+        CidrIp: 0.0.0.0/0
+        Description: Jenkins
+      - IpProtocol: tcp
+        FromPort: 8081
+        ToPort: 8081
+        CidrIp: 0.0.0.0/0
+        Description: OWASP
+      - IpProtocol: tcp
+        FromPort: 50000
+        ToPort: 50000
+        CidrIp: 0.0.0.0/0
+        Description: Nexus
+      - IpProtocol: tcp
+        FromPort: 8090
+        ToPort: 8090
+        CidrIp: 0.0.0.0/0
+        Description: OWASP
+      - IpProtocol: tcp
+        FromPort: 9000
+        ToPort: 9000
+        CidrIp: 0.0.0.0/0
+        Description: Sonarqube
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+        Description: SSH
+      - IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        CidrIp: 0.0.0.0/0
+        Description: Gitlab
+      - IpProtocol: tcp
+        FromPort: 9083
+        ToPort: 9083
+        CidrIp: 0.0.0.0/0
+        Description: clouddiscover
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+  VPCRoutingTable:
+    Type: 'AWS::EC2::RouteTable'
+    Properties:
+      VpcId: !Ref VPC
+    DependsOn:
+      - Subnet1
+  Route:
+    Type: 'AWS::EC2::Route'
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      RouteTableId: !Ref VPCRoutingTable
+      GatewayId: !Ref InternetGateway
+    DependsOn:
+      - GatewayAttachment
+  InternetGateway:
+    Type: 'AWS::EC2::InternetGateway'
+    Properties: {}
+  GatewayAttachment:
+    Type: 'AWS::EC2::VPCGatewayAttachment'
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+  StudentRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref 'Subnet1'
+      RouteTableId: !Ref 'VPCRoutingTable'
+
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties : 
+      ClusterName : microcosm2
+
+  clouddiscoveryLogGroup: 
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      RetentionInDays: 7
+      LogGroupName: /ecs/cloud-discoveryTST
+
+  ECSTaskDefCloudDiscovery:
+    Type: AWS::ECS::TaskDefinition
+    Properties : 
+      ContainerDefinitions : 
+        - Name: cloud-discoveryTST
+          Image: twistlock/cloud-discovery:latest
+          PortMappings:
+            - ContainerPort: 9083
+              HostPort: 9083
+          Essential: 'true'
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: /ecs/cloud-discoveryTST
+              awslogs-region: us-east-2
+              awslogs-stream-prefix: ecs
+      Volumes : []
+      NetworkMode: awsvpc
+      ExecutionRoleArn: !GetAtt IAMRole.Arn
+      TaskRoleArn: !GetAtt IAMRole.Arn
+      RequiresCompatibilities:
+        - "EC2"
+        - "FARGATE"
+      Cpu : 512
+      Memory : 1024
+  ECSServiceCloudDiscovery:
+    Type: AWS::ECS::Service
+    Properties:
+      TaskDefinition: !Ref ECSTaskDefCloudDiscovery
+      Cluster: !Ref ECSCluster
+      ServiceName: cloud-discoveryTST
+      DeploymentConfiguration:
+        MaximumPercent: 200
+        MinimumHealthyPercent: 100
+      DesiredCount: 1
+      LaunchType: FARGATE
+      NetworkConfiguration: 
+        AwsvpcConfiguration:  
+          AssignPublicIp: ENABLED
+          Subnets: 
+            - !Ref Subnet1
+          SecurityGroups:
+            - !Ref VPCSecurityGroup
+    DependsOn:
+    - ECSCluster
+    - ECSTaskDefCloudDiscovery
+    - clouddiscoveryLogGroup
+
+  gitlabLogGroup: 
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      RetentionInDays: 7
+      LogGroupName: /ecs/gitlabTST
+
+  ECSTaskDefgitlab:
+    Type: AWS::ECS::TaskDefinition
+    Properties : 
+      ContainerDefinitions : 
+        - Name: gitlabTST
+          Image: gitlab/gitlab-ce
+          PortMappings:
+            - ContainerPort: 80
+              HostPort: 80
+            - ContainerPort: 443
+              HostPort: 443
+          Essential: 'true'
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: /ecs/gitlabTST
+              awslogs-region: us-east-2
+              awslogs-stream-prefix: ecs
+          MountPoints: 
+            - ContainerPath: /etc/gitlab
+              SourceVolume: gitlab-config
+            - ContainerPath: /var/log/gitlab
+              SourceVolume: gitlab-logs
+            - ContainerPath: /var/opt/gitlab
+              SourceVolume: gitlab-data
+      Volumes: 
+        - Name: gitlab-config
+        - Name: gitlab-logs
+        - Name: gitlab-data
+      NetworkMode: awsvpc
+      ExecutionRoleArn: !GetAtt IAMRole.Arn
+      TaskRoleArn: !GetAtt IAMRole.Arn
+      RequiresCompatibilities:
+        - "EC2"
+        - "FARGATE"
+      Cpu : 1024
+      Memory : 4096
+  ECSServicegitlab:
+    Type: AWS::ECS::Service
+    Properties:
+      TaskDefinition: !Ref ECSTaskDefgitlab
+      Cluster: !Ref ECSCluster
+      ServiceName: gitlabTST
+      DeploymentConfiguration:
+        MaximumPercent: 200
+        MinimumHealthyPercent: 100
+      DesiredCount: 1
+      LaunchType: FARGATE
+      NetworkConfiguration: 
+        AwsvpcConfiguration:  
+          AssignPublicIp: ENABLED
+          Subnets: 
+            - !Ref Subnet1
+          SecurityGroups:
+            - !Ref VPCSecurityGroup
+    DependsOn:
+    - ECSCluster
+    - ECSTaskDefgitlab
+    - gitlabLogGroup
+
+  HubotLogGroup: 
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      RetentionInDays: 7
+      LogGroupName: /ecs/hubot
+
+  ECSTaskDefhubot:
+    Type: AWS::ECS::TaskDefinition
+    Properties : 
+      ContainerDefinitions : 
+        - Name: hubotTST
+          Image: gillax/hubot-slack-jenkins
+          PortMappings:
+            - ContainerPort: 8080
+              HostPort: 8080
+          Essential: 'true'
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: /ecs/hubot
+              awslogs-region: us-east-2
+              awslogs-stream-prefix: ecs
+          Environment:
+            - Name : HUBOT_SLACK_TOKEN
+              Value : !Ref HUBOTSLACKTOKEN
+            - Name : HUBOT_JENKINS_URL
+              Value : !Ref HUBOTJENKINSURL
+            - Name: HUBOT_JENKINS_AUTH
+              Value: admin:tartans
+          MountPoints: []
+      Volumes: []
+      NetworkMode: awsvpc
+      ExecutionRoleArn: !GetAtt IAMRole.Arn
+      TaskRoleArn: !GetAtt IAMRole.Arn
+      RequiresCompatibilities:
+        - "EC2"
+        - "FARGATE"
+      Cpu : 1024
+      Memory : 4096
+  ECSServicehubot:
+    Type: AWS::ECS::Service
+    Properties:
+      TaskDefinition: !Ref ECSTaskDefhubot
+      Cluster: !Ref ECSCluster
+      ServiceName: hubotTST
+      DeploymentConfiguration:
+        MaximumPercent: 200
+        MinimumHealthyPercent: 100
+      DesiredCount: 1
+      LaunchType: FARGATE
+      NetworkConfiguration: 
+        AwsvpcConfiguration:  
+          AssignPublicIp: ENABLED
+          Subnets: 
+            - !Ref Subnet1
+          SecurityGroups:
+            - !Ref VPCSecurityGroup
+    DependsOn:
+    - ECSCluster
+    - ECSTaskDefhubot
+    - HubotLogGroup
+
+  jenkinsLogGroup: 
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      RetentionInDays: 7
+      LogGroupName: /ecs/jenkinsTST
+
+  ECSTaskDefjenkins:
+    Type: AWS::ECS::TaskDefinition
+    Properties : 
+      ContainerDefinitions : 
+        - Name: jenkinsTST
+          Image: h1kkan/jenkins-docker:lts
+          PortMappings:
+            - ContainerPort: 8080
+              HostPort: 8080
+          Essential: 'true'
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: /ecs/jenkinsTST
+              awslogs-region: us-east-2
+              awslogs-stream-prefix: ecs
+          Environment: []
+          MountPoints: 
+            - ContainerPath: /var/jenkins_home
+              SourceVolume: jenkins_home
+      Volumes: 
+        - Name: jenkins_home
+      NetworkMode: awsvpc
+      ExecutionRoleArn: !GetAtt IAMRole.Arn
+      TaskRoleArn: !GetAtt IAMRole.Arn
+      RequiresCompatibilities:
+        - "EC2"
+        - "FARGATE"
+      Cpu : 1024
+      Memory : 5120
+  ECSServicejenkins:
+    Type: AWS::ECS::Service
+    Properties:
+      TaskDefinition: !Ref ECSTaskDefjenkins
+      Cluster: !Ref ECSCluster
+      ServiceName: jenkinsTST
+      DeploymentConfiguration:
+        MaximumPercent: 200
+        MinimumHealthyPercent: 100
+      DesiredCount: 1
+      LaunchType: FARGATE
+      NetworkConfiguration: 
+        AwsvpcConfiguration:  
+          AssignPublicIp: ENABLED
+          Subnets: 
+            - !Ref Subnet1
+          SecurityGroups:
+            - !Ref VPCSecurityGroup
+    DependsOn:
+    - ECSCluster
+    - ECSTaskDefjenkins
+    - jenkinsLogGroup
+
+  nexusLogGroup: 
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      RetentionInDays: 7
+      LogGroupName: /ecs/nexusTST
+
+  ECSTaskDefnexus:
+    Type: AWS::ECS::TaskDefinition
+    Properties : 
+      ContainerDefinitions : 
+        - Name: sonatype_nexusTST
+          Image: sonatype/nexus
+          PortMappings:
+            - ContainerPort: 8081
+              HostPort: 8081
+          Essential: 'true'
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: /ecs/nexusTST
+              awslogs-region: us-east-2
+              awslogs-stream-prefix: ecs
+          Environment: []
+          MountPoints: 
+            - ContainerPath: /sonatype-work
+              SourceVolume: nexus-data
+      Volumes: 
+        - Name: nexus-data
+      NetworkMode: awsvpc
+      ExecutionRoleArn: !GetAtt IAMRole.Arn
+      TaskRoleArn: !GetAtt IAMRole.Arn
+      RequiresCompatibilities:
+        - "EC2"
+        - "FARGATE"
+      Cpu : 512
+      Memory : 1024
+  ECSServicenexus:
+    Type: AWS::ECS::Service
+    Properties:
+      TaskDefinition: !Ref ECSTaskDefnexus
+      Cluster: !Ref ECSCluster
+      ServiceName: nexusTST
+      DeploymentConfiguration:
+        MaximumPercent: 200
+        MinimumHealthyPercent: 100
+      DesiredCount: 1
+      LaunchType: FARGATE
+      NetworkConfiguration: 
+        AwsvpcConfiguration:  
+          AssignPublicIp: ENABLED
+          Subnets: 
+            - !Ref Subnet1
+          SecurityGroups:
+            - !Ref VPCSecurityGroup
+    DependsOn:
+    - ECSCluster
+    - ECSTaskDefnexus
+    - nexusLogGroup
+
+  sonarqubeLogGroup: 
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      RetentionInDays: 7
+      LogGroupName: /ecs/sonarqubeTST
+
+  ECSTaskDefsonarqube:
+    Type: AWS::ECS::TaskDefinition
+    Properties : 
+      ContainerDefinitions : 
+        - Name: sonatype_sonarqubeTST
+          Image: sonarqube:lts
+          PortMappings:
+            - ContainerPort: 9000
+              HostPort: 9000
+          Essential: 'true'
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: /ecs/sonarqubeTST
+              awslogs-region: us-east-2
+              awslogs-stream-prefix: ecs
+          Environment: []
+          MountPoints: 
+            - ContainerPath: /opt/sonarqube/conf
+              SourceVolume: sonarqube_conf
+            - ContainerPath: /opt/sonarqube/data
+              SourceVolume: sonarqube_data
+            - ContainerPath: /opt/sonarqube/
+              SourceVolume: sonarqube_extensions
+            - ContainerPath: /opt/sonarqube/lib/bundled-plugins
+              SourceVolume: sonarqube_bundled-plugins
+      Volumes: 
+        - Name: sonarqube_conf
+        - Name: sonarqube_data
+        - Name: sonarqube_extensions
+        - Name: sonarqube_bundled-plugins
+      NetworkMode: awsvpc
+      ExecutionRoleArn: !GetAtt IAMRole.Arn
+      TaskRoleArn: !GetAtt IAMRole.Arn
+      RequiresCompatibilities:
+        - "EC2"
+        - "FARGATE"
+      Cpu : 512
+      Memory : 1024
+  ECSServicesonarqube:
+    Type: AWS::ECS::Service
+    Properties:
+      TaskDefinition: !Ref ECSTaskDefsonarqube
+      Cluster: !Ref ECSCluster
+      ServiceName: sonarqubeTST
+      DeploymentConfiguration:
+        MaximumPercent: 200
+        MinimumHealthyPercent: 100
+      DesiredCount: 1
+      LaunchType: FARGATE
+      NetworkConfiguration: 
+        AwsvpcConfiguration:  
+          AssignPublicIp: ENABLED
+          Subnets: 
+            - !Ref Subnet1
+          SecurityGroups:
+            - !Ref VPCSecurityGroup
+    DependsOn:
+    - ECSCluster
+    - ECSTaskDefsonarqube
+    - sonarqubeLogGroup
+
+  owaspzapLogGroup: 
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      RetentionInDays: 7
+      LogGroupName: /ecs/owaspzapTST
+
+  ECSTaskDefowaspzap:
+    Type: AWS::ECS::TaskDefinition
+    Properties : 
+      ContainerDefinitions : 
+        - Name: sonatype_owaspzapTST
+          Image: owasp/zap2docker-stable
+          PortMappings:
+            - ContainerPort: 8080
+              HostPort: 8080
+            - ContainerPort: 8090
+              HostPort: 8090
+          Essential: 'true'
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: /ecs/owaspzapTST
+              awslogs-region: us-east-2
+              awslogs-stream-prefix: ecs
+          EntryPoint: 
+            - zap-webswing.sh
+          Environment: []
+          MountPoints: []
+      Volumes: []
+      NetworkMode: awsvpc
+      ExecutionRoleArn: !GetAtt IAMRole.Arn
+      TaskRoleArn: !GetAtt IAMRole.Arn
+      RequiresCompatibilities:
+        - "EC2"
+        - "FARGATE"
+      Cpu : 512
+      Memory : 1024
+  ECSServiceowaspzap:
+    Type: AWS::ECS::Service
+    Properties:
+      TaskDefinition: !Ref ECSTaskDefowaspzap
+      Cluster: !Ref ECSCluster
+      ServiceName: owaspzapTST
+      DeploymentConfiguration:
+        MaximumPercent: 200
+        MinimumHealthyPercent: 100
+      DesiredCount: 1
+      LaunchType: FARGATE
+      NetworkConfiguration: 
+        AwsvpcConfiguration:  
+          AssignPublicIp: ENABLED
+          Subnets: 
+            - !Ref Subnet1
+          SecurityGroups:
+            - !Ref VPCSecurityGroup
+    DependsOn:
+    - ECSCluster
+    - ECSTaskDefowaspzap
+    - owaspzapLogGroup

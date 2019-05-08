@@ -1,0 +1,11 @@
+version: 0.0
+Resources:
+  - TargetService:
+      Type: AWS::ECS::Service
+      Properties:
+        TaskDefinition: "arn:aws:ecs:us-east-2:443007076818:task-definition/petclinic:1"
+        LoadBalancerInfo:
+          ContainerName: "petclinic"
+          ContainerPort: 8080
+Hooks:
+  - BeforeInstall: "tstpetclinic"
