@@ -6,3 +6,4 @@ projects/**/*
 !./projects/.githold
 ./nodes/*
 !./nodes/.githold
+.AWS/.DS_Store
