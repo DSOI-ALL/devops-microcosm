@@ -1,0 +1,317 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters: 
+  EC2KeyPairName:
+    Type: String
+    Description: Enter your key pair name (found in the EC2 Console under Key Pairs)
+  Layer1StackName:
+    Type: String
+    Description: Name of the Layer 1 Dynamic Stack
+  Layer2StackName:
+    Type: String
+    Description: Name of the Layer 2 Stack
+  StudentIDNumber:
+    Type: String
+    Description: The number following the word Student in your username
+
+Resources:
+  CodeDeployRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: CodeDeployServiceRoleTST
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Sid: ''
+          Effect: Allow
+          Principal:
+            Service: codedeploy.amazonaws.com
+          Action: sts:AssumeRole
+      ManagedPolicyArns: 
+        - arn:aws:iam::aws:policy/AmazonEC2FullAccess
+        - arn:aws:iam::aws:policy/AutoScalingFullAccess
+        - arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AWSCodeDeployRoleForECS
+        - arn:aws:iam::aws:policy/CloudWatchFullAccess
+        - arn:aws:iam::aws:policy/AWSCodeDeployFullAccess
+        - arn:aws:iam::aws:policy/service-role/AWSDataLifecycleManagerServiceRole
+        - arn:aws:iam::aws:policy/AmazonECS_FullAccess
+  EC2PlusS3Role:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: EC2PlusS3RoleTST
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: ec2.amazonaws.com
+          Action: sts:AssumeRole
+      ManagedPolicyArns: 
+        - arn:aws:iam::aws:policy/AmazonEC2FullAccess
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+
+  EC2PlusS3InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties: 
+      InstanceProfileName: EC2PlusS3RoleTST
+      Path: "/"
+      Roles: 
+        - !Ref EC2PlusS3Role
+
+  s3petclinicdeployTST: 
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: Private
+      VersioningConfiguration:
+        Status: Enabled
+      Tags: 
+        - Key: petclinic
+          Value: deploy
+
+  petclinicLogGroup: 
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      RetentionInDays: 7
+      LogGroupName: /ecs/petclinicTST
+
+  ECSTaskDefpetclinic:
+    Type: AWS::ECS::TaskDefinition
+    Properties : 
+      ContainerDefinitions : 
+        - Name: tomcat8
+          Image: tomcat:8-jre8
+          PortMappings:
+            - ContainerPort: 8080
+              HostPort: 8080
+            - ContainerPort: 80
+              HostPort: 80
+          Essential: 'true'
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: /ecs/petclinicTST
+              awslogs-region: us-east-2
+              awslogs-stream-prefix: ecs
+          MountPoints: 
+            - ContainerPath: /opt/tomcat/webapps
+              SourceVolume: webapps
+      Volumes: 
+        - Name: webapps
+      NetworkMode: awsvpc
+      ExecutionRoleArn: 
+        Fn::ImportValue:
+          !Sub "${Layer2StackName}-ECSTaskExecutionRoleTST"
+      TaskRoleArn: 
+        Fn::ImportValue:
+          !Sub "${Layer2StackName}-ECSTaskExecutionRoleTST"
+      RequiresCompatibilities:
+        - "EC2"
+        - "FARGATE"
+      Cpu : 512
+      Memory : 2048
+  ECSServicepetclinic:
+    Type: AWS::ECS::Service
+    Properties:
+      TaskDefinition: !Ref ECSTaskDefpetclinic
+      Cluster: 
+        Fn::ImportValue:
+          !Sub "${Layer2StackName}-ECSClusterTST"
+      ServiceName: petclinicTST
+      DeploymentConfiguration:
+        MaximumPercent: 200
+        MinimumHealthyPercent: 100
+      DesiredCount: 1
+      LaunchType: FARGATE
+      NetworkConfiguration: 
+        AwsvpcConfiguration:  
+          AssignPublicIp: ENABLED
+          Subnets: 
+            - Fn::ImportValue:
+                !Sub "${Layer1StackName}-Subnet1TST"
+          SecurityGroups:
+            - Fn::ImportValue:
+                !Sub "${Layer1StackName}-VPCSecurityGroupTST"
+    DependsOn:
+    - ECSTaskDefpetclinic
+    - petclinicLogGroup
+
+  PetclinicInstance1:
+    Type: AWS::EC2::Instance
+    Properties:
+      DisableApiTermination: false
+      InstanceInitiatedShutdownBehavior: stop
+      ImageId: ami-0885e0cd6c51e6b89
+      InstanceType: t2.large
+      KeyName: !Ref EC2KeyPairName
+      Monitoring: false
+      Tags:
+        - Key: Name
+          Value: tomcat_codedeployTST
+      NetworkInterfaces: 
+        - DeleteOnTermination: true
+          Description: Primary network interface
+          DeviceIndex: 0
+          SubnetId: 
+            Fn::ImportValue:
+              !Sub "${Layer1StackName}-Subnet1TST"
+          GroupSet: 
+            - Fn::ImportValue:
+                !Sub "${Layer1StackName}-VPCSecurityGroupIDTST"
+          AssociatePublicIpAddress: true
+      UserData:
+        Fn::Base64: 
+          !Sub |
+              #!/bin/bash -x
+              # For Tomcat AMI from marketplace | Linux/Unix, Ubuntu 16.04 | 64-bit (x86) Amazon Machine Image (AMI) 
+              # Debug with logs at /var/log/cloud-init-output.log
+              # TODO "When a user data script is processed, it is copied to and executed from a directory in /var/lib/cloud. The script is not deleted after it is run. Be sure to delete the user data scripts from /var/lib/cloud before you create an AMI from the instance. Otherwise, the script will exist in this directory on any instance launched from the AMI and will be run when the instance is launched."
+              apt-get -y update
+              apt-get -y install ruby
+              apt-get -y install wget
+              cd /home/ubuntu
+              wget https://aws-codedeploy-us-east-2.s3.amazonaws.com/latest/install
+              chmod +x ./install
+              ./install auto
+              apt-get -y install python
+              wget https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py
+              wget https://s3.amazonaws.com/aws-codedeploy-us-east-2/cloudwatch/codedeploy_logs.conf
+              chmod +x ./awslogs-agent-setup.py
+              python awslogs-agent-setup.py -n -r REGION -c s3://aws-codedeploy-us-east-2/cloudwatch/awslogs.conf
+              mkdir -p /var/awslogs/etc/config
+              cp codedeploy_logs.conf /var/awslogs/etc/config/
+              service awslogs restart
+
+  PetclinicInstance2:
+    Type: AWS::EC2::Instance
+    Properties:
+      DisableApiTermination: false
+      InstanceInitiatedShutdownBehavior: stop
+      ImageId: ami-0885e0cd6c51e6b89
+      InstanceType: t2.large
+      KeyName: !Ref EC2KeyPairName
+      Monitoring: false
+      Tags:
+        - Key: Name
+          Value: tomcat_codedeployTST
+      NetworkInterfaces: 
+        - DeleteOnTermination: true
+          Description: Primary network interface
+          DeviceIndex: 0
+          SubnetId: 
+            Fn::ImportValue:
+              !Sub "${Layer1StackName}-Subnet2TST"
+          GroupSet: 
+            - Fn::ImportValue:
+                !Sub "${Layer1StackName}-VPCSecurityGroupIDTST"
+          AssociatePublicIpAddress: true
+      UserData:
+        Fn::Base64: 
+          !Sub |
+              #!/bin/bash -x
+              # For Tomcat AMI from marketplace | Linux/Unix, Ubuntu 16.04 | 64-bit (x86) Amazon Machine Image (AMI) 
+              # Debug with logs at /var/log/cloud-init-output.log
+              # TODO "When a user data script is processed, it is copied to and executed from a directory in /var/lib/cloud. The script is not deleted after it is run. Be sure to delete the user data scripts from /var/lib/cloud before you create an AMI from the instance. Otherwise, the script will exist in this directory on any instance launched from the AMI and will be run when the instance is launched."
+              apt-get -y update
+              apt-get -y install ruby
+              apt-get -y install wget
+              cd /home/ubuntu
+              wget https://aws-codedeploy-us-east-2.s3.amazonaws.com/latest/install
+              chmod +x ./install
+              ./install auto
+              apt-get -y install python
+              wget https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py
+              wget https://s3.amazonaws.com/aws-codedeploy-us-east-2/cloudwatch/codedeploy_logs.conf
+              chmod +x ./awslogs-agent-setup.py
+              python awslogs-agent-setup.py -n -r REGION -c s3://aws-codedeploy-us-east-2/cloudwatch/awslogs.conf
+              mkdir -p /var/awslogs/etc/config
+              cp codedeploy_logs.conf /var/awslogs/etc/config/
+              service awslogs restart
+
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: petclinicTST
+      Subnets:
+        - Fn::ImportValue:
+            !Sub "${Layer1StackName}-Subnet1TST"
+        - Fn::ImportValue:
+            !Sub "${Layer1StackName}-Subnet2TST"
+      Type: 'application'
+
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckEnabled: true
+      HealthCheckIntervalSeconds : 30
+      HealthCheckTimeoutSeconds : 20
+      HealthyThresholdCount : 2
+      Name: petclinicTargetGroupTest
+      Port: 80
+      Protocol: HTTP
+      TargetType: instance
+      Targets:
+        - Id: !Ref PetclinicInstance1
+          Port: 80
+        - Id: !Ref PetclinicInstance2
+          Port: 80
+      UnhealthyThresholdCount: 10
+      VpcId:
+        Fn::ImportValue:
+          !Sub "${Layer1StackName}-VPCTST"
+
+  Listener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions: 
+        - Type: 'forward'
+          TargetGroupArn: !Ref TargetGroup
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 80
+      Protocol: HTTP
+
+  jenkinsjobLogGroup: 
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      RetentionInDays: 7
+      LogGroupName: /jenkins/jobsTST
+
+  CodeDeplyApplication:
+    Type: AWS::CodeDeploy::Application
+    Properties : 
+      ApplicationName : petclinicTST
+      ComputePlatform : Server
+
+  CodeDeployConfig:
+    Type: AWS::CodeDeploy::DeploymentConfig
+    Properties : 
+      DeploymentConfigName : petclinicconfigTST
+      MinimumHealthyHosts : 
+        Type: "HOST_COUNT"
+        Value: 0
+
+  DeploymentGroup:
+    Type: AWS::CodeDeploy::DeploymentGroup
+    Properties : 
+      ApplicationName : !Ref CodeDeplyApplication
+      AutoRollbackConfiguration : 
+        Enabled: true
+        Events: 
+          - DEPLOYMENT_FAILURE
+          - DEPLOYMENT_STOP_ON_ALARM
+          - DEPLOYMENT_STOP_ON_REQUEST
+      DeploymentConfigName : !Ref CodeDeployConfig
+      DeploymentGroupName : petclinicdeploymentgroupTST
+      DeploymentStyle : 
+        DeploymentOption: WITH_TRAFFIC_CONTROL
+        DeploymentType: IN_PLACE
+      Ec2TagFilters : 
+        - Key : Name
+          Type : KEY_AND_VALUE
+          Value : tomcat_codedeployTST
+      LoadBalancerInfo : 
+        ElbInfoList : 
+          - Name: !GetAtt LoadBalancer.LoadBalancerName
+      ServiceRoleArn : !GetAtt CodeDeployRole.Arn

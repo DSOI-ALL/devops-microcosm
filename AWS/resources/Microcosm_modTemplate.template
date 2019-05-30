@@ -1,0 +1,106 @@
+AWSTemplateFormatVersion: 2010-09-09
+#ref: https://github.com/pabloperfer/CFN_Macros/tree/master/Looping
+Resources:
+  Macro:
+    Type: AWS::CloudFormation::Macro
+    Properties:
+      Name: !Sub '${AWS::StackName}'
+      Description: Transform the original template performing a for loop that adds the requested number of Users resources.
+      FunctionName: !Ref MacroProcessor
+
+
+  MacroProcessor: 
+    Type: "AWS::Lambda::Function"
+    Properties: 
+      FunctionName: MacroProcessor
+      Runtime: "python3.6"
+      Description: IAM Users Macro processor function
+      Handler: "index.lambda_handler"
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Timeout: "100"
+      MemorySize: 128
+      Code:
+        ZipFile: |
+          import json
+          import copy
+          def lambda_handler(event, context):
+            FinFrag=event["fragment"]
+            Num=event["templateParameterValues"]["NumberOfUsers"]
+            templt={}
+            templt=FinFrag["Resources"]
+            for i in range(int(Num)):
+              n=str(i)
+              templt["StudentUser"+n]=copy.deepcopy(templt["StudentUser"])
+              templt["StudentEC2VPC"+n]=copy.deepcopy(templt["StudentEC2VPC"])
+              templt["StudentEC2VPC"+n]["Properties"]["Tags"][0]["Value"]=templt["StudentEC2VPC"+n]["Properties"]["Tags"][0]["Value"]+n
+              templt["StudentVPCSUBNET"+n]=copy.deepcopy(templt["StudentVPCSUBNET"])
+              templt["StudentVPCSUBNET"+n]["Properties"]["VpcId"]["Ref"]="{}{}".format(templt["StudentVPCSUBNET"+n]["Properties"]["VpcId"]["Ref"],n)
+              templt["StudentVPCSecondSUBNET"+n]=copy.deepcopy(templt["StudentVPCSecondSUBNET"])
+              templt["StudentVPCSecondSUBNET"+n]["Properties"]["VpcId"]["Ref"]="{}{}".format(templt["StudentVPCSecondSUBNET"+n]["Properties"]["VpcId"]["Ref"],n)
+              templt["StudentVPCSecurityGroup"+n]=copy.deepcopy(templt["StudentVPCSecurityGroup"])
+              templt["StudentVPCSecurityGroup"+n]["Properties"]["VpcId"]["Ref"]="{}{}".format(templt["StudentVPCSecurityGroup"+n]["Properties"]["VpcId"]["Ref"],n)
+              templt["StudentVPCRoutingTable"+n]=copy.deepcopy(templt["StudentVPCRoutingTable"])
+              templt["StudentVPCRoutingTable"+n]["Properties"]["VpcId"]["Ref"]="{}{}".format(templt["StudentVPCRoutingTable"+n]["Properties"]["VpcId"]["Ref"],n)
+              dependencies=[]
+              for dep in templt["StudentVPCRoutingTable"+n]["DependsOn"]:
+                dependencies.append("{}{}".format(dep,n))
+              templt["StudentVPCRoutingTable"+n]["DependsOn"]=dependencies
+              templt["StudentVPCRoute"+n]=copy.deepcopy(templt["StudentVPCRoute"])
+              templt["StudentVPCRoute"+n]["Properties"]["RouteTableId"]["Ref"]="{}{}".format(templt["StudentVPCRoute"+n]["Properties"]["RouteTableId"]["Ref"],n)
+              templt["StudentVPCRoute"+n]["Properties"]["GatewayId"]["Ref"]="{}{}".format(templt["StudentVPCRoute"+n]["Properties"]["GatewayId"]["Ref"],n)
+              dependencies=[]
+              for dep in templt["StudentVPCRoute"+n]["DependsOn"]:
+                dependencies.append("{}{}".format(dep,n))
+              templt["StudentVPCRoute"+n]["DependsOn"]=dependencies
+              templt["StudentVPCInternetGateway"+n]=copy.deepcopy(templt["StudentVPCInternetGateway"])
+              templt["StudentVPCGatewayAttachment"+n]=copy.deepcopy(templt["StudentVPCGatewayAttachment"])
+              templt["StudentVPCGatewayAttachment"+n]["Properties"]["VpcId"]["Ref"]="{}{}".format(templt["StudentVPCGatewayAttachment"+n]["Properties"]["VpcId"]["Ref"],n)
+              templt["StudentVPCGatewayAttachment"+n]["Properties"]["InternetGatewayId"]["Ref"]="{}{}".format(templt["StudentVPCGatewayAttachment"+n]["Properties"]["InternetGatewayId"]["Ref"],n)
+              templt["StudentRouteTableAssociation"+n]=copy.deepcopy(templt["StudentRouteTableAssociation"])
+              templt["StudentRouteTableAssociation"+n]["Properties"]["SubnetId"]["Ref"]="{}{}".format(templt["StudentRouteTableAssociation"+n]["Properties"]["SubnetId"]["Ref"],n)
+              templt["StudentRouteTableAssociation"+n]["Properties"]["RouteTableId"]["Ref"]="{}{}".format(templt["StudentRouteTableAssociation"+n]["Properties"]["RouteTableId"]["Ref"],n)
+              templt["StudentRouteTableSecondAssociation"+n]=copy.deepcopy(templt["StudentRouteTableSecondAssociation"])
+              templt["StudentRouteTableSecondAssociation"+n]["Properties"]["SubnetId"]["Ref"]="{}{}".format(templt["StudentRouteTableSecondAssociation"+n]["Properties"]["SubnetId"]["Ref"],n)
+              templt["StudentRouteTableSecondAssociation"+n]["Properties"]["RouteTableId"]["Ref"]="{}{}".format(templt["StudentRouteTableSecondAssociation"+n]["Properties"]["RouteTableId"]["Ref"],n)
+            res={}
+            res["requestId"]=event["requestId"]
+            res["status"]="success"
+            res["fragment"]=FinFrag
+            print("PRINT EVENT:\n{}".format(json.dumps(event)))
+            print("PRINT RESOURCES:\n{}".format(FinFrag["Resources"]))
+            return res
+
+  LambdaExecutionRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: !Sub MacroProcessor-lambda-role-${AWS::Region}
+        AssumeRolePolicyDocument:
+          Version: 2012-10-17
+          Statement:
+            -
+              Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action:
+                - sts:AssumeRole
+        Path: /
+
+  LambdaPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Sub MacroProcessor-lambda-policy-${AWS::Region}
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          -
+            Effect: Allow
+            Action: "cloudformation:*"
+            Resource: "*"      
+          -
+            Effect: Allow
+            Action: "logs:*"
+            Resource: "*"      
+      Roles:
+        -
+          !Ref LambdaExecutionRole

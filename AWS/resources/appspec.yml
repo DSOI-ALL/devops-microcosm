@@ -1,0 +1,13 @@
+version: 0.0
+os: linux
+
+files:
+  - source: target/petclinic.war
+    destination: /opt/bitnami/apache-tomcat/webapps
+    overwrite: yes
+
+    
+hooks:
+  BeforeInstall:
+    - location: scripts/index.sh
+      runas: root
