@@ -1,6 +1,6 @@
 Vagrant.configure("2") do |config|
 
-  # config.vbguest.auto_update = true
+  config.vbguest.auto_update = false
   # config.vbguest.no_remote = true
 
   config.vm.box = "cmu/centos72_x86_64"
@@ -8,6 +8,7 @@ Vagrant.configure("2") do |config|
 
   config.ssh.pty = true
   config.ssh.insert_key = false
+  config.omnibus.chef_version = '14.12.9' # Newer Chef binaries aren't free anymore
 
   config.vm.define "newJenkins" do |jenkins|
     jenkins.vm.network "private_network", ip: "10.1.1.8"
@@ -28,8 +29,8 @@ Vagrant.configure("2") do |config|
       chef.roles_path = "./roles"
 
       chef.add_role "jenkins"
-      chef.add_role "owaspZap"
-      chef.add_role "selenium"
+      #chef.add_role "owaspZap"
+      #chef.add_role "selenium"
     end
   end
 
