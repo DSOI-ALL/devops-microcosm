@@ -1,0 +1,59 @@
+Download vagrant: https://releases.hashicorp.com/vagrant/1.9.3/
+Download git: https://git-scm.com/downloads
+Download Docker: https://hub.docker.com/editions/community/docker-ce-desktop-windows
+Download Virtual Box 5.1.18: https://download.virtualbox.org/virtualbox/5.1.18/
+
+https://github.com/SLS-ALL/devops-microcosm
+git clone https://github.com/SLS-ALL/devops-microcosm.git
+cd devops-microcosm
+vagrant box add metadata.json 
+vagrant up newJenkins
+vagrant up gitlab
+vagrant up staging
+
+vagrant ssh newJenkins
+sudo -s
+cat /var/lib/jenkins/secrets/initialAdminPassword
+*Copy value*
+
+Generate Personal Access Token on GitHub:
+
+1. Login to your GitHub account
+2. Fork SLS-spring-petclinic from https://github.com/SLS-ALL/spring-petclinic
+2. Navigate to account settings -> developer settings -> personal access tokens 
+3. Generate a new personal access token and copy/paste into notepad
+
+Import spring-petclinic project from GitHub to Gitlab:
+
+1. Navigate to localhost:8083
+2. Create new password and login with "root" as username
+3. Click "create project" -> import project -> select gitlab
+4. Enter GitHub personal access token and import "SLS-spring-petclinic"
+
+Setup Project in Jenkins:
+
+1. Navigate to localhost:8088
+2. paste in initial password
+3. Go to "manage Jenkins" -> Global tool configuration -> Add Maven and check install automatically -> apply & save
+4. Go to "manage Jenkins" -> manage plugins -> click "available"
+5. Search for "Ansible plugin and download"
+6. Return to jenkins home and click "New Item"
+7. Enter "petclinic" as project name and select freestyle project
+8. Click "Configure" on the left side of the screen
+9. Select "git" under source code management
+10. Under "Build", select "Invoke top level Maven Targets" and leave the default value 
+11. Under "Build", select "Invoke Ansible Playbook":
+	- Enter "deploy.yml" under playbook path
+	- Select "file or host list" under inventory and enter: /etc/ansible/hosts
+12. Click "Add" next to credentials, select SSH Username w/ private key and enter "vagrant" as the username
+	- curl -o vagrant_id_rsa https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant from the command line and copy contetnts of this file
+	- Paste this private key in the "enter directly" box: 
+	
+
+
+View the deployed petclinic app:
+
+1. Navigate to localhost:8087/petclinic/
+
+
+

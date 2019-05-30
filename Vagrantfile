@@ -40,7 +40,7 @@ Vagrant.configure("2") do |config|
 
     gitlab.vm.provider "virtualbox" do |v|
       v.name = "microcosm-gitlab"
-      v.customize ["modifyvm", :id, "--memory", 1024]
+      v.customize ["modifyvm", :id, "--memory", 2048]
       v.customize ["modifyvm", :id, "--cpus", 1]
       v.customize ["modifyvm", :id, "--groups", "/CERT"]
     end
