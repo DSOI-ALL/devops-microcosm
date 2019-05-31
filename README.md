@@ -593,6 +593,7 @@ external source outside of the node.
 
        
 # Running Microcosm on AWS
-  You can run contation version of Microcosm on AWS  platform. Instructions and code can be found under AWS folder.
-   - Instractions on how to build platform manually is under "AWS/Documentation/documentation.pdf"
-   - Auto creatino of Microcosm  can be done via Cloud Formation Template. it is under "AWS/resources"
+  You can run container version of Microcosm on AWS  platform. Instructions and code can be found under AWS folder.
+   - Build platform manually, follow the instructions at "AWS/Documentation/documentation.pdf"
+   - Auto creation of Microcosm via Cloud Formation Template is under "AWS/resources"
+   - Follow steps under "Dev/Build/Deploy Configuration " section to configure, jenkins, Sonarqube, gitlab, nexus to develop/test/deploy  "spring-petclinic" project.
