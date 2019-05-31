@@ -438,6 +438,16 @@ The environment arguments for the Hubot container defined in "docker-compose.yml
 - In order to integrate with jenkins, a ZAP session must be created in the same manner described above in the "Add OwasZap build step" section.
 - Once a Zap session is created, the "petclinic.Session" file must be secure copied from the ZAP container to the Jenkins container, in the petclinic workspace
 
+### Setting up staging environment
+Once you "vagrant up staging", you need SSH  from jenkins container to staging environment to deploy project successfully. 
+1. SSH into the VM using 
+   vagrant ssh docker-compose
+2. Enter the Jenkins container as root using a bash shell:
+   docker exec -it jenkins /bin/bash
+3. SSH into staging environment
+   ssh vagrant@10.1.1.7
+4. close SSH connection and exit from Jenkins container 
+
 ## Environment Creation Using Kubernetes with Minikube
 
 ### Prerequisites
@@ -582,5 +592,7 @@ external source outside of the node.
         
 
        
-
-         
+# Running Microcosm on AWS
+  You can run contation version of Microcosm on AWS  platform. Instructions and code can be found under AWS folder.
+   - Instractions on how to build platform manually is under "AWS/Documentation/documentation.pdf"
+   - Auto creatino of Microcosm  can be done via Cloud Formation Template. it is under "AWS/resources"
