@@ -8,7 +8,7 @@ Resources:
   IAMRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: ecsTaskExecutionRoleTST
+      RoleName: ecsTaskExecutionRoleDeployTST
       AssumeRolePolicyDocument:
         Version: '2008-10-17'
         Statement:
@@ -61,6 +61,7 @@ Resources:
         - arn:aws:iam::aws:policy/AmazonEC2FullAccess
         - arn:aws:iam::aws:policy/AmazonS3FullAccess
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+        - arn:aws:iam::aws:policy/AWSCodeDeployFullAccess
 
   EC2PlusS3InstanceProfile:
     Type: AWS::IAM::InstanceProfile
@@ -186,7 +187,7 @@ Resources:
   ECSCluster:
     Type: AWS::ECS::Cluster
     Properties : 
-      ClusterName : microcosm2
+      ClusterName : microcosm3
 
   petclinicLogGroup: 
     Type: AWS::Logs::LogGroup
@@ -289,7 +290,12 @@ Resources:
               python awslogs-agent-setup.py -n -r REGION -c s3://aws-codedeploy-us-east-2/cloudwatch/awslogs.conf
               mkdir -p /var/awslogs/etc/config
               cp codedeploy_logs.conf /var/awslogs/etc/config/
+              mkdir /opt/bitnami/apache-tomcat/webapps/petclinic/
+              mkdir /opt/bitnami/apache-tomcat/webapps/petclinic/WEB-INF/
               service awslogs restart
+              service codedeploy-agent start
+      IamInstanceProfile: EC2PlusS3RoleTST
+
 
   PetclinicInstance2:
     Type: AWS::EC2::Instance
@@ -332,7 +338,11 @@ Resources:
               python awslogs-agent-setup.py -n -r REGION -c s3://aws-codedeploy-us-east-2/cloudwatch/awslogs.conf
               mkdir -p /var/awslogs/etc/config
               cp codedeploy_logs.conf /var/awslogs/etc/config/
+              mkdir /opt/bitnami/apache-tomcat/webapps/petclinic/
+              mkdir /opt/bitnami/apache-tomcat/webapps/petclinic/WEB-INF/
               service awslogs restart
+              service codedeploy-agent start
+      IamInstanceProfile: EC2PlusS3RoleTST
 
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
@@ -411,7 +421,7 @@ Resources:
         - Key : Name
           Type : KEY_AND_VALUE
           Value : tomcat_codedeployTST
-      LoadBalancerInfo : 
-        ElbInfoList : 
-          - Name: !GetAtt LoadBalancer.LoadBalancerName
+      LoadBalancerInfo :
+        TargetGroupInfoList :
+          - Name: petclinicTargetGroupTest
       ServiceRoleArn : !GetAtt CodeDeployRole.Arn
