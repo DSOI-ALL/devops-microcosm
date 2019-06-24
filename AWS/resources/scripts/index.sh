@@ -20,5 +20,5 @@ if test ! -e "$MANAGERFILE"; then
     echo "    <Valve className=\"org.apache.catalina.valves.RemoteAddrValve\" allow=\"^.*\$\" />" >> $MANAGERFILE
     echo "</Context>" >> $MANAGERFILE
 fi
-touch /opt/bitnami/apache-tomcat/webapps/petclinic/WEB-INF/web.xml 
+#touch /opt/bitnami/apache-tomcat/webapps/petclinic/WEB-INF/web.xml
 #java -jar target/*.jar
