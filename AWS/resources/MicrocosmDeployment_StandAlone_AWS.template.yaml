@@ -338,7 +338,7 @@ Resources:
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
-      Name: petclinicTST
+      Name: petclinicTST #Change to petclinicTSTNAME
       Subnets:
         - !Ref Subnet1
         - !Ref Subnet2
