@@ -414,5 +414,5 @@ Resources:
           Value : tomcat_codedeployTST #Change to tomcat_codedeployTSTNAME
       LoadBalancerInfo :
         TargetGroupInfoList :
-          - Name: petclinicTargetGroupTest
+          - Name: petclinicTargetGroupTest #Change to petclinicTargetGroupTestNAME
       ServiceRoleArn : !GetAtt CodeDeployRole.Arn
