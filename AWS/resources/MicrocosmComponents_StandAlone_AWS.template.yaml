@@ -4,7 +4,7 @@ Resources:
   IAMRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: ecsTaskExecutionRoleTSTGroup1 #Change name to ecsTaskExecutionRoleTSTNAME
+      RoleName: ecsTaskExecutionRoleTSTGroup2 #Change name to ecsTaskExecutionRoleTSTNAME
       AssumeRolePolicyDocument:
         Version: '2008-10-17'
         Statement:
@@ -108,19 +108,19 @@ Resources:
   ECSCluster:
     Type: AWS::ECS::Cluster
     Properties : 
-      ClusterName : microcosm2Group1 #Change to microcosmNAME
+      ClusterName : microcosm2Group2 #Change to microcosmNAME
 
   gitlabLogGroup: 
     Type: AWS::Logs::LogGroup
     Properties: 
       RetentionInDays: 7
-      LogGroupName: /ecs/gitlabTSTGroup1 #Change to /ecs/gitlabNAMETST
+      LogGroupName: /ecs/gitlabTSTGroup2 #Change to /ecs/gitlabNAMETST
 
   ECSTaskDefgitlab:
     Type: AWS::ECS::TaskDefinition
     Properties : 
       ContainerDefinitions : 
-        - Name: gitlabTSTGroup1 #Change to gitlabTSTNAME
+        - Name: gitlabTSTGroup2 #Change to gitlabTSTNAME
           Image: gitlab/gitlab-ce
           PortMappings:
             - ContainerPort: 80
@@ -131,7 +131,7 @@ Resources:
           LogConfiguration:
             LogDriver: awslogs
             Options:
-              awslogs-group: /ecs/gitlabTSTGroup1 #Change to /ecs/gitlabNAMETST
+              awslogs-group: /ecs/gitlabTSTGroup2 #Change to /ecs/gitlabNAMETST
               awslogs-region: us-east-2
               awslogs-stream-prefix: ecs
           MountPoints: 
@@ -158,7 +158,7 @@ Resources:
     Properties:
       TaskDefinition: !Ref ECSTaskDefgitlab
       Cluster: !Ref ECSCluster
-      ServiceName: gitlabTSTGroup1  #Change to gitlabTSTNAME
+      ServiceName: gitlabTSTGroup2  #Change to gitlabTSTNAME
       DeploymentConfiguration:
         MaximumPercent: 200
         MinimumHealthyPercent: 100
@@ -180,13 +180,13 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties: 
       RetentionInDays: 7
-      LogGroupName: /ecs/jenkinsTSTGroup1 #Change to /ecs/jenkinsNAMETST
+      LogGroupName: /ecs/jenkinsTSTGroup2 #Change to /ecs/jenkinsNAMETST
 
   ECSTaskDefjenkins:
     Type: AWS::ECS::TaskDefinition
     Properties : 
       ContainerDefinitions : 
-        - Name: jenkinsTSTGroup1 #Change to jenkinsTSTName
+        - Name: jenkinsTSTGroup2 #Change to jenkinsTSTName
           Image: h1kkan/jenkins-docker:lts
           PortMappings:
             - ContainerPort: 8080
@@ -195,7 +195,7 @@ Resources:
           LogConfiguration:
             LogDriver: awslogs
             Options:
-              awslogs-group: /ecs/jenkinsTSTGroup1 #Change to /ecs/jenkinsNAMETST
+              awslogs-group: /ecs/jenkinsTSTGroup2 #Change to /ecs/jenkinsNAMETST
               awslogs-region: us-east-2
               awslogs-stream-prefix: ecs
           Environment: []
@@ -217,7 +217,7 @@ Resources:
     Properties:
       TaskDefinition: !Ref ECSTaskDefjenkins
       Cluster: !Ref ECSCluster
-      ServiceName: jenkinsTSTGroup1 #Change to jenkinsTSTNAME
+      ServiceName: jenkinsTSTGroup2 #Change to jenkinsTSTNAME
       DeploymentConfiguration:
         MaximumPercent: 200
         MinimumHealthyPercent: 100
@@ -239,13 +239,13 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties: 
       RetentionInDays: 7
-      LogGroupName: /ecs/nexusTSTGroup1 #Change to /ecs/nexusTSTNAME
+      LogGroupName: /ecs/nexusTSTGroup2 #Change to /ecs/nexusTSTNAME
 
   ECSTaskDefnexus:
     Type: AWS::ECS::TaskDefinition
     Properties : 
       ContainerDefinitions : 
-        - Name: sonatype_nexusTSTGroup1 #Change to sonatype_nexusTSTNAME
+        - Name: sonatype_nexusTSTGroup2 #Change to sonatype_nexusTSTNAME
           Image: sonatype/nexus
           PortMappings:
             - ContainerPort: 8081
@@ -254,7 +254,7 @@ Resources:
           LogConfiguration:
             LogDriver: awslogs
             Options:
-              awslogs-group: /ecs/nexusTSTGroup1 #Change to /ecs/nexusTSTNAME
+              awslogs-group: /ecs/nexusTSTGroup2 #Change to /ecs/nexusTSTNAME
               awslogs-region: us-east-2
               awslogs-stream-prefix: ecs
           Environment: []
@@ -276,7 +276,7 @@ Resources:
     Properties:
       TaskDefinition: !Ref ECSTaskDefnexus
       Cluster: !Ref ECSCluster
-      ServiceName: nexusTSTGroup1 #Change to nexusTSTNAME
+      ServiceName: nexusTSTGroup2 #Change to nexusTSTNAME
       DeploymentConfiguration:
         MaximumPercent: 200
         MinimumHealthyPercent: 100
@@ -298,13 +298,13 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties: 
       RetentionInDays: 7
-      LogGroupName: /ecs/sonarqubeTSTGroup1 #Change to /ecs/sonarqubeTSTNAME
+      LogGroupName: /ecs/sonarqubeTSTGroup2 #Change to /ecs/sonarqubeTSTNAME
 
   ECSTaskDefsonarqube:
     Type: AWS::ECS::TaskDefinition
     Properties : 
       ContainerDefinitions : 
-        - Name: sonatype_sonarqubeTSTGroup1 #Change to sonatype_sonarqubeTSTNAME
+        - Name: sonatype_sonarqubeTSTGroup2 #Change to sonatype_sonarqubeTSTNAME
           Image: sonarqube:lts
           PortMappings:
             - ContainerPort: 9000
@@ -313,7 +313,7 @@ Resources:
           LogConfiguration:
             LogDriver: awslogs
             Options:
-              awslogs-group: /ecs/sonarqubeTSTGroup1 #Change to /ecs/sonarqubeTSTNAME
+              awslogs-group: /ecs/sonarqubeTSTGroup2 #Change to /ecs/sonarqubeTSTNAME
               awslogs-region: us-east-2
               awslogs-stream-prefix: ecs
           Environment: []
@@ -344,7 +344,7 @@ Resources:
     Properties:
       TaskDefinition: !Ref ECSTaskDefsonarqube
       Cluster: !Ref ECSCluster
-      ServiceName: sonarqubeTSTGroup1 #Change to sonarqubeTSTNAME
+      ServiceName: sonarqubeTSTGroup2 #Change to sonarqubeTSTNAME
       DeploymentConfiguration:
         MaximumPercent: 200
         MinimumHealthyPercent: 100
@@ -366,13 +366,13 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties: 
       RetentionInDays: 7
-      LogGroupName: /ecs/owaspzapTSTGroup1 #Change to /ecs/owaspzapTSTNAME
+      LogGroupName: /ecs/owaspzapTSTGroup2 #Change to /ecs/owaspzapTSTNAME
 
   ECSTaskDefowaspzap:
     Type: AWS::ECS::TaskDefinition
     Properties : 
       ContainerDefinitions : 
-        - Name: sonatype_owaspzapTSTGroup1 #Change to sonatype_owaspzapTSTNAME
+        - Name: sonatype_owaspzapTSTGroup2 #Change to sonatype_owaspzapTSTNAME
           Image: owasp/zap2docker-stable
           PortMappings:
             - ContainerPort: 8080
@@ -383,7 +383,7 @@ Resources:
           LogConfiguration:
             LogDriver: awslogs
             Options:
-              awslogs-group: /ecs/owaspzapTSTGroup1 #Change to /ecs/owaspzapTSTNAME
+              awslogs-group: /ecs/owaspzapTSTGroup2 #Change to /ecs/owaspzapTSTNAME
               awslogs-region: us-east-2
               awslogs-stream-prefix: ecs
           EntryPoint: 
@@ -404,7 +404,7 @@ Resources:
     Properties:
       TaskDefinition: !Ref ECSTaskDefowaspzap
       Cluster: !Ref ECSCluster
-      ServiceName: owaspzapTSTGroup1 #Change to owaspzapTSTNAME
+      ServiceName: owaspzapTSTGroup2 #Change to owaspzapTSTNAME
       DeploymentConfiguration:
         MaximumPercent: 200
         MinimumHealthyPercent: 100

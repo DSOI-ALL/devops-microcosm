@@ -8,7 +8,7 @@ Resources:
   IAMRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: ecsTaskExecutionRoleDeployTSTGroup1 #Change to ecsTaskExecutionRoleDeployTSTNAME
+      RoleName: ecsTaskExecutionRoleDeployTSTGroup2 #Change to ecsTaskExecutionRoleDeployTSTNAME
       AssumeRolePolicyDocument:
         Version: '2008-10-17'
         Statement:
@@ -27,7 +27,7 @@ Resources:
   CodeDeployRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: CodeDeployServiceRoleTSTGroup1 #Change to CodeDeployServiceRoleTSTNAME
+      RoleName: CodeDeployServiceRoleTSTGroup2 #Change to CodeDeployServiceRoleTSTNAME
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -49,7 +49,7 @@ Resources:
   EC2PlusS3Role:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: EC2PlusS3RoleTSTGroup1 #Change to EC2PlusS3RoleTSTNAME
+      RoleName: EC2PlusS3RoleTSTGroup2 #Change to EC2PlusS3RoleTSTNAME
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -182,13 +182,13 @@ Resources:
   ECSCluster:
     Type: AWS::ECS::Cluster
     Properties : 
-      ClusterName : microcosm3Group1 #Change to microcosmNAME
+      ClusterName : microcosm3Group2 #Change to microcosmNAME
 
   petclinicLogGroup: 
     Type: AWS::Logs::LogGroup
     Properties: 
       RetentionInDays: 7
-      LogGroupName: /ecs/petclinicTSTGroup1 #Change to /ecs/petclinicTSTNAME
+      LogGroupName: /ecs/petclinicTSTGroup2 #Change to /ecs/petclinicTSTNAME
 
   ECSTaskDefpetclinic:
     Type: AWS::ECS::TaskDefinition
@@ -205,7 +205,7 @@ Resources:
           LogConfiguration:
             LogDriver: awslogs
             Options:
-              awslogs-group: /ecs/petclinicTSTGroup1 #Change to /ecs/petclinicTSTNAME
+              awslogs-group: /ecs/petclinicTSTGroup2 #Change to /ecs/petclinicTSTNAME
               awslogs-region: us-east-2
               awslogs-stream-prefix: ecs
           MountPoints: 
@@ -226,7 +226,7 @@ Resources:
     Properties:
       TaskDefinition: !Ref ECSTaskDefpetclinic
       Cluster: !Ref ECSCluster
-      ServiceName: petclinicTSTGroup1 #Change to petclinicTSTNAME
+      ServiceName: petclinicTSTGroup2 #Change to petclinicTSTNAME
       DeploymentConfiguration:
         MaximumPercent: 200
         MinimumHealthyPercent: 100
@@ -255,7 +255,7 @@ Resources:
       Monitoring: false
       Tags:
         - Key: Name
-          Value: tomcat_codedeployTSTGroup1 #Change to tomcat_codedeployTSTNAME
+          Value: tomcat_codedeployTSTGroup2 #Change to tomcat_codedeployTSTNAME
       NetworkInterfaces: 
         - DeleteOnTermination: true
           Description: Primary network interface
@@ -301,7 +301,7 @@ Resources:
       Monitoring: false
       Tags:
         - Key: Name
-          Value: tomcat_codedeployTSTGroup1 #Change to tomcat_codedeployTSTNAME
+          Value: tomcat_codedeployTSTGroup2 #Change to tomcat_codedeployTSTNAME
       NetworkInterfaces: 
         - DeleteOnTermination: true
           Description: Primary network interface
@@ -338,7 +338,7 @@ Resources:
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
-      Name: petclinicTSTGroup1 #Change to petclinicTSTNAME
+      Name: petclinicTSTGroup2 #Change to petclinicTSTNAME
       Subnets:
         - !Ref Subnet1
         - !Ref Subnet2
@@ -351,7 +351,7 @@ Resources:
       HealthCheckIntervalSeconds : 30
       HealthCheckTimeoutSeconds : 20
       HealthyThresholdCount : 2
-      Name: petclinicTargetGroupTestGroup1 #Change to petclinicTargetGroupTestNAME
+      Name: petclinicTargetGroupTestGroup2 #Change to petclinicTargetGroupTestNAME
       Port: 80
       Protocol: HTTP
       TargetType: instance
@@ -377,18 +377,18 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties: 
       RetentionInDays: 7
-      LogGroupName: /jenkins/jobsTSTGroup1 #Change to /jenkins/jobsTSTNAME
+      LogGroupName: /jenkins/jobsTSTGroup2 #Change to /jenkins/jobsTSTNAME
 
   CodeDeplyApplication:
     Type: AWS::CodeDeploy::Application
     Properties : 
-      ApplicationName : petclinicTSTGroup1 #Change to petclinicTSTNAME
+      ApplicationName : petclinicTSTGroup2 #Change to petclinicTSTNAME
       ComputePlatform : Server
 
   CodeDeployConfig:
     Type: AWS::CodeDeploy::DeploymentConfig
     Properties : 
-      DeploymentConfigName : petclinicconfigTSTGroup1 #Change to petclinicconfigTSTNAME
+      DeploymentConfigName : petclinicconfigTSTGroup2 #Change to petclinicconfigTSTNAME
       MinimumHealthyHosts : 
         Type: "HOST_COUNT"
         Value: 0
@@ -404,15 +404,15 @@ Resources:
           - DEPLOYMENT_STOP_ON_ALARM
           - DEPLOYMENT_STOP_ON_REQUEST
       DeploymentConfigName : !Ref CodeDeployConfig
-      DeploymentGroupName : petclinicdeploymentgroupTSTGroup1 #Change to petclinicdeploymentgroupTSTNAME
+      DeploymentGroupName : petclinicdeploymentgroupTSTGroup2 #Change to petclinicdeploymentgroupTSTNAME
       DeploymentStyle : 
         DeploymentOption: WITH_TRAFFIC_CONTROL
         DeploymentType: IN_PLACE
       Ec2TagFilters : 
         - Key : Name
           Type : KEY_AND_VALUE
-          Value : tomcat_codedeployTSTGroup1 #Change to tomcat_codedeployTSTNAME
+          Value : tomcat_codedeployTSTGroup2 #Change to tomcat_codedeployTSTNAME
       LoadBalancerInfo :
         TargetGroupInfoList :
-          - Name: petclinicTargetGroupTestGroup1 #Change to petclinicTargetGroupTestNAME
+          - Name: petclinicTargetGroupTestGroup2 #Change to petclinicTargetGroupTestNAME
       ServiceRoleArn : !GetAtt CodeDeployRole.Arn
