@@ -66,7 +66,7 @@ Resources:
   EC2PlusS3InstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties: 
-      InstanceProfileName: EC2PlusS3RoleTST #Change to EC2PlusS3RoleTSTNAME
+      InstanceProfileName: EC2PlusS3RoleTSTGroup1 #Change to EC2PlusS3RoleTSTNAME
       Path: "/"
       Roles: 
         - !Ref EC2PlusS3Role
@@ -287,7 +287,7 @@ Resources:
               cp codedeploy_logs.conf /var/awslogs/etc/config/
               service awslogs restart
               service codedeploy-agent start
-      IamInstanceProfile: EC2PlusS3RoleTST
+      IamInstanceProfile: EC2PlusS3RoleTSTGroup1
 
 
   PetclinicInstance2:
@@ -333,7 +333,7 @@ Resources:
               cp codedeploy_logs.conf /var/awslogs/etc/config/
               service awslogs restart
               service codedeploy-agent start
-      IamInstanceProfile: EC2PlusS3RoleTST
+      IamInstanceProfile: EC2PlusS3RoleTSTGroup1
 
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
