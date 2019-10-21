@@ -88,12 +88,15 @@ spec:
   selector:
     app: owaspzap
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: jenkins
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins
   template:
     metadata:
       labels:
@@ -101,17 +104,20 @@ spec:
     spec:
       containers:
       - name: jenkins
-        image: jenkins:2.60.3
+        image: jenkins/jenkins:lts
         ports:
         - containerPort: 8080
 ---
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gitlab
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: gitlab
   template:
     metadata:
       labels:
@@ -124,12 +130,15 @@ spec:
         - containerPort: 80
 ---
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sonarqube
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: sonarqube
   template:
     metadata:
       labels:
@@ -142,12 +151,15 @@ spec:
         - containerPort: 9000
 ---
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: bugzilla
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: bugzilla
   template:
     metadata:
       labels:
@@ -160,12 +172,15 @@ spec:
         - containerPort: 80
 ---
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mediawiki
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: mediawiki
   template:
     metadata:
       labels:
@@ -178,12 +193,15 @@ spec:
         - containerPort: 80
 ---
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nexus
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: nexus
   template:
     metadata:
       labels:
@@ -196,12 +214,15 @@ spec:
         - containerPort: 8081
 ---
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: owaspzap
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: owaspzap
   template:
     metadata:
       labels:
