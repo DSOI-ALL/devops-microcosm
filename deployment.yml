@@ -88,128 +88,149 @@ spec:
   selector:
     app: owaspzap
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: jenkins
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins
   template:
     metadata:
       labels:
         app: jenkins
     spec:
       containers:
-      - name: jenkins
-        image: jenkins:2.60.3
-        ports:
-        - containerPort: 8080
+        - name: jenkins
+          image: jenkins/jenkins:lts
+          ports:
+            - containerPort: 8080
 ---
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gitlab
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: gitlab
   template:
     metadata:
       labels:
         app: gitlab
     spec:
       containers:
-      - name: gitlab
-        image: gitlab/gitlab-ce
-        ports:
-        - containerPort: 80
+        - name: gitlab
+          image: gitlab/gitlab-ce
+          ports:
+            - containerPort: 80
 ---
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sonarqube
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: sonarqube
   template:
     metadata:
       labels:
         app: sonarqube
     spec:
       containers:
-      - name: sonarqube
-        image: sonarqube:lts
-        ports:
-        - containerPort: 9000
+        - name: sonarqube
+          image: sonarqube:lts
+          ports:
+            - containerPort: 9000
 ---
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: bugzilla
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: bugzilla
   template:
     metadata:
       labels:
         app: bugzilla
     spec:
       containers:
-      - name: bugzilla
-        image: dklawren/docker-bugzilla
-        ports:
-        - containerPort: 80
+        - name: bugzilla
+          image: dklawren/docker-bugzilla
+          ports:
+            - containerPort: 80
 ---
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mediawiki
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: mediawiki
   template:
     metadata:
       labels:
         app: mediawiki
     spec:
       containers:
-      - name: mediawiki
-        image: mediawiki
-        ports:
-        - containerPort: 80
+        - name: mediawiki
+          image: mediawiki
+          ports:
+            - containerPort: 80
 ---
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nexus
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: nexus
   template:
     metadata:
       labels:
         app: nexus
     spec:
       containers:
-      - name: nexus
-        image: sonatype/nexus
-        ports:
-        - containerPort: 8081
+        - name: nexus
+          image: sonatype/nexus
+          ports:
+            - containerPort: 8081
 ---
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: owaspzap
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: owaspzap
   template:
     metadata:
       labels:
         app: owaspzap
     spec:
       containers:
-      - name: owaspzap
-        image: owasp/zap2docker-stable
-        command: ["zap.sh", "-daemon", "-port", "8090", "-host", "0.0.0.0"]
-        ports:
-        - containerPort: 8090
+        - name: owaspzap
+          image: owasp/zap2docker-stable
+          command: ["zap.sh", "-daemon", "-port", "8090", "-host", "0.0.0.0"]
+          ports:
+            - containerPort: 8090
