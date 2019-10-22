@@ -480,12 +480,15 @@ Once you "vagrant up staging", you need SSH  from jenkins container to staging e
  Each service has a corresponding "deployment" and "service" definition that are required by Kubernetes. Below is
  an example of the deployment and service definitions for Jenkins in the "deployment.yml" file:
  
-        apiVersion: extensions/v1beta1
+        apiVersion: apps/v1
         kind: Deployment
         metadata:
           name: jenkins
         spec:
           replicas: 1
+          selector:
+              matchLabels:
+                app: jenkins
           template:
             metadata:
               labels:
