@@ -117,7 +117,7 @@ Resources:
   ECSCluster:
     Type: AWS::ECS::Cluster
     Properties :
-      ClusterName: !Join ["-", [ "microcosm2", !Ref ResourceSuffix ]]
+      ClusterName: !Join ["-", [ "microcosm", !Ref ResourceSuffix ]]
 
   gitlabLogGroup:
     Type: AWS::Logs::LogGroup
