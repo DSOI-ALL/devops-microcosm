@@ -317,7 +317,7 @@ Resources:
     Properties :
       ContainerDefinitions :
         - Name: !Join ["-", [ "sonarqube", !Ref ResourceSuffix ]]
-          Image: sonarqube:8.9.9-community
+          Image: sonarqube:8.9-community
           PortMappings:
             - ContainerPort: 9000
               HostPort: 9000
@@ -334,15 +334,9 @@ Resources:
               SourceVolume: sonarqube_conf
             - ContainerPath: /opt/sonarqube/data
               SourceVolume: sonarqube_data
-            - ContainerPath: /opt/sonarqube/
-              SourceVolume: sonarqube_extensions
-            - ContainerPath: /opt/sonarqube/lib/bundled-plugins
-              SourceVolume: sonarqube_bundled-plugins
       Volumes:
         - Name: sonarqube_conf
         - Name: sonarqube_data
-        - Name: sonarqube_extensions
-        - Name: sonarqube_bundled-plugins
       NetworkMode: awsvpc
       ExecutionRoleArn: !GetAtt IAMRole.Arn
       TaskRoleArn: !GetAtt IAMRole.Arn
