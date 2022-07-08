@@ -13,7 +13,7 @@ Resources:
           Principal:
             Service: ecs-tasks.amazonaws.com
           Action: sts:AssumeRole
-      ManagedPolicyArns: 
+      ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonEC2FullAccess
         - arn:aws:iam::aws:policy/AmazonS3FullAccess
         - arn:aws:iam::aws:policy/AWSCodeDeployRoleForECS
@@ -107,19 +107,19 @@ Resources:
 
   ECSCluster:
     Type: AWS::ECS::Cluster
-    Properties : 
+    Properties :
       ClusterName : microcosm2 #Change to microcosmNAME
 
-  gitlabLogGroup: 
+  gitlabLogGroup:
     Type: AWS::Logs::LogGroup
-    Properties: 
+    Properties:
       RetentionInDays: 7
       LogGroupName: /ecs/gitlabTST #Change to /ecs/gitlabNAMETST
 
   ECSTaskDefgitlab:
     Type: AWS::ECS::TaskDefinition
-    Properties : 
-      ContainerDefinitions : 
+    Properties :
+      ContainerDefinitions :
         - Name: gitlabTST #Change to gitlabTSTNAME
           Image: gitlab/gitlab-ce
           PortMappings:
@@ -128,20 +128,23 @@ Resources:
             - ContainerPort: 443
               HostPort: 443
           Essential: 'true'
+          Environment:
+            - Name: GITLAB_OMNIBUS_CONFIG
+              Value: "gitlab_rails['display_initial_root_password'] = true;"
           LogConfiguration:
             LogDriver: awslogs
             Options:
               awslogs-group: /ecs/gitlabTST #Change to /ecs/gitlabNAMETST
               awslogs-region: us-east-2
               awslogs-stream-prefix: ecs
-          MountPoints: 
+          MountPoints:
             - ContainerPath: /etc/gitlab
               SourceVolume: gitlab-config
             - ContainerPath: /var/log/gitlab
               SourceVolume: gitlab-logs
             - ContainerPath: /var/opt/gitlab
               SourceVolume: gitlab-data
-      Volumes: 
+      Volumes:
         - Name: gitlab-config
         - Name: gitlab-logs
         - Name: gitlab-data
@@ -164,10 +167,10 @@ Resources:
         MinimumHealthyPercent: 100
       DesiredCount: 1
       LaunchType: FARGATE
-      NetworkConfiguration: 
-        AwsvpcConfiguration:  
+      NetworkConfiguration:
+        AwsvpcConfiguration:
           AssignPublicIp: ENABLED
-          Subnets: 
+          Subnets:
             - !Ref Subnet1
           SecurityGroups:
             - !Ref VPCSecurityGroup
@@ -176,16 +179,16 @@ Resources:
     - ECSTaskDefgitlab
     - gitlabLogGroup
 
-  jenkinsLogGroup: 
+  jenkinsLogGroup:
     Type: AWS::Logs::LogGroup
-    Properties: 
+    Properties:
       RetentionInDays: 7
       LogGroupName: /ecs/jenkinsTST #Change to /ecs/jenkinsNAMETST
 
   ECSTaskDefjenkins:
     Type: AWS::ECS::TaskDefinition
-    Properties : 
-      ContainerDefinitions : 
+    Properties :
+      ContainerDefinitions :
         - Name: jenkinsTST #Change to jenkinsTSTName
           Image: h1kkan/jenkins-docker:lts
           PortMappings:
@@ -199,10 +202,10 @@ Resources:
               awslogs-region: us-east-2
               awslogs-stream-prefix: ecs
           Environment: []
-          MountPoints: 
+          MountPoints:
             - ContainerPath: /var/jenkins_home
               SourceVolume: jenkins_home
-      Volumes: 
+      Volumes:
         - Name: jenkins_home
       NetworkMode: awsvpc
       ExecutionRoleArn: !GetAtt IAMRole.Arn
@@ -223,10 +226,10 @@ Resources:
         MinimumHealthyPercent: 100
       DesiredCount: 1
       LaunchType: FARGATE
-      NetworkConfiguration: 
-        AwsvpcConfiguration:  
+      NetworkConfiguration:
+        AwsvpcConfiguration:
           AssignPublicIp: ENABLED
-          Subnets: 
+          Subnets:
             - !Ref Subnet1
           SecurityGroups:
             - !Ref VPCSecurityGroup
@@ -235,16 +238,16 @@ Resources:
     - ECSTaskDefjenkins
     - jenkinsLogGroup
 
-  nexusLogGroup: 
+  nexusLogGroup:
     Type: AWS::Logs::LogGroup
-    Properties: 
+    Properties:
       RetentionInDays: 7
       LogGroupName: /ecs/nexusTST #Change to /ecs/nexusTSTNAME
 
   ECSTaskDefnexus:
     Type: AWS::ECS::TaskDefinition
-    Properties : 
-      ContainerDefinitions : 
+    Properties :
+      ContainerDefinitions :
         - Name: sonatype_nexusTST #Change to sonatype_nexusTSTNAME
           Image: sonatype/nexus
           PortMappings:
@@ -258,10 +261,10 @@ Resources:
               awslogs-region: us-east-2
               awslogs-stream-prefix: ecs
           Environment: []
-          MountPoints: 
+          MountPoints:
             - ContainerPath: /sonatype-work
               SourceVolume: nexus-data
-      Volumes: 
+      Volumes:
         - Name: nexus-data
       NetworkMode: awsvpc
       ExecutionRoleArn: !GetAtt IAMRole.Arn
@@ -282,10 +285,10 @@ Resources:
         MinimumHealthyPercent: 100
       DesiredCount: 1
       LaunchType: FARGATE
-      NetworkConfiguration: 
-        AwsvpcConfiguration:  
+      NetworkConfiguration:
+        AwsvpcConfiguration:
           AssignPublicIp: ENABLED
-          Subnets: 
+          Subnets:
             - !Ref Subnet1
           SecurityGroups:
             - !Ref VPCSecurityGroup
@@ -294,16 +297,16 @@ Resources:
     - ECSTaskDefnexus
     - nexusLogGroup
 
-  sonarqubeLogGroup: 
+  sonarqubeLogGroup:
     Type: AWS::Logs::LogGroup
-    Properties: 
+    Properties:
       RetentionInDays: 7
       LogGroupName: /ecs/sonarqubeTST #Change to /ecs/sonarqubeTSTNAME
 
   ECSTaskDefsonarqube:
     Type: AWS::ECS::TaskDefinition
-    Properties : 
-      ContainerDefinitions : 
+    Properties :
+      ContainerDefinitions :
         - Name: sonatype_sonarqubeTST #Change to sonatype_sonarqubeTSTNAME
           Image: sonarqube:lts
           PortMappings:
@@ -317,7 +320,7 @@ Resources:
               awslogs-region: us-east-2
               awslogs-stream-prefix: ecs
           Environment: []
-          MountPoints: 
+          MountPoints:
             - ContainerPath: /opt/sonarqube/conf
               SourceVolume: sonarqube_conf
             - ContainerPath: /opt/sonarqube/data
@@ -326,7 +329,7 @@ Resources:
               SourceVolume: sonarqube_extensions
             - ContainerPath: /opt/sonarqube/lib/bundled-plugins
               SourceVolume: sonarqube_bundled-plugins
-      Volumes: 
+      Volumes:
         - Name: sonarqube_conf
         - Name: sonarqube_data
         - Name: sonarqube_extensions
@@ -350,10 +353,10 @@ Resources:
         MinimumHealthyPercent: 100
       DesiredCount: 1
       LaunchType: FARGATE
-      NetworkConfiguration: 
-        AwsvpcConfiguration:  
+      NetworkConfiguration:
+        AwsvpcConfiguration:
           AssignPublicIp: ENABLED
-          Subnets: 
+          Subnets:
             - !Ref Subnet1
           SecurityGroups:
             - !Ref VPCSecurityGroup
@@ -362,16 +365,16 @@ Resources:
     - ECSTaskDefsonarqube
     - sonarqubeLogGroup
 
-  owaspzapLogGroup: 
+  owaspzapLogGroup:
     Type: AWS::Logs::LogGroup
-    Properties: 
+    Properties:
       RetentionInDays: 7
       LogGroupName: /ecs/owaspzapTST #Change to /ecs/owaspzapTSTNAME
 
   ECSTaskDefowaspzap:
     Type: AWS::ECS::TaskDefinition
-    Properties : 
-      ContainerDefinitions : 
+    Properties :
+      ContainerDefinitions :
         - Name: sonatype_owaspzapTST #Change to sonatype_owaspzapTSTNAME
           Image: owasp/zap2docker-stable
           PortMappings:
@@ -386,7 +389,7 @@ Resources:
               awslogs-group: /ecs/owaspzapTST #Change to /ecs/owaspzapTSTNAME
               awslogs-region: us-east-2
               awslogs-stream-prefix: ecs
-          EntryPoint: 
+          EntryPoint:
             - zap-webswing.sh
           Environment: []
           MountPoints: []
@@ -410,10 +413,10 @@ Resources:
         MinimumHealthyPercent: 100
       DesiredCount: 1
       LaunchType: FARGATE
-      NetworkConfiguration: 
-        AwsvpcConfiguration:  
+      NetworkConfiguration:
+        AwsvpcConfiguration:
           AssignPublicIp: ENABLED
-          Subnets: 
+          Subnets:
             - !Ref Subnet1
           SecurityGroups:
             - !Ref VPCSecurityGroup
