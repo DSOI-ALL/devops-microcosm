@@ -1,14 +1,22 @@
 AWSTemplateFormatVersion: '2010-09-09'
 
-Parameters: 
+Parameters:
+  ResourceSuffix:
+    Type: String
+    Default: "TST"
+    MinLength: 3
+    MaxLength: 15
+    AllowedPattern: "^[a-zA-Z0-9]*$"
+    Description: Name suffix for resource creation
   EC2KeyPairName:
     Type: String
     Description: Enter your key pair name (found in the EC2 Console under Key Pairs)
+
 Resources:
   IAMRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: ecsTaskExecutionRoleDeployTST #Change to ecsTaskExecutionRoleDeployTSTNAME
+      RoleName: !Join ["-", [ "ecsTaskExecutionRoleDeploy", !Ref ResourceSuffix ]]
       AssumeRolePolicyDocument:
         Version: '2008-10-17'
         Statement:
@@ -17,7 +25,7 @@ Resources:
           Principal:
             Service: ecs-tasks.amazonaws.com
           Action: sts:AssumeRole
-      ManagedPolicyArns: 
+      ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonEC2FullAccess
         - arn:aws:iam::aws:policy/AmazonS3FullAccess
         - arn:aws:iam::aws:policy/AWSCodeDeployRoleForECS
@@ -27,7 +35,7 @@ Resources:
   CodeDeployRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: CodeDeployServiceRoleTST #Change to CodeDeployServiceRoleTSTNAME
+      RoleName: !Join ["-", [ "CodeDeployServiceRole", !Ref ResourceSuffix ]]
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -36,7 +44,7 @@ Resources:
           Principal:
             Service: codedeploy.amazonaws.com
           Action: sts:AssumeRole
-      ManagedPolicyArns: 
+      ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonEC2FullAccess
         - arn:aws:iam::aws:policy/AutoScalingFullAccess
         - arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess
@@ -49,7 +57,7 @@ Resources:
   EC2PlusS3Role:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: EC2PlusS3RoleTST #Change to EC2PlusS3RoleTSTNAME
+      RoleName: !Join ["-", [ "EC2PlusS3Role", !Ref ResourceSuffix ]]
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -57,7 +65,7 @@ Resources:
           Principal:
             Service: ec2.amazonaws.com
           Action: sts:AssumeRole
-      ManagedPolicyArns: 
+      ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonEC2FullAccess
         - arn:aws:iam::aws:policy/AmazonS3FullAccess
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
@@ -65,10 +73,10 @@ Resources:
 
   EC2PlusS3InstanceProfile:
     Type: AWS::IAM::InstanceProfile
-    Properties: 
-      InstanceProfileName: EC2PlusS3RoleTST #Change to EC2PlusS3RoleTSTNAME
+    Properties:
+      InstanceProfileName: !Join ["-", [ "EC2PlusS3Role", !Ref ResourceSuffix ]]
       Path: "/"
-      Roles: 
+      Roles:
         - !Ref EC2PlusS3Role
 
   VPC:
@@ -169,31 +177,31 @@ Resources:
       SubnetId: !Ref 'Subnet2'
       RouteTableId: !Ref 'VPCRoutingTable'
 
-  s3petclinicdeployTST: 
+  s3petclinicdeployTST:
     Type: AWS::S3::Bucket
     Properties:
       AccessControl: Private
       VersioningConfiguration:
         Status: Enabled
-      Tags: 
+      Tags:
         - Key: petclinic
           Value: deploy
 
   ECSCluster:
     Type: AWS::ECS::Cluster
-    Properties : 
-      ClusterName : microcosm3 #Change to microcosmNAME
+    Properties :
+      ClusterName : !Join ["-", [ "microcosm_deploy", !Ref ResourceSuffix ]]
 
-  petclinicLogGroup: 
+  petclinicLogGroup:
     Type: AWS::Logs::LogGroup
-    Properties: 
+    Properties:
       RetentionInDays: 7
-      LogGroupName: /ecs/petclinicTST #Change to /ecs/petclinicTSTNAME
+      LogGroupName: !Join ["-", [ "/ecs/petclinic", !Ref ResourceSuffix ]]
 
   ECSTaskDefpetclinic:
     Type: AWS::ECS::TaskDefinition
-    Properties : 
-      ContainerDefinitions : 
+    Properties :
+      ContainerDefinitions :
         - Name: tomcat8
           Image: tomcat:8-jre8
           PortMappings:
@@ -205,13 +213,13 @@ Resources:
           LogConfiguration:
             LogDriver: awslogs
             Options:
-              awslogs-group: /ecs/petclinicTST #Change to /ecs/petclinicTSTNAME
+              awslogs-group: !Join ["-", [ "/ecs/petclinic", !Ref ResourceSuffix ]]
               awslogs-region: us-east-2
               awslogs-stream-prefix: ecs
-          MountPoints: 
+          MountPoints:
             - ContainerPath: /opt/tomcat/webapps
               SourceVolume: webapps
-      Volumes: 
+      Volumes:
         - Name: webapps
       NetworkMode: awsvpc
       ExecutionRoleArn: !GetAtt IAMRole.Arn
@@ -226,16 +234,16 @@ Resources:
     Properties:
       TaskDefinition: !Ref ECSTaskDefpetclinic
       Cluster: !Ref ECSCluster
-      ServiceName: petclinicTST #Change to petclinicTSTNAME
+      ServiceName: !Join ["-", [ "petclinic", !Ref ResourceSuffix ]]
       DeploymentConfiguration:
         MaximumPercent: 200
         MinimumHealthyPercent: 100
       DesiredCount: 1
       LaunchType: FARGATE
-      NetworkConfiguration: 
-        AwsvpcConfiguration:  
+      NetworkConfiguration:
+        AwsvpcConfiguration:
           AssignPublicIp: ENABLED
-          Subnets: 
+          Subnets:
             - !Ref Subnet1
           SecurityGroups:
             - !Ref VPCSecurityGroup
@@ -255,20 +263,20 @@ Resources:
       Monitoring: false
       Tags:
         - Key: Name
-          Value: tomcat_codedeployTST #Change to tomcat_codedeployTSTNAME
-      NetworkInterfaces: 
+          Value: !Join ["-", [ "tomcat_codedeploy", !Ref ResourceSuffix ]]
+      NetworkInterfaces:
         - DeleteOnTermination: true
           Description: Primary network interface
           DeviceIndex: 0
           SubnetId: !Ref Subnet1
-          GroupSet: 
+          GroupSet:
             - !GetAtt VPCSecurityGroup.GroupId
           AssociatePublicIpAddress: true
       UserData:
-        Fn::Base64: 
+        Fn::Base64:
           !Sub |
               #!/bin/bash -x
-              # For Tomcat AMI from marketplace | Linux/Unix, Ubuntu 16.04 | 64-bit (x86) Amazon Machine Image (AMI) 
+              # For Tomcat AMI from marketplace | Linux/Unix, Ubuntu 16.04 | 64-bit (x86) Amazon Machine Image (AMI)
               # Debug with logs at /var/log/cloud-init-output.log
               # TODO "When a user data script is processed, it is copied to and executed from a directory in /var/lib/cloud. The script is not deleted after it is run. Be sure to delete the user data scripts from /var/lib/cloud before you create an AMI from the instance. Otherwise, the script will exist in this directory on any instance launched from the AMI and will be run when the instance is launched."
               apt-get -y update
@@ -287,7 +295,7 @@ Resources:
               cp codedeploy_logs.conf /var/awslogs/etc/config/
               service awslogs restart
               service codedeploy-agent start
-      IamInstanceProfile: EC2PlusS3RoleTST
+      IamInstanceProfile: !Join ["-", [ "EC2PlusS3Role", !Ref ResourceSuffix ]]
 
 
   PetclinicInstance2:
@@ -301,20 +309,20 @@ Resources:
       Monitoring: false
       Tags:
         - Key: Name
-          Value: tomcat_codedeployTST #Change to tomcat_codedeployTSTNAME
-      NetworkInterfaces: 
+          Value: !Join ["-", [ "tomcat_codedeploy", !Ref ResourceSuffix ]]
+      NetworkInterfaces:
         - DeleteOnTermination: true
           Description: Primary network interface
           DeviceIndex: 0
           SubnetId: !Ref Subnet2
-          GroupSet: 
+          GroupSet:
             - !GetAtt VPCSecurityGroup.GroupId
           AssociatePublicIpAddress: true
       UserData:
-        Fn::Base64: 
+        Fn::Base64:
           !Sub |
               #!/bin/bash -x
-              # For Tomcat AMI from marketplace | Linux/Unix, Ubuntu 16.04 | 64-bit (x86) Amazon Machine Image (AMI) 
+              # For Tomcat AMI from marketplace | Linux/Unix, Ubuntu 16.04 | 64-bit (x86) Amazon Machine Image (AMI)
               # Debug with logs at /var/log/cloud-init-output.log
               # TODO "When a user data script is processed, it is copied to and executed from a directory in /var/lib/cloud. The script is not deleted after it is run. Be sure to delete the user data scripts from /var/lib/cloud before you create an AMI from the instance. Otherwise, the script will exist in this directory on any instance launched from the AMI and will be run when the instance is launched."
               apt-get -y update
@@ -333,7 +341,7 @@ Resources:
               cp codedeploy_logs.conf /var/awslogs/etc/config/
               service awslogs restart
               service codedeploy-agent start
-      IamInstanceProfile: EC2PlusS3RoleTST
+      IamInstanceProfile: !Join ["-", [ "EC2PlusS3Role", !Ref ResourceSuffix ]]
 
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
@@ -351,7 +359,7 @@ Resources:
       HealthCheckIntervalSeconds : 30
       HealthCheckTimeoutSeconds : 20
       HealthyThresholdCount : 2
-      Name: petclinicTargetGroupTest #Change to petclinicTargetGroupTestNAME
+      Name: !Join ["-", [ "petclinicTargetGroup", !Ref ResourceSuffix ]]
       Port: 80
       Protocol: HTTP
       TargetType: instance
@@ -366,53 +374,53 @@ Resources:
   Listener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
-      DefaultActions: 
+      DefaultActions:
         - Type: 'forward'
           TargetGroupArn: !Ref TargetGroup
       LoadBalancerArn: !Ref LoadBalancer
       Port: 8080
       Protocol: HTTP
 
-  jenkinsjobLogGroup: 
+  jenkinsjobLogGroup:
     Type: AWS::Logs::LogGroup
-    Properties: 
+    Properties:
       RetentionInDays: 7
-      LogGroupName: /jenkins/jobsTST #Change to /jenkins/jobsTSTNAME
+      LogGroupName: !Join ["-", [ "/jenkins/jobs", !Ref ResourceSuffix ]]
 
   CodeDeplyApplication:
     Type: AWS::CodeDeploy::Application
-    Properties : 
+    Properties :
       ApplicationName : petclinicTST #Change to petclinicTSTNAME
       ComputePlatform : Server
 
   CodeDeployConfig:
     Type: AWS::CodeDeploy::DeploymentConfig
-    Properties : 
-      DeploymentConfigName : petclinicconfigTST #Change to petclinicconfigTSTNAME
-      MinimumHealthyHosts : 
+    Properties :
+      DeploymentConfigName : !Join ["-", [ "petclinicconfig", !Ref ResourceSuffix ]]
+      MinimumHealthyHosts :
         Type: "HOST_COUNT"
         Value: 0
 
   DeploymentGroup:
     Type: AWS::CodeDeploy::DeploymentGroup
-    Properties : 
+    Properties :
       ApplicationName : !Ref CodeDeplyApplication
-      AutoRollbackConfiguration : 
+      AutoRollbackConfiguration :
         Enabled: true
-        Events: 
+        Events:
           - DEPLOYMENT_FAILURE
           - DEPLOYMENT_STOP_ON_ALARM
           - DEPLOYMENT_STOP_ON_REQUEST
       DeploymentConfigName : !Ref CodeDeployConfig
-      DeploymentGroupName : petclinicdeploymentgroupTST #Change to petclinicdeploymentgroupTSTNAME
-      DeploymentStyle : 
+      DeploymentGroupName : !Join ["-", [ "petclinicdeploymentgroup", !Ref ResourceSuffix ]]
+      DeploymentStyle :
         DeploymentOption: WITH_TRAFFIC_CONTROL
         DeploymentType: IN_PLACE
-      Ec2TagFilters : 
+      Ec2TagFilters :
         - Key : Name
           Type : KEY_AND_VALUE
-          Value : tomcat_codedeployTST #Change to tomcat_codedeployTSTNAME
+          Value : !Join ["-", [ "tomcat_codedeploy", !Ref ResourceSuffix ]]
       LoadBalancerInfo :
         TargetGroupInfoList :
-          - Name: petclinicTargetGroupTest #Change to petclinicTargetGroupTestNAME
+          - Name: !Join ["-", [ "petclinicTargetGroup", !Ref ResourceSuffix ]]
       ServiceRoleArn : !GetAtt CodeDeployRole.Arn

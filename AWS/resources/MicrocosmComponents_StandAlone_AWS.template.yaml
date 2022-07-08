@@ -1,10 +1,19 @@
 AWSTemplateFormatVersion: '2010-09-09'
 
+Parameters:
+  ResourceSuffix:
+    Type: String
+    Default: "TST"
+    MinLength: 3
+    MaxLength: 15
+    AllowedPattern: "^[a-zA-Z0-9]*$"
+    Description: Name suffix for resource creation
+
 Resources:
   IAMRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: ecsTaskExecutionRoleTST #Change name to ecsTaskExecutionRoleTST
+      RoleName: !Join ["-", [ "ecsTaskExecutionRole", !Ref ResourceSuffix ]]
       AssumeRolePolicyDocument:
         Version: '2008-10-17'
         Statement:
@@ -108,19 +117,19 @@ Resources:
   ECSCluster:
     Type: AWS::ECS::Cluster
     Properties :
-      ClusterName : microcosm2 #Change to microcosmNAME
+      ClusterName: !Join ["-", [ "microcosm", !Ref ResourceSuffix ]]
 
   gitlabLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
       RetentionInDays: 7
-      LogGroupName: /ecs/gitlabTST #Change to /ecs/gitlabNAMETST
+      LogGroupName: !Join ["-", [ "/ecs/gitlab", !Ref ResourceSuffix ]]
 
   ECSTaskDefgitlab:
     Type: AWS::ECS::TaskDefinition
     Properties :
       ContainerDefinitions :
-        - Name: gitlabTST #Change to gitlabTSTNAME
+        - Name: !Join ["-", [ "gitlab", !Ref ResourceSuffix ]]
           Image: gitlab/gitlab-ce
           PortMappings:
             - ContainerPort: 80
@@ -134,7 +143,7 @@ Resources:
           LogConfiguration:
             LogDriver: awslogs
             Options:
-              awslogs-group: /ecs/gitlabTST #Change to /ecs/gitlabNAMETST
+              awslogs-group: !Join ["-", [ "/ecs/gitlab", !Ref ResourceSuffix ]]
               awslogs-region: us-east-2
               awslogs-stream-prefix: ecs
           MountPoints:
@@ -161,7 +170,7 @@ Resources:
     Properties:
       TaskDefinition: !Ref ECSTaskDefgitlab
       Cluster: !Ref ECSCluster
-      ServiceName: gitlabTST  #Change to gitlabTSTNAME
+      ServiceName: !Join ["-", [ "gitlab", !Ref ResourceSuffix ]]
       DeploymentConfiguration:
         MaximumPercent: 200
         MinimumHealthyPercent: 100
@@ -183,7 +192,7 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties:
       RetentionInDays: 7
-      LogGroupName: /ecs/jenkinsTST #Change to /ecs/jenkinsNAMETST
+      LogGroupName: !Join ["-", [ "/ecs/jenkins", !Ref ResourceSuffix ]]
 
   ECSTaskDefjenkins:
     Type: AWS::ECS::TaskDefinition
@@ -198,7 +207,7 @@ Resources:
           LogConfiguration:
             LogDriver: awslogs
             Options:
-              awslogs-group: /ecs/jenkinsTST #Change to /ecs/jenkinsNAMETST
+              awslogs-group: !Join ["-", [ "/ecs/jenkins", !Ref ResourceSuffix ]]
               awslogs-region: us-east-2
               awslogs-stream-prefix: ecs
           Environment: []
@@ -220,7 +229,7 @@ Resources:
     Properties:
       TaskDefinition: !Ref ECSTaskDefjenkins
       Cluster: !Ref ECSCluster
-      ServiceName: jenkinsTST #Change to jenkinsTSTNAME
+      ServiceName: !Join ["-", [ "jenkins", !Ref ResourceSuffix ]]
       DeploymentConfiguration:
         MaximumPercent: 200
         MinimumHealthyPercent: 100
@@ -242,13 +251,13 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties:
       RetentionInDays: 7
-      LogGroupName: /ecs/nexusTST #Change to /ecs/nexusTSTNAME
+      LogGroupName: !Join ["-", [ "/ecs/nexus", !Ref ResourceSuffix ]]
 
   ECSTaskDefnexus:
     Type: AWS::ECS::TaskDefinition
     Properties :
       ContainerDefinitions :
-        - Name: sonatype_nexusTST #Change to sonatype_nexusTSTNAME
+        - Name: !Join ["-", [ "sonatype_nexus", !Ref ResourceSuffix ]]
           Image: sonatype/nexus
           PortMappings:
             - ContainerPort: 8081
@@ -257,7 +266,7 @@ Resources:
           LogConfiguration:
             LogDriver: awslogs
             Options:
-              awslogs-group: /ecs/nexusTST #Change to /ecs/nexusTSTNAME
+              awslogs-group: !Join ["-", [ "/ecs/nexus", !Ref ResourceSuffix ]]
               awslogs-region: us-east-2
               awslogs-stream-prefix: ecs
           Environment: []
@@ -279,7 +288,7 @@ Resources:
     Properties:
       TaskDefinition: !Ref ECSTaskDefnexus
       Cluster: !Ref ECSCluster
-      ServiceName: nexusTST #Change to nexusTSTNAME
+      ServiceName:  !Join ["-", [ "nexus", !Ref ResourceSuffix ]]
       DeploymentConfiguration:
         MaximumPercent: 200
         MinimumHealthyPercent: 100
@@ -301,14 +310,14 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties:
       RetentionInDays: 7
-      LogGroupName: /ecs/sonarqubeTST #Change to /ecs/sonarqubeTSTNAME
+      LogGroupName: !Join ["-", [ "/ecs/sonarqube", !Ref ResourceSuffix ]]
 
   ECSTaskDefsonarqube:
     Type: AWS::ECS::TaskDefinition
     Properties :
       ContainerDefinitions :
-        - Name: sonatype_sonarqubeTST #Change to sonatype_sonarqubeTSTNAME
-          Image: sonarqube:lts
+        - Name: !Join ["-", [ "sonarqube", !Ref ResourceSuffix ]]
+          Image: sonarqube:8.9-community
           PortMappings:
             - ContainerPort: 9000
               HostPort: 9000
@@ -316,7 +325,7 @@ Resources:
           LogConfiguration:
             LogDriver: awslogs
             Options:
-              awslogs-group: /ecs/sonarqubeTST #Change to /ecs/sonarqubeTSTNAME
+              awslogs-group: !Join ["-", [ "/ecs/sonarqube", !Ref ResourceSuffix ]]
               awslogs-region: us-east-2
               awslogs-stream-prefix: ecs
           Environment: []
@@ -325,15 +334,9 @@ Resources:
               SourceVolume: sonarqube_conf
             - ContainerPath: /opt/sonarqube/data
               SourceVolume: sonarqube_data
-            - ContainerPath: /opt/sonarqube/
-              SourceVolume: sonarqube_extensions
-            - ContainerPath: /opt/sonarqube/lib/bundled-plugins
-              SourceVolume: sonarqube_bundled-plugins
       Volumes:
         - Name: sonarqube_conf
         - Name: sonarqube_data
-        - Name: sonarqube_extensions
-        - Name: sonarqube_bundled-plugins
       NetworkMode: awsvpc
       ExecutionRoleArn: !GetAtt IAMRole.Arn
       TaskRoleArn: !GetAtt IAMRole.Arn
@@ -347,7 +350,7 @@ Resources:
     Properties:
       TaskDefinition: !Ref ECSTaskDefsonarqube
       Cluster: !Ref ECSCluster
-      ServiceName: sonarqubeTST #Change to sonarqubeTSTNAME
+      ServiceName: !Join ["-", [ "sonarqube", !Ref ResourceSuffix ]]
       DeploymentConfiguration:
         MaximumPercent: 200
         MinimumHealthyPercent: 100
@@ -369,13 +372,13 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties:
       RetentionInDays: 7
-      LogGroupName: /ecs/owaspzapTST #Change to /ecs/owaspzapTSTNAME
+      LogGroupName: !Join ["-", [ "/ecs/owaspzap", !Ref ResourceSuffix ]]
 
   ECSTaskDefowaspzap:
     Type: AWS::ECS::TaskDefinition
     Properties :
       ContainerDefinitions :
-        - Name: sonatype_owaspzapTST #Change to sonatype_owaspzapTSTNAME
+        - Name: !Join ["-", [ "owaspzap", !Ref ResourceSuffix ]]
           Image: owasp/zap2docker-stable
           PortMappings:
             - ContainerPort: 8080
@@ -386,7 +389,7 @@ Resources:
           LogConfiguration:
             LogDriver: awslogs
             Options:
-              awslogs-group: /ecs/owaspzapTST #Change to /ecs/owaspzapTSTNAME
+              awslogs-group: !Join ["-", [ "/ecs/owaspzap", !Ref ResourceSuffix ]]
               awslogs-region: us-east-2
               awslogs-stream-prefix: ecs
           EntryPoint:
@@ -407,7 +410,7 @@ Resources:
     Properties:
       TaskDefinition: !Ref ECSTaskDefowaspzap
       Cluster: !Ref ECSCluster
-      ServiceName: owaspzapTST #Change to owaspzapTSTNAME
+      ServiceName: !Join ["-", [ "owaspzap", !Ref ResourceSuffix ]]
       DeploymentConfiguration:
         MaximumPercent: 200
         MinimumHealthyPercent: 100
