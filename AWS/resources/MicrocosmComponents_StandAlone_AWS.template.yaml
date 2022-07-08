@@ -198,7 +198,7 @@ Resources:
     Type: AWS::ECS::TaskDefinition
     Properties :
       ContainerDefinitions :
-        - Name: jenkinsTST #Change to jenkinsTSTName
+        - Name: !Join ["-", [ "jenkins", !Ref ResourceSuffix ]]
           Image: h1kkan/jenkins-docker:lts
           PortMappings:
             - ContainerPort: 8080
